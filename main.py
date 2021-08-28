@@ -46,6 +46,10 @@ while True :
             if event.key == pygame.K_DOWN:
                 hero.y += 1
             if event.key == pygame.K_SPACE:
-                hero.z += 1
+                hero.jump = True
+
+
+        if hero.jump:
+            hero.z += 1
 
         pygame.display.update()

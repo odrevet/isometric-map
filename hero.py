@@ -7,3 +7,4 @@ class Hero(pygame.sprite.Sprite):
         self.x = 0
         self.y = 0
         self.z = 0
+        self.jump = False
