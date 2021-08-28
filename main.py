@@ -4,8 +4,8 @@ from pygame.locals import *
 from hero import Hero
 from level import *
 
-def cartesian_to_isometric(x, y):
-    return [x - y, (x + y) // 2]
+def cartesian_to_isometric(coord):
+    return [coord[0] - coord[1], (coord[0] + coord[1]) // 2]
 
 pygame.init()
 bgcolor = (0, 0, 0)
@@ -24,8 +24,8 @@ while True :
     surface_display.fill(bgcolor)
 
     level_draw(level, image_tileset, camera, surface_display)
-    hero_iso_x, hero_iso_y = cartesian_to_isometric(hero.x, hero.y)
-    surface_display.blit(hero.image, (camera[0] + hero_iso_x, camera[1] + hero_iso_y - hero.z))
+    hero_iso_x, hero_iso_y = cartesian_to_isometric((hero.x, hero.y))
+    surface_display.blit(hero.image, (camera[0] + hero_iso_x , camera[1] + hero_iso_y - hero.z - 32))
 
     for event in pygame.event.get() :
         if event.type == pygame.QUIT :
