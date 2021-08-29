@@ -14,18 +14,33 @@ def read_level(filename,tileset_width):
         for row in reader:
             level.append(row[:])
 
-    for y, row in enumerate(level):
-        for x, tile in enumerate(row):
-            if tile and tile != '-':
-                level[y][x] = []
+    data = []
+    x, y, z = 0,0,0
 
+    data.append([])  # first floor
+    for row in level:
+        if row[0] == '-':
+            data.append([])  # append a floor
+            x, y = 0, 0
+            z += 1
+            continue 
+        
+        data[z].append([])
+        for tile in row:
+            data[z][y].append([])
+            if tile:
                 for index in tile.split(','):
                     if index:
-                        level[y][x].append(to_2d_coords(int(index), tileset_width))
+                        data[z][y][x].append(to_2d_coords(int(index), tileset_width))
                     else:
-                        level[y][x].append(None)
-
-    return level
+                        data[z][y][x].append(None)
+            else: 
+                data[z][y][x] = None
+            x += 1
+        y += 1
+        x = 0
+    
+    return data
 
 def cube_draw(surface_display, image_tileset, x, y, tile):
     top, left, right = tile
@@ -46,18 +61,17 @@ def cube_draw(surface_display, image_tileset, x, y, tile):
 
 def level_draw(level, image_tileset, camera, surface_display):
     x, y, z = 0, 0, 0
-    for row in level:
-        if row[0] == '-':
-            z += 1
-            x, y = 0, 0
-            continue
-        for tile in row:
-            if tile:
-                cube_draw(surface_display,
-                         image_tileset,
-                         camera[0] + x *  TILE_SIZE * 2 - y * TILE_SIZE * 2,
-                         camera[1] + x * TILE_SIZE + y * TILE_SIZE - (TILE_SIZE * 2 * z),
-                         tile)
-            x += 1
-        y += 1
-        x = 0
+    for floor in level:
+        for row in floor:
+            for tile in row:
+                if tile:
+                    cube_draw(surface_display,
+                            image_tileset,
+                            camera[0] + x *  TILE_SIZE * 2 - y * TILE_SIZE * 2,
+                            camera[1] + x * TILE_SIZE + y * TILE_SIZE - (TILE_SIZE * 2 * z),
+                            tile)
+                x += 1
+            y += 1
+            x = 0
+        z += 1
+        x, y = 0, 0
