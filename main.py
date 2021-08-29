@@ -20,7 +20,13 @@ level = read_level('data/level.map', image_tileset.get_width() / TILE_SIZE)
 hero = Hero()
 camera = [screen_res[0] / 2, screen_res[1] / 2]
 
+clock = pygame.time.Clock()
+
 while True :
+    hero_index_x = hero.x // (TILE_SIZE * 2)
+    hero_index_y = hero.y // (TILE_SIZE * 2)
+    hero_index_z = hero.z // (TILE_SIZE * 2)
+
     surface_display.fill(bgcolor)
 
     level_draw(level, image_tileset, camera, surface_display)
@@ -38,18 +44,19 @@ while True :
                 quit()
 
             if event.key == pygame.K_LEFT:
-                hero.x -= 1
+                if hero.x > 0:
+                    hero.x -= 1
             if event.key == pygame.K_RIGHT:
-                hero.x += 1
+                if hero.x + TILE_SIZE * 2 < len(level[hero_index_z][hero_index_y] * TILE_SIZE * 2) - 1:
+                    hero.x += 1
             if event.key == pygame.K_UP:
-                hero.y -= 1
+                if hero.y > 0: 
+                    hero.y -= 1
             if event.key == pygame.K_DOWN:
-                hero.y += 1
+                if hero.y + TILE_SIZE * 2 < len(level[hero_index_z] * TILE_SIZE * 2) - 1:
+                    hero.y += 1
             if event.key == pygame.K_SPACE:
-                hero.jump = True
-
-
-        if hero.jump:
-            hero.z += 1
+                hero.z+= 1
 
         pygame.display.update()
+        clock.tick(60)
