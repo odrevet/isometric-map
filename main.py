@@ -22,8 +22,6 @@ level = read_level("data/level.map", image_tileset.get_width() / TILE_SIZE)
 hero = Hero()
 camera = [screen_res[0] / 2, screen_res[1] / 2]
 
-clock = pygame.time.Clock()
-
 while True:
     hero_index_x = hero.x // (TILE_SIZE * 2)
     hero_index_y = hero.y // (TILE_SIZE * 2)
@@ -69,4 +67,3 @@ while True:
                 hero.z += 1
 
         pygame.display.update()
-        clock.tick(60)
