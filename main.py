@@ -4,11 +4,6 @@ from pygame.locals import *
 from hero import Hero
 from level import *
 
-
-def cartesian_to_isometric(coord):
-    return [coord[0] - coord[1], (coord[0] + coord[1]) // 2]
-
-
 pygame.init()
 bgcolor = (0, 0, 0)
 screen_res = (640, 480)
@@ -23,17 +18,12 @@ hero = Hero()
 camera = [screen_res[0] / 2, screen_res[1] / 2]
 
 while True:
+    surface_display.fill(bgcolor)
+    level_draw(level, image_tileset, hero, camera, surface_display)
+
     hero_index_x = hero.x // (TILE_SIZE * 2)
     hero_index_y = hero.y // (TILE_SIZE * 2)
-    hero_index_z = hero.z // (TILE_SIZE * 2)
-
-    surface_display.fill(bgcolor)
-
-    level_draw(level, image_tileset, camera, surface_display)
-    hero_iso_x, hero_iso_y = cartesian_to_isometric((hero.x, hero.y))
-    surface_display.blit(
-        hero.image, (camera[0] + hero_iso_x, camera[1] + hero_iso_y - hero.z - 32)
-    )
+    hero_index_z = hero.z // (TILE_SIZE * 3)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

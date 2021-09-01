@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 import csv
+import time
 
 TILE_SIZE = 8
 
@@ -68,13 +69,24 @@ def cube_draw(surface_display, image_tileset, x, y, tile):
         )
 
 
-def level_draw(level, image_tileset, camera, surface_display):
+def cartesian_to_isometric(coord):
+    return [coord[0] - coord[1], (coord[0] + coord[1]) // 2]
+
+
+def level_draw(level, image_tileset, hero, camera, surface_display):
     size = [3, 2]
     hm = [[1, 2, 0], [1, 1, 1]]
+
+    hero_iso_x, hero_iso_y = cartesian_to_isometric((hero.x, hero.y))
+    hero_index_x = (hero.x + 16) // (TILE_SIZE * 2)
+    hero_index_y = (hero.y + 16) // (TILE_SIZE * 2)
+    hero_index_z = hero.z // (TILE_SIZE * 3)
+
+    print(hero_index_x, hero_index_x, hero_index_z)
+
     for x in range(size[0]):
         for y in range(size[1]):
             for z in range(hm[y][x]):
-                print(z, x, y)
                 if level[z][y][x] is not None:
                     cube_draw(
                         surface_display,
@@ -83,3 +95,14 @@ def level_draw(level, image_tileset, camera, surface_display):
                         camera[1] + x * TILE_SIZE + y * TILE_SIZE - (TILE_SIZE * 2 * z),
                         level[z][y][x],
                     )
+
+                if (
+                    hero_index_x - 1 == x and hero_index_y - 1 == y
+                ):  # and hero_index_z == z:
+                    surface_display.blit(
+                        hero.image,
+                        (camera[0] + hero_iso_x, camera[1] + hero_iso_y - hero.z - 32),
+                    )
+
+                time.sleep(0.5)
+                pygame.display.update()
