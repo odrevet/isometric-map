@@ -21,8 +21,8 @@ while True:
     surface_display.fill(bgcolor)
     level_draw(level, image_tileset, hero, camera, surface_display)
 
-    hero_index_x = hero.x // (TILE_SIZE * 2)
-    hero_index_y = hero.y // (TILE_SIZE * 2)
+    hero_index_x = (hero.x + 14) // (TILE_SIZE * 2)
+    hero_index_y = (hero.y + 20) // (TILE_SIZE * 3)
     hero_index_z = hero.z // (TILE_SIZE * 3)
 
     for event in pygame.event.get():
@@ -39,20 +39,12 @@ while True:
                 if hero.x > 0:
                     hero.x -= 1
             if event.key == pygame.K_RIGHT:
-                if (
-                    hero.x + TILE_SIZE * 2
-                    < len(level[hero_index_z][hero_index_y] * TILE_SIZE * 2) - 1
-                ):
-                    hero.x += 1
+                hero.x += 1
             if event.key == pygame.K_UP:
                 if hero.y > 0:
                     hero.y -= 1
             if event.key == pygame.K_DOWN:
-                if (
-                    hero.y + TILE_SIZE * 2
-                    < len(level[hero_index_z] * TILE_SIZE * 2) - 1
-                ):
-                    hero.y += 1
+                hero.y += 1
             if event.key == pygame.K_SPACE:
                 hero.z += 1
 
