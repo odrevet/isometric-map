@@ -11,18 +11,18 @@ surface_display = pygame.display.set_mode(screen_res)
 pygame.display.set_caption("Isometric map")
 pygame.key.set_repeat(1, 16)
 
-image_tileset = pygame.image.load("res/tileset.png")
-level = read_level("data/level.map", image_tileset.get_width() / TILE_SIZE)
+level = Level()
+level.read("data/level.map")
 
 hero = Hero()
 camera = [screen_res[0] / 2, screen_res[1] / 2]
 
 while True:
     surface_display.fill(bgcolor)
-    level_draw(level, image_tileset, hero, camera, surface_display)
+    level.draw(hero, camera, surface_display)
 
-    hero_index_x = (hero.x + 14) // (TILE_SIZE * 2)
-    hero_index_y = (hero.y + 20) // (TILE_SIZE * 3)
+    hero_index_x = (hero.x + 16) // (TILE_SIZE * 2)
+    hero_index_y = (hero.y + 16) // (TILE_SIZE * 3)
     hero_index_z = hero.z // (TILE_SIZE * 3)
 
     for event in pygame.event.get():
