@@ -5,7 +5,6 @@ import time
 
 TILE_SIZE = 8
 
-
 def cartesian_to_isometric(coord):
     return [coord[0] - coord[1], (coord[0] + coord[1]) // 2]
 
@@ -100,36 +99,40 @@ class Level(pygame.sprite.Sprite):
         for x in range(self.size[0]):
             for y in range(self.size[1]):
                 for z in range(self.hm[y][x]):
-                    if self.mapdata[z][y][x] is not None:
-                        self.cube_draw(
-                            surface_display,
-                            self.image_tileset,
-                            camera[0] + x * TILE_SIZE * 2 - y * TILE_SIZE * 2,
-                            camera[1]
-                            + x * TILE_SIZE
-                            + y * TILE_SIZE
-                            - (TILE_SIZE * 2 * z),
-                            self.mapdata[z][y][x],
-                        )
+                    try:
+                        if self.mapdata[z][y][x] is not None:
+                            self.cube_draw(
+                                surface_display,
+                                self.image_tileset,
+                                camera[0] + x * TILE_SIZE * 2 - y * TILE_SIZE * 2,
+                                camera[1]
+                                + x * TILE_SIZE
+                                + y * TILE_SIZE
+                                - (TILE_SIZE * 2 * z),
+                                self.mapdata[z][y][x],
+                            )
 
-                    if hero_index_x == x and hero_index_y == y:
-                        surface_display.blit(
-                            hero.image,
-                            (
-                                camera[0] + hero_iso_x,
-                                camera[1] + hero_iso_y - hero.z - 32,
-                            ),
-                        )
+                        if hero_index_x == x and hero_index_y == y:
+                            surface_display.blit(
+                                hero.image,
+                                (
+                                    camera[0] + hero_iso_x,
+                                    camera[1] + hero_iso_y - hero.z - 32,
+                                ),
+                            )
+                    except IndexError: 
+                        pass
 
                     # time.sleep(0.5)
                     # pygame.display.update()
 
-        # Visual debug
-        blx, bly = cartesian_to_isometric((hero.x + TILE_SIZE, hero.y + TILE_SIZE))
-        brx, bry = cartesian_to_isometric((hero.x + TILE_SIZE * 3, hero.y + TILE_SIZE))
-        pygame.draw.line(
-            surface_display,
-            (255, 0, 0),
-            (blx + camera[0], bly + camera[1]),
-            (brx + camera[0], bry + camera[1]),
-        )
+        if __debug__:
+            blx, bly = cartesian_to_isometric((hero.x + TILE_SIZE, hero.y + TILE_SIZE))
+            brx, bry = cartesian_to_isometric((hero.x + TILE_SIZE * 3, hero.y + TILE_SIZE))
+
+            pygame.draw.line(
+                surface_display,
+                (255, 0, 0),
+                (blx + camera[0], bly + camera[1]),
+                (brx + camera[0], bry + camera[1]),
+            )
