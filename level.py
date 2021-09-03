@@ -18,9 +18,8 @@ class Level(pygame.sprite.Sprite):
         super().__init__()
         self.mapdata = []
         self.image_tileset = pygame.image.load("res/tileset.png")
-        self.size = [3, 2]
-        self.hm = [[1, 2, 0], [1, 1, 1]]
-
+        self.size = [0, 0]
+        self.nb_floors = 0
     def read(self, filename):
         with open(filename, newline="") as file:
             reader = csv.reader(file, delimiter=",")
@@ -40,6 +39,11 @@ class Level(pygame.sprite.Sprite):
 
             self.mapdata[z].append([])
             for tile in row:
+                if x > self.size[0]:
+                    self.size[0] = x
+                if y > self.size[1]:
+                    self.size[1] = y
+ 
                 self.mapdata[z][y].append([])
                 if tile:
                     for index in tile.split(","):
@@ -57,6 +61,10 @@ class Level(pygame.sprite.Sprite):
                 x += 1
             y += 1
             x = 0
+
+        self.size[0] += self.size[0]
+        self.size[1] += self.size[1]        
+        self.nb_floors = z + 1
 
     def cube_draw(self, surface_display, image_tileset, x, y, tile):
         top, left, right = tile
@@ -98,7 +106,7 @@ class Level(pygame.sprite.Sprite):
 
         for x in range(self.size[0]):
             for y in range(self.size[1]):
-                for z in range(self.hm[y][x]):
+                for z in range(self.nb_floors):
                     try:
                         if self.mapdata[z][y][x] is not None:
                             self.cube_draw(
