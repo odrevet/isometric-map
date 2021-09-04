@@ -5,11 +5,13 @@ from hero import Hero
 from level import *
 
 pygame.init()
+pygame.font.init()
+font = pygame.font.SysFont("", 30)
 bgcolor = (0, 0, 0)
 screen_res = (640, 480)
 surface_display = pygame.display.set_mode(screen_res)
 pygame.display.set_caption("Isometric map")
-pygame.key.set_repeat(1, 16)
+pygame.key.set_repeat(1, 24)
 
 level = Level()
 level.read("data/level.map")
@@ -20,10 +22,6 @@ camera = [screen_res[0] / 2, screen_res[1] / 2]
 while True:
     surface_display.fill(bgcolor)
     level.draw(hero, camera, surface_display)
-
-    hero_index_x = (hero.x + 16) // (TILE_SIZE * 2)
-    hero_index_y = (hero.y + 16) // (TILE_SIZE * 3)
-    hero_index_z = hero.z // (TILE_SIZE * 3)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -47,5 +45,14 @@ while True:
                 hero.y += 1
             if event.key == pygame.K_SPACE:
                 hero.z += 1
+
+        if __debug__:
+            hero_index = hero.get_index()
+            textsurface = font.render(
+                f"Index: x {hero_index[0]} y {hero_index[1]} z {hero_index[2]} | Coords: x {hero.x} y {hero.y} z {hero.z}",
+                False,
+                (255, 255, 255),
+            )
+            surface_display.blit(textsurface, (0, 0))
 
         pygame.display.update()
