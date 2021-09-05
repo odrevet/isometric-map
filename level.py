@@ -2,7 +2,6 @@ import pygame
 from pygame.locals import *
 import csv
 import time
-import time
 
 TILE_SIZE = 8
 
@@ -105,7 +104,7 @@ class Level(pygame.sprite.Sprite):
         hero_iso_x, hero_iso_y = cartesian_to_isometric((hero.x, hero.y))
         hero_index = hero.get_index()
 
-        for z in range(self.nb_floors):
+        for z in range(self.nb_floors   ):
             for y in range(self.size[1]):
                 for x in range(self.size[0]):
                     try:
