@@ -9,7 +9,7 @@ class Hero(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("res/ryle.png")
         self.x = 0
-        self.y = 32
+        self.y = 16
         self.z = 16
         self.jump = False
 

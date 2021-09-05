@@ -7,6 +7,7 @@ from level import *
 
 pygame.init()
 pygame.font.init()
+font_size = 30
 font = pygame.font.SysFont("", 30)
 bgcolor = (0, 0, 0)
 screen_res = (640, 480)
@@ -50,11 +51,18 @@ while True:
                 hero.z += 1
 
         if __debug__:
-            hero_index = hero.get_index()
             textsurface = font.render(
-                f"Index: x {hero_index[0]} y {hero_index[1]} z {hero_index[2]} | Coords: x {hero.x} y {hero.y} z {hero.z}",
+                f"Level size: {level.size[0]} {level.size[1]} {level.size[2]}",
                 False,
                 (255, 255, 255),
             )
-            surface_display.blit(textsurface, (0, 0))
+            surface_display.blit(textsurface, (0, font_size * 0))
+
+            hero_index = hero.get_index()
+            textsurface = font.render(
+                f"Hero Index: x {hero_index[0]} y {hero_index[1]} z {hero_index[2]} | Coords: x {hero.x} y {hero.y} z {hero.z}",
+                False,
+                (255, 255, 255),
+            )
+            surface_display.blit(textsurface, (0, font_size * 1))
         pygame.display.update()
