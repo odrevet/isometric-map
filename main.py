@@ -69,7 +69,7 @@ while True:
             surface_screen.blit(textsurface, (0, font_size * 1))
 
             textsurface = font.render(
-                f"x {hero.x + TILE_SIZE} {((hero.x + TILE_SIZE) // (TILE_SIZE * 3) )}",
+                f"x {hero.x + (TILE_SIZE * 2)} {math.ceil((hero.x + (TILE_SIZE * 2)) / (TILE_SIZE * 2) )}",
                 False,
                 (255, 255, 255),
             )

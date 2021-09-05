@@ -176,5 +176,5 @@ class Level(pygame.sprite.Sprite):
             pygame.draw.rect(
                 surface_display,
                 (255, 0, 0),
-                (bl[0] + camera[0], bl[1] + camera[1], 2, 2),
+                (br[0] + camera[0], br[1] + camera[1], 1, 1),
             )
