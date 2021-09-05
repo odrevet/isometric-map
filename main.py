@@ -12,8 +12,8 @@ font = pygame.font.SysFont("", 30)
 bgcolor = (0, 0, 0)
 resolution_window = (640, 480)
 resolution_screen = (320, 240)
-surface_display = pygame.display.set_mode(resolution_window)
-surface_display_bis = pygame.Surface(resolution_screen)
+surface_window = pygame.display.set_mode(resolution_window)
+surface_screen = pygame.Surface(resolution_screen)
 pygame.display.set_caption("Isometric map")
 pygame.key.set_repeat(1, 24)
 
@@ -24,8 +24,8 @@ hero = Hero()
 camera = [resolution_screen[0] / 2, resolution_screen[1] / 2]
 
 while True:
-    surface_display_bis.fill(bgcolor)
-    level.draw(hero, camera, surface_display_bis)
+    surface_screen.fill(bgcolor)
+    level.draw(hero, camera, surface_screen)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -58,7 +58,7 @@ while True:
                 False,
                 (255, 255, 255),
             )
-            surface_display_bis.blit(textsurface, (0, font_size * 0))
+            surface_screen.blit(textsurface, (0, font_size * 0))
 
             hero_index = hero.get_index()
             textsurface = font.render(
@@ -66,8 +66,8 @@ while True:
                 False,
                 (255, 255, 255),
             )
-            surface_display_bis.blit(textsurface, (0, font_size * 1))
+            surface_screen.blit(textsurface, (0, font_size * 1))
 
-        scaled_win = pygame.transform.scale(surface_display_bis, surface_display.get_size())
-        surface_display.blit(scaled_win, (0, 0))
+        scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
+        surface_window.blit(scaled_win, (0, 0))
         pygame.display.update()
