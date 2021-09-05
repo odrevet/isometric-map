@@ -64,8 +64,6 @@ class Level(pygame.sprite.Sprite):
             y += 1
             x = 0
 
-        self.size[0] += self.size[0]
-        self.size[1] += self.size[1]
         self.nb_floors = z + 1
 
     def cube_draw(self, surface_display, image_tileset, x, y, tile):

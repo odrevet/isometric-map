@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import math
 
 from hero import Hero
 from level import *
@@ -37,12 +38,14 @@ while True:
                 if hero.x > 0:
                     hero.x -= 1
             if event.key == pygame.K_RIGHT:
-                hero.x += 1
+                if math.ceil((hero.x) / (TILE_SIZE * 2)) < level.size[0]:
+                    hero.x += 1
             if event.key == pygame.K_UP:
                 if hero.y > 0:
                     hero.y -= 1
             if event.key == pygame.K_DOWN:
-                hero.y += 1
+                if math.ceil((hero.y) / (TILE_SIZE * 2)) < level.size[1]:
+                    hero.y += 1
             if event.key == pygame.K_SPACE:
                 hero.z += 1
 
@@ -54,5 +57,4 @@ while True:
                 (255, 255, 255),
             )
             surface_display.blit(textsurface, (0, 0))
-
         pygame.display.update()
