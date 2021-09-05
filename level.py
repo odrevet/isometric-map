@@ -1,7 +1,8 @@
 import pygame
 from pygame.locals import *
 import csv
-import time
+
+# import time
 
 TILE_SIZE = 8
 
@@ -19,8 +20,7 @@ class Level(pygame.sprite.Sprite):
         super().__init__()
         self.mapdata = []
         self.image_tileset = pygame.image.load("res/tileset.png")
-        self.size = [0, 0]
-        self.nb_floors = 0
+        self.size = [0, 0, 0]
 
     def read(self, filename):
         with open(filename, newline="") as file:
@@ -64,7 +64,7 @@ class Level(pygame.sprite.Sprite):
             y += 1
             x = 0
 
-        self.nb_floors = z + 1
+        self.size[2] = z + 1
 
     def cube_draw(self, surface_display, image_tileset, x, y, tile):
         top, left, right = tile
@@ -102,7 +102,7 @@ class Level(pygame.sprite.Sprite):
         hero_iso_x, hero_iso_y = cartesian_to_isometric((hero.x, hero.y))
         hero_index = hero.get_index()
 
-        for z in range(self.nb_floors   ):
+        for z in range(self.size[2]):
             for y in range(self.size[1]):
                 for x in range(self.size[0]):
                     try:
