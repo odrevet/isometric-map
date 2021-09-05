@@ -41,13 +41,13 @@ while True:
                 if hero.x > 0:
                     hero.x -= 1
             if event.key == pygame.K_RIGHT:
-                if math.ceil((hero.x) / (TILE_SIZE * 2)) < level.size[0]:
+                if math.ceil((hero.x + 1) / (TILE_SIZE * 2)) < level.size[0]:
                     hero.x += 1
             if event.key == pygame.K_UP:
                 if hero.y > 0:
                     hero.y -= 1
             if event.key == pygame.K_DOWN:
-                if math.ceil((hero.y) / (TILE_SIZE * 2)) < level.size[1]:
+                if math.ceil((hero.y + 1) / (TILE_SIZE * 2)) < level.size[1]:
                     hero.y += 1
             if event.key == pygame.K_SPACE:
                 hero.z += 1
