@@ -9,13 +9,13 @@ class Hero(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("res/ryle.png")
         self.x = 0
-        self.y = 0
-        self.z = 0
+        self.y = 32
+        self.z = 16
         self.jump = False
 
     def get_index(self):
         return [
-            math.ceil(self.x / (TILE_SIZE * 2)),
-            math.ceil(self.y / (TILE_SIZE * 2)),
-            self.z / (TILE_SIZE * 2),
+            math.ceil(self.x / (TILE_SIZE * 4)),
+            math.ceil(self.y / (TILE_SIZE * 4)),
+            math.ceil(self.z / (TILE_SIZE * 4)),
         ]

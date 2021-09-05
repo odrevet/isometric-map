@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import csv
 import time
+import time
 
 TILE_SIZE = 8
 
@@ -104,9 +105,9 @@ class Level(pygame.sprite.Sprite):
         hero_iso_x, hero_iso_y = cartesian_to_isometric((hero.x, hero.y))
         hero_index = hero.get_index()
 
-        for x in range(self.size[0]):
+        for z in range(self.nb_floors):
             for y in range(self.size[1]):
-                for z in range(self.nb_floors):
+                for x in range(self.size[0]):
                     try:
                         if self.mapdata[z][y][x] is not None:
                             self.cube_draw(
@@ -120,17 +121,21 @@ class Level(pygame.sprite.Sprite):
                                 self.mapdata[z][y][x],
                             )
 
-                            # time.sleep(0.5)
-                            # pygame.display.update()
-
-                        if hero_index[0] == x and hero_index[1] == y:
+                        if (
+                            hero_index[0] == x
+                            and hero_index[1] == y
+                            and hero_index[2] == z
+                        ):
                             surface_display.blit(
                                 hero.image,
                                 (
                                     camera[0] + hero_iso_x,
-                                    camera[1] + hero_iso_y - hero.z - TILE_SIZE * 4,
+                                    camera[1] + hero_iso_y - hero.z - TILE_SIZE * 2,
                                 ),
                             )
+
+                        # time.sleep(0.5)
+                        # pygame.display.update()
                     except IndexError:
                         pass
 
