@@ -43,7 +43,6 @@ class Level(pygame.sprite.Sprite):
             for tile in row:
                 if x > self.size[0]:
                     self.size[0] = x
-                print(x, y)
                 if y > self.size[1]:
                     self.size[1] = y
 
