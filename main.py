@@ -8,7 +8,7 @@ from level import *
 pygame.init()
 pygame.font.init()
 font_size = 30
-font = pygame.font.SysFont("", 30)
+font = pygame.font.SysFont("", 28)
 bgcolor = (0, 0, 0)
 resolution_window = (640, 480)
 resolution_screen = (320, 240)
@@ -54,7 +54,7 @@ while True:
 
         if __debug__:
             textsurface = font.render(
-                f"Level size: {level.size[0]} {level.size[1]} {level.size[2]}",
+                f"Level size {level.size[0]}:{level.size[1]}:{level.size[2]}",
                 False,
                 (255, 255, 255),
             )
@@ -67,6 +67,13 @@ while True:
                 (255, 255, 255),
             )
             surface_screen.blit(textsurface, (0, font_size * 1))
+
+            textsurface = font.render(
+                f"x {hero.x + TILE_SIZE} {((hero.x + TILE_SIZE) // (TILE_SIZE * 3) )}",
+                False,
+                (255, 255, 255),
+            )
+            surface_screen.blit(textsurface, (0, font_size * 2))
 
         scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
         surface_window.blit(scaled_win, (0, 0))

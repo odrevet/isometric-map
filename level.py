@@ -119,24 +119,19 @@ class Level(pygame.sprite.Sprite):
                                 - (TILE_SIZE * 2 * z),
                                 self.mapdata[z][y][x],
                             )
-
-                        if (
-                            hero_index[0] == x
-                            and hero_index[1] == y
-                            and hero_index[2] == z
-                        ):
-                            surface_display.blit(
-                                hero.image,
-                                (
-                                    camera[0] + hero_iso_x,
-                                    camera[1] + hero_iso_y - hero.z - TILE_SIZE * 2,
-                                ),
-                            )
-
                         # time.sleep(0.5)
                         # pygame.display.update()
                     except IndexError:
                         pass
+
+                    if hero_index[0] == x and hero_index[1] == y and hero_index[2] == z:
+                        surface_display.blit(
+                            hero.image,
+                            (
+                                camera[0] + hero_iso_x,
+                                camera[1] + hero_iso_y - hero.z - TILE_SIZE * 2,
+                            ),
+                        )
 
         if __debug__:
             bl = cartesian_to_isometric((hero.x + TILE_SIZE, hero.y + TILE_SIZE))
@@ -176,4 +171,10 @@ class Level(pygame.sprite.Sprite):
                 (255, 255, 255),
                 False,
                 points,
+            )
+
+            pygame.draw.rect(
+                surface_display,
+                (255, 0, 0),
+                (bl[0] + camera[0], bl[1] + camera[1], 2, 2),
             )
