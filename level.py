@@ -159,3 +159,25 @@ class Level(pygame.sprite.Sprite):
                 False,
                 points,
             )
+
+            HERO_DEPTH = 32
+            tbl = cartesian_to_isometric((hero.x + TILE_SIZE, hero.y + TILE_SIZE))
+            tbr = cartesian_to_isometric((hero.x + TILE_SIZE * 3, hero.y + TILE_SIZE))
+            ttl = cartesian_to_isometric((hero.x + TILE_SIZE, hero.y - TILE_SIZE))
+            ttr = cartesian_to_isometric((hero.x + TILE_SIZE * 3, hero.y - TILE_SIZE))
+            points = [
+                (tbl[0] + camera[0], tbl[1] + camera[1] - HERO_DEPTH),
+                (tbr[0] + camera[0], tbr[1] + camera[1] - HERO_DEPTH),
+                (tbr[0] + camera[0], tbr[1] + camera[1] - HERO_DEPTH),
+                (ttr[0] + camera[0], ttr[1] + camera[1] - HERO_DEPTH),
+                (ttl[0] + camera[0], ttl[1] + camera[1] - HERO_DEPTH),
+                (ttr[0] + camera[0], ttr[1] + camera[1] - HERO_DEPTH),
+                (ttl[0] + camera[0], ttl[1] + camera[1] - HERO_DEPTH),
+                (tbl[0] + camera[0], tbl[1] + camera[1] - HERO_DEPTH),
+            ]
+            pygame.draw.lines(
+                surface_display,
+                (255, 255, 255),
+                False,
+                points,
+            )
