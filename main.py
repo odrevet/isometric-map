@@ -45,13 +45,14 @@ while True:
             if event.key == pygame.K_RIGHT:
                 walkable = True
                 try:
-                    index_x = math.ceil(
-                        (hero.x + 1 + (TILE_SIZE * 2)) / (TILE_SIZE * 2) - 1
+                    br = [hero.x + (TILE_SIZE * 2), hero.y + (TILE_SIZE * 2)]
+                    br[0] += 1
+                    br_index_x = math.ceil((br[0]) / (TILE_SIZE * 2) - 1)
+                    br_index_y = math.ceil((br[1]) / (TILE_SIZE * 2) - 1)
+
+                    walkable = not isinstance(
+                        level.mapdata[1][br_index_y][br_index_x], list
                     )
-                    index_y = math.ceil(
-                        (hero.y + (TILE_SIZE * 2)) / (TILE_SIZE * 2) - 1
-                    )
-                    walkable = not isinstance(level.mapdata[1][index_y][index_x], list)
                 except IndexError:
                     pass
                 if (
