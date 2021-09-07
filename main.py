@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 import math
 
+from pygame.sndarray import array
+
 from hero import Hero
 from level import *
 
@@ -41,7 +43,21 @@ while True:
                 if hero.x > 0:
                     hero.x -= 1
             if event.key == pygame.K_RIGHT:
-                if math.ceil((hero.x + 1) / (TILE_SIZE * 2)) < level.size[0]:
+                walkable = True
+                try:
+                    index_x = math.ceil(
+                        (hero.x + 1 + (TILE_SIZE * 2)) / (TILE_SIZE * 2) - 1
+                    )
+                    index_y = math.ceil(
+                        (hero.y + (TILE_SIZE * 2)) / (TILE_SIZE * 2) - 1
+                    )
+                    walkable = not isinstance(level.mapdata[1][index_y][index_x], list)
+                except IndexError:
+                    pass
+                if (
+                    math.ceil((hero.x + 1) / (TILE_SIZE * 2)) < level.size[0]
+                    and walkable
+                ):
                     hero.x += 1
             if event.key == pygame.K_UP:
                 if hero.y > 0:
@@ -69,7 +85,7 @@ while True:
             surface_screen.blit(textsurface, (0, font_size * 1))
 
             textsurface = font.render(
-                f"x {hero.x + (TILE_SIZE * 2)} {math.ceil((hero.x + (TILE_SIZE * 2)) / (TILE_SIZE * 2) )}",
+                f"x {hero.x + (TILE_SIZE * 2) - 1} {math.ceil((hero.x + (TILE_SIZE * 2)) / (TILE_SIZE * 2) ) - 1} y {hero.y + (TILE_SIZE * 2) - 1} {math.ceil((hero.y + (TILE_SIZE * 2)) / (TILE_SIZE * 2) ) - 1}",
                 False,
                 (255, 255, 255),
             )
