@@ -2,8 +2,8 @@ import pygame
 from pygame.locals import *
 import csv
 
-TILE_SIZE = 8
-CUBE_SIZE = TILE_SIZE * 2
+from const import *
+
 
 def cartesian_to_isometric(coord):
     return [coord[0] - coord[1], (coord[0] + coord[1]) // 2]
