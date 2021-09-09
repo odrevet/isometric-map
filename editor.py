@@ -29,26 +29,28 @@ while True:
     surface_screen.fill(bgcolor)
     level.draw(hero, camera, surface_screen)
 
-    bl = cartesian_to_isometric((coords[0], coords[1] + CUBE_SIZE))
-    br = cartesian_to_isometric((coords[0] + CUBE_SIZE, coords[1] + CUBE_SIZE))
-    tl = cartesian_to_isometric((coords[0], coords[1]))
-    tr = cartesian_to_isometric((coords[0] + CUBE_SIZE, coords[1]))
+    bl = cartesian_to_isometric(
+        (coords[0] * CUBE_SIZE, coords[1] * CUBE_SIZE + CUBE_SIZE)
+    )
+    br = cartesian_to_isometric(
+        (coords[0] * CUBE_SIZE + CUBE_SIZE, coords[1] * CUBE_SIZE + CUBE_SIZE)
+    )
+    tl = cartesian_to_isometric((coords[0] * CUBE_SIZE, coords[1] * CUBE_SIZE))
+    tr = cartesian_to_isometric(
+        (coords[0] * CUBE_SIZE + CUBE_SIZE, coords[1] * CUBE_SIZE)
+    )
 
     points = [
         (bl[0] + camera[0], bl[1] + camera[1]),
         (br[0] + camera[0], br[1] + camera[1]),
-        (br[0] + camera[0], br[1] + camera[1]),
         (tr[0] + camera[0], tr[1] + camera[1]),
         (tl[0] + camera[0], tl[1] + camera[1]),
-        (tr[0] + camera[0], tr[1] + camera[1]),
-        (tl[0] + camera[0], tl[1] + camera[1]),
-        (bl[0] + camera[0], bl[1] + camera[1]),
     ]
 
     pygame.draw.lines(
         surface_screen,
         (255, 255, 255),
-        False,
+        True,
         points,
     )
 
@@ -80,6 +82,13 @@ while True:
                 (255, 255, 255),
             )
             surface_screen.blit(textsurface, (0, font_size * 0))
+
+            textsurface = font.render(
+                f"{coords[0]} : {coords[1]} : {coords[2]} : {level.mapdata[coords[2]][coords[1]][coords[0]]}",
+                False,
+                (255, 255, 255),
+            )
+            surface_screen.blit(textsurface, (0, font_size * 1))
 
         scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
         surface_window.blit(scaled_win, (0, 0))
