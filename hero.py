@@ -7,7 +7,7 @@ from const import *
 class Hero(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("res/ryle.png")
+        self.image = pygame.image.load("res/down.png")
         self.x = 0
         self.y = 0
         self.z = CUBE_SIZE
