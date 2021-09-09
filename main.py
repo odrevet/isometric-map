@@ -9,8 +9,8 @@ from level import *
 
 pygame.init()
 pygame.font.init()
-font_size = 30
-font = pygame.font.SysFont("", 28)
+font_size = 24
+font = pygame.font.SysFont("", font_size)
 bgcolor = (0, 0, 0)
 resolution_window = (640, 480)
 resolution_screen = (320, 240)
