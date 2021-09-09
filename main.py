@@ -43,23 +43,7 @@ while True:
                 if hero.x > 0:
                     hero.x -= 1
             if event.key == pygame.K_RIGHT:
-                walkable = True
-                try:
-                    br = [hero.x + (TILE_SIZE * 2), hero.y + (TILE_SIZE * 2)]
-                    br[0] += 1
-                    br_index_x = math.ceil((br[0]) / (TILE_SIZE * 2) - 1)
-                    br_index_y = math.ceil((br[1]) / (TILE_SIZE * 2) - 1)
-
-                    walkable = not isinstance(
-                        level.mapdata[1][br_index_y][br_index_x], list
-                    )
-                except IndexError:
-                    pass
-                if (
-                    math.ceil((hero.x + 1) / (TILE_SIZE * 2)) < level.size[0]
-                    and walkable
-                ):
-                    hero.x += 1
+                hero.x += 1
             if event.key == pygame.K_UP:
                 if hero.y > 0:
                     hero.y -= 1
@@ -77,20 +61,13 @@ while True:
             )
             surface_screen.blit(textsurface, (0, font_size * 0))
 
-            hero_index = hero.get_index()
+            [bl, br, tl, tr] = hero.get_coords()
             textsurface = font.render(
-                f"x {hero_index[0]} y {hero_index[1]} z {hero_index[2]} | x {hero.x} y {hero.y} z {hero.z}",
+                f"bl {bl} br {br} tl {tl} tr {tr}",
                 False,
                 (255, 255, 255),
             )
             surface_screen.blit(textsurface, (0, font_size * 1))
-
-            textsurface = font.render(
-                f"x {hero.x + (TILE_SIZE * 2) - 1} {math.ceil((hero.x + (TILE_SIZE * 2)) / (TILE_SIZE * 2) ) - 1} y {hero.y + (TILE_SIZE * 2) - 1} {math.ceil((hero.y + (TILE_SIZE * 2)) / (TILE_SIZE * 2) ) - 1}",
-                False,
-                (255, 255, 255),
-            )
-            surface_screen.blit(textsurface, (0, font_size * 2))
 
         scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
         surface_window.blit(scaled_win, (0, 0))
