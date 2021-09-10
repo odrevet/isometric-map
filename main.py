@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 import math
 
-from hero import Hero
+from hero import Direction, Hero
 from level import *
 
 pygame.init()
@@ -39,14 +39,18 @@ while True:
                 quit()
 
             if event.key == pygame.K_LEFT:
+                hero.direction = Direction.LEFT
                 if hero.x > 0:
                     hero.x -= 1
             if event.key == pygame.K_RIGHT:
+                hero.direction = Direction.RIGHT
                 hero.x += 1
             if event.key == pygame.K_UP:
+                hero.direction = Direction.UP
                 if hero.y > 0:
                     hero.y -= 1
             if event.key == pygame.K_DOWN:
+                hero.direction = Direction.DOWN
                 try:
                     if (
                         math.ceil((hero.y + 1) / (TILE_SIZE * 2)) < level.size[1]
