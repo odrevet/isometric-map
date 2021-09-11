@@ -54,13 +54,13 @@ while True:
                 try:
                     if (
                         math.ceil((hero.y + 1) / (TILE_SIZE * 2)) < level.size[1]
-                        and level.mapdata[1][(bl[1] - 1 + 1) // 16][bl[0] // 16] is None
-                        and level.mapdata[1][(br[1] - 1 + 1) // 16][((br[0] - 1) // 16)]
-                        is None
+                        and level.mapdata[1][(bl[1] - 1 + 1) // CUBE_SIZE][bl[0] // CUBE_SIZE] is None
+                        and level.mapdata[1][(br[1] - 1 + 1) // CUBE_SIZE][((br[0] - 1) // CUBE_SIZE)] is None
                     ):
                         hero.y += 1
                 except IndexError:
                     print("Index error")
+                    print((bl[1] - 1 + 1) // CUBE_SIZE, bl[0] // CUBE_SIZE)
                     hero.y += 1
                     pass
             if event.key == pygame.K_SPACE:

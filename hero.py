@@ -2,6 +2,7 @@ from enum import Enum
 import math
 
 import pygame
+import pyganim
 
 from const import *
 
@@ -17,11 +18,28 @@ class Hero(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.direction = Direction.DOWN
-        
-        self.image_up = pygame.image.load('res/up.png')
-        self.image_down = pygame.image.load('res/down.png')
+
+        self.image_up = pygame.image.load("res/ryle/up.png")
+        self.image_down = pygame.image.load("res/ryle/down.png")
         self.image_left = pygame.transform.flip(self.image_up, True, False)
         self.image_right = pygame.transform.flip(self.image_down, True, False)
+
+        anim_types = ["walk_up", "walk_down"]
+        self.anim_objs = {}
+        for anim_type in anim_types:
+            images_with_duration = [
+                ((f"res/ryle/{anim_type}_{str(num)}.png"), 100) for num in range(8)
+            ]
+            self.anim_objs[anim_type] = pyganim.PygAnimation(images_with_duration)
+
+        self.anim_objs["walk_right"] = self.anim_objs["walk_down"].getCopy()
+        self.anim_objs["walk_right"].flip(True, False)
+        self.anim_objs["walk_right"].makeTransformsPermanent()
+        self.anim_objs["walk_left"] = self.anim_objs["walk_up"].getCopy()
+        self.anim_objs["walk_left"].flip(True, False)
+        self.anim_objs["walk_left"].makeTransformsPermanent()
+
+        self.moveConductor = pyganim.PygConductor(self.anim_objs)
 
         self.x = 0
         self.y = 0
@@ -45,20 +63,13 @@ class Hero(pygame.sprite.Sprite):
         ]
 
     def draw(self, x, y, surface_display):
-        image = None
+        self.moveConductor.play()
+
         if self.direction == Direction.UP:
-            image = self.image_up
+            self.anim_objs["walk_up"].blit(surface_display, (x, y))
         elif self.direction == Direction.RIGHT:
-            image = self.image_right
+            self.anim_objs["walk_right"].blit(surface_display, (x, y))
         elif self.direction == Direction.DOWN:
-            image = self.image_down
+            self.anim_objs["walk_down"].blit(surface_display, (x, y))
         elif self.direction == Direction.LEFT:
-            image = self.image_left
-        
-        surface_display.blit(
-            image,
-            (
-                x,
-                y,
-            ),
-        )
+            self.anim_objs["walk_left"].blit(surface_display, (x, y))

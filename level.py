@@ -125,7 +125,11 @@ class Level(pygame.sprite.Sprite):
                         pass
 
                     if hero_index[0] == x and hero_index[1] == y and hero_index[2] == z:
-                        hero.draw(camera[0] + hero_iso_x - TILE_SIZE * 2, camera[1] + hero_iso_y - hero.z - TILE_SIZE * 2, surface_display)
+                        hero.draw(
+                            camera[0] + hero_iso_x - TILE_SIZE * 2,
+                            camera[1] + hero_iso_y - hero.z - TILE_SIZE * 2,
+                            surface_display,
+                        )
 
         if __debug__:
             bl, br, tl, tr = hero.get_coords()
