@@ -43,7 +43,10 @@ level.read("data/level.map")
 hero = Hero()
 camera = [resolution_screen[0] / 2, resolution_screen[1] / 2]
 
+clock = pygame.time.Clock()
+
 while True:
+    time_delta = clock.tick(60)/1000.0
     surface_screen.fill(bgcolor)
     level.draw(hero, camera, surface_screen)
     [bl, br, tl, tr] = hero.get_coords()
