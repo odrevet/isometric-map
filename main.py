@@ -44,25 +44,21 @@ while True:
                     hero.x -= 1
             if event.key == pygame.K_RIGHT:
                 hero.direction = Direction.RIGHT
-                hero.x += 1
+                if math.ceil((hero.x + 1) / (CUBE_SIZE)) < level.size[0]:
+                    hero.x += 1
             if event.key == pygame.K_UP:
                 hero.direction = Direction.UP
                 if hero.y > 0:
                     hero.y -= 1
             if event.key == pygame.K_DOWN:
                 hero.direction = Direction.DOWN
-                try:
-                    if (
-                        math.ceil((hero.y + 1) / (TILE_SIZE * 2)) < level.size[1]
-                        and level.mapdata[1][(bl[1] - 1 + 1) // CUBE_SIZE][bl[0] // CUBE_SIZE] is None
-                        and level.mapdata[1][(br[1] - 1 + 1) // CUBE_SIZE][((br[0] - 1) // CUBE_SIZE)] is None
-                    ):
-                        hero.y += 1
-                except IndexError:
-                    print("Index error")
-                    print((bl[1] - 1 + 1) // CUBE_SIZE, bl[0] // CUBE_SIZE)
-                    hero.y += 1
-                    pass
+                next_y = hero.y + 1
+                if (
+                    math.ceil(next_y / (CUBE_SIZE)) < level.size[1]
+                    and level.tile(bl[0] // CUBE_SIZE, (bl[1] - 1 + 1) // CUBE_SIZE, 1) is None
+                    and level.tile((br[0] - 1) // CUBE_SIZE, (br[1] - 1 + 1) // CUBE_SIZE, 1) is None
+                ):
+                    hero.y = next_y
             if event.key == pygame.K_SPACE:
                 hero.z += 1
 

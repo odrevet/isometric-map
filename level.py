@@ -67,6 +67,13 @@ class Level(pygame.sprite.Sprite):
         self.size[1] += 1
         self.size[2] = z + 1
 
+    def tile(self, x, y, z):
+        try:
+            return self.mapdata[z][y][x]
+        except IndexError:
+            print(f"Index error at {x}:{y}:{z}")
+            pass
+
     def cube_draw(self, surface_display, image_tileset, x, y, tile):
         top, left, right = tile
 
