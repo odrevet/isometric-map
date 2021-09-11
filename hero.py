@@ -45,11 +45,10 @@ class Hero(pygame.sprite.Sprite):
         self.y = 0
         self.z = CUBE_SIZE
         self.jump = False
-        self.jump_max = CUBE_SIZE * 1.5
+        self.jump_max = CUBE_SIZE * 2
         self.jump_cur = 0
         self.depth = CUBE_SIZE * 2
         self.size = CUBE_SIZE - 1
-        
 
     def get_coords(self):
         bl = [self.x, self.y + self.size]

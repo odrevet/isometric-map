@@ -5,6 +5,26 @@ import math
 from hero import Direction, Hero
 from level import *
 
+
+def is_hero_not_on_ground(hero, level):
+    return (
+        level.tile(bl[0] // CUBE_SIZE, bl[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE)
+        is None
+        and level.tile(
+            br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE
+        )
+        is None
+        and level.tile(
+            tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE
+        )
+        is None
+        and level.tile(
+            tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE
+        )
+        is None
+    )
+
+
 pygame.init()
 pygame.font.init()
 font_size = 24
@@ -28,6 +48,18 @@ while True:
     level.draw(hero, camera, surface_screen)
     [bl, br, tl, tr] = hero.get_coords()
 
+    if hero.jump == True:
+        if hero.jump_cur >= hero.jump_max:
+            hero.jump = False
+            hero.jump_cur = 0
+        else:
+            hero.z += 1
+            hero.jump_cur += 1
+
+    # gravity
+    if hero.jump == False and is_hero_not_on_ground(hero, level):
+        hero.z -= 1
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -45,8 +77,14 @@ while True:
                 tl[0] -= 1
                 if (
                     next_x >= 0
-                    and level.tile(tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, 1) is None
-                    and level.tile(bl[0] // CUBE_SIZE, bl[1] // CUBE_SIZE, 1) is None
+                    and level.tile(
+                        tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    )
+                    is None
+                    and level.tile(
+                        bl[0] // CUBE_SIZE, bl[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    )
+                    is None
                 ):
                     hero.x = next_x
             if event.key == pygame.K_RIGHT:
@@ -56,8 +94,14 @@ while True:
                 br[0] += 1
                 if (
                     math.ceil(next_x / (CUBE_SIZE)) < level.size[0]
-                    and level.tile(tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, 1) is None
-                    and level.tile(br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, 1) is None
+                    and level.tile(
+                        tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    )
+                    is None
+                    and level.tile(
+                        br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    )
+                    is None
                 ):
                     hero.x = next_x
             if event.key == pygame.K_UP:
@@ -67,8 +111,14 @@ while True:
                 tr[1] -= 1
                 if (
                     next_y >= 0
-                    and level.tile(tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, 1) is None
-                    and level.tile(tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, 1) is None
+                    and level.tile(
+                        tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    )
+                    is None
+                    and level.tile(
+                        tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    )
+                    is None
                 ):
                     hero.y = next_y
             if event.key == pygame.K_DOWN:
@@ -78,17 +128,19 @@ while True:
                 br[1] += 1
                 if (
                     math.ceil(next_y / (CUBE_SIZE)) < level.size[1]
-                    and level.tile(bl[0] // CUBE_SIZE, bl[1] // CUBE_SIZE, 1) is None
-                    and level.tile(br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, 1) is None
+                    and level.tile(
+                        bl[0] // CUBE_SIZE, bl[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    )
+                    is None
+                    and level.tile(
+                        br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    )
+                    is None
                 ):
                     hero.y = next_y
             if event.key == pygame.K_SPACE:
-                hero.jump = True
-
-    if hero.jump == True:
-        if hero.jump_cur < hero.jump_max:
-            hero.z += 1
-            hero.jump_cur += 1
+                if not is_hero_not_on_ground(hero, level):
+                    hero.jump = True
 
     if __debug__:
         textsurface = font.render(
@@ -99,11 +151,18 @@ while True:
         surface_screen.blit(textsurface, (0, font_size * 0))
 
         textsurface = font.render(
-            f"bl {bl} br {br} tl {tl} tr {tr}",
+            f"x {hero.x} y {hero.y} z {hero.z} jump {hero.jump} fall {is_hero_not_on_ground(hero, level)}",
             False,
             (255, 255, 255),
         )
         surface_screen.blit(textsurface, (0, font_size * 1))
+
+        textsurface = font.render(
+            f"bl {bl} br {br} tl {tl} tr {tr}",
+            False,
+            (255, 255, 255),
+        )
+        surface_screen.blit(textsurface, (0, font_size * 2))
 
     scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
     surface_window.blit(scaled_win, (0, 0))
