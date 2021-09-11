@@ -146,14 +146,14 @@ class Level(pygame.sprite.Sprite):
             tr = cartesian_to_isometric(tr)
 
             points = [
-                (bl[0] + camera[0], bl[1] + camera[1]),
-                (br[0] + camera[0], br[1] + camera[1]),
-                (br[0] + camera[0], br[1] + camera[1]),
-                (tr[0] + camera[0], tr[1] + camera[1]),
-                (tl[0] + camera[0], tl[1] + camera[1]),
-                (tr[0] + camera[0], tr[1] + camera[1]),
-                (tl[0] + camera[0], tl[1] + camera[1]),
-                (bl[0] + camera[0], bl[1] + camera[1]),
+                (bl[0] + camera[0], bl[1] + camera[1] - hero.z + 16),
+                (br[0] + camera[0], br[1] + camera[1] - hero.z + 16),
+                (br[0] + camera[0], br[1] + camera[1] - hero.z + 16),
+                (tr[0] + camera[0], tr[1] + camera[1] - hero.z + 16),
+                (tl[0] + camera[0], tl[1] + camera[1] - hero.z + 16),
+                (tr[0] + camera[0], tr[1] + camera[1] - hero.z + 16),
+                (tl[0] + camera[0], tl[1] + camera[1] - hero.z + 16),
+                (bl[0] + camera[0], bl[1] + camera[1] - hero.z + 16),
             ]
             pygame.draw.lines(
                 surface_display,
