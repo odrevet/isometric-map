@@ -83,7 +83,12 @@ while True:
                 ):
                     hero.y = next_y
             if event.key == pygame.K_SPACE:
+                hero.jump = True
+
+        if hero.jump == True:
+            if hero.jump_cur < hero.jump_max:
                 hero.z += 1
+                hero.jump_cur += 1
 
         if __debug__:
             textsurface = font.render(
@@ -99,13 +104,6 @@ while True:
                 (255, 255, 255),
             )
             surface_screen.blit(textsurface, (0, font_size * 1))
-
-            textsurface = font.render(
-                f"bl ({(bl[0]) // 16}, {(bl[1] - 1) // 16})",
-                False,
-                (255, 255, 255),
-            )
-            surface_screen.blit(textsurface, (0, font_size * 2))
 
         scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
         surface_window.blit(scaled_win, (0, 0))
