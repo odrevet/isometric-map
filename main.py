@@ -41,36 +41,45 @@ while True:
             if event.key == pygame.K_LEFT:
                 hero.direction = Direction.LEFT
                 next_x = hero.x - 1
+                bl[0] -= 1
+                tl[0] -= 1
                 if (
                     next_x >= 0
-                    and level.tile((tl[0] - 1) // CUBE_SIZE, (tl[1] - 1) // CUBE_SIZE, 1) is None
-                    and level.tile((bl[0] - 1) // CUBE_SIZE, (bl[1] - 1) // CUBE_SIZE, 1) is None
+                    and level.tile(tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, 1) is None
+                    and level.tile(bl[0] // CUBE_SIZE, bl[1] // CUBE_SIZE, 1) is None
                 ):
                     hero.x = next_x
             if event.key == pygame.K_RIGHT:
                 hero.direction = Direction.RIGHT
                 next_x = hero.x + 1
+                tr[0] += 1
+                br[0] += 1
                 if (
                     math.ceil(next_x / (CUBE_SIZE)) < level.size[0]
                     and level.tile(tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, 1) is None
-                    and level.tile(
-                        (br[0] - 1) // CUBE_SIZE, (br[1] - 1) // CUBE_SIZE, 1
-                    )
-                    is None
+                    and level.tile(br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, 1) is None
                 ):
                     hero.x = next_x
             if event.key == pygame.K_UP:
                 hero.direction = Direction.UP
                 next_y = hero.y - 1
-                if next_y >= 0:
+                tl[1] -= 1
+                tr[1] -= 1
+                if (
+                    next_y >= 0
+                    and level.tile(tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, 1) is None
+                    and level.tile(tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, 1) is None
+                ):
                     hero.y = next_y
             if event.key == pygame.K_DOWN:
                 hero.direction = Direction.DOWN
                 next_y = hero.y + 1
+                bl[1] += 1
+                br[1] += 1
                 if (
                     math.ceil(next_y / (CUBE_SIZE)) < level.size[1]
-                    and level.tile((bl[0] - 1) // CUBE_SIZE, (bl[1] - 1) // CUBE_SIZE, 1) is None
-                    and level.tile((br[0] - 1) // CUBE_SIZE, (br[1] - 1) // CUBE_SIZE, 1) is None
+                    and level.tile(bl[0] // CUBE_SIZE, bl[1] // CUBE_SIZE, 1) is None
+                    and level.tile(br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, 1) is None
                 ):
                     hero.y = next_y
             if event.key == pygame.K_SPACE:
