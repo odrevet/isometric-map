@@ -20,10 +20,15 @@ class Hero(pygame.sprite.Sprite):
         self.direction = Direction.DOWN
         self.is_moving = False
 
-        self.image_up = pygame.image.load("res/ryle/up.png")
-        self.image_down = pygame.image.load("res/ryle/down.png")
-        self.image_left = pygame.transform.flip(self.image_up, True, False)
-        self.image_right = pygame.transform.flip(self.image_down, True, False)
+        self.still_up = pygame.image.load("res/ryle/up.png")
+        self.still_down = pygame.image.load("res/ryle/down.png")
+        self.still_left = pygame.transform.flip(self.still_up, True, False)
+        self.still_right = pygame.transform.flip(self.still_down, True, False)
+
+        self.jump_up = pygame.image.load("res/ryle/jump_up_0.png")
+        self.jump_down = pygame.image.load("res/ryle/jump_down_0.png")
+        self.jump_left = pygame.transform.flip(self.jump_up, True, False)
+        self.jump_right = pygame.transform.flip(self.jump_down, True, False)
 
         anim_types = ["walk_up", "walk_down"]
         self.anim_objs = {}
@@ -79,10 +84,22 @@ class Hero(pygame.sprite.Sprite):
         else:
             self.moveConductor.stop()
             if self.direction == Direction.UP:
-                surface_display.blit(self.image_up, (x, y))
+                if self.jump == False:
+                    surface_display.blit(self.still_up, (x, y))
+                else:
+                    surface_display.blit(self.jump_up, (x, y))
             elif self.direction == Direction.RIGHT:
-                surface_display.blit(self.image_right, (x, y))
+                if self.jump == False:
+                    surface_display.blit(self.still_right, (x, y))
+                else:
+                    surface_display.blit(self.jump_right, (x, y))
             elif self.direction == Direction.DOWN:
-                surface_display.blit(self.image_down, (x, y))
+                if self.jump == False:
+                    surface_display.blit(self.still_down, (x, y))
+                else:
+                    surface_display.blit(self.jump_down, (x, y))
             elif self.direction == Direction.LEFT:
-                surface_display.blit(self.image_left, (x, y))
+                if self.jump == False:
+                    surface_display.blit(self.still_left, (x, y))
+                else:
+                    surface_display.blit(self.jump_left, (x, y))
