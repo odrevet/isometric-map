@@ -18,6 +18,7 @@ class Hero(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.direction = Direction.DOWN
+        self.is_moving= False
 
         self.image_up = pygame.image.load("res/ryle/up.png")
         self.image_down = pygame.image.load("res/ryle/down.png")
@@ -65,13 +66,23 @@ class Hero(pygame.sprite.Sprite):
         ]
 
     def draw(self, x, y, surface_display):
-        self.moveConductor.play()
-
-        if self.direction == Direction.UP:
-            self.anim_objs["walk_up"].blit(surface_display, (x, y))
-        elif self.direction == Direction.RIGHT:
-            self.anim_objs["walk_right"].blit(surface_display, (x, y))
-        elif self.direction == Direction.DOWN:
-            self.anim_objs["walk_down"].blit(surface_display, (x, y))
-        elif self.direction == Direction.LEFT:
-            self.anim_objs["walk_left"].blit(surface_display, (x, y))
+        if self.is_moving == True:
+            self.moveConductor.play()
+            if self.direction == Direction.UP:
+                self.anim_objs["walk_up"].blit(surface_display, (x, y))
+            elif self.direction == Direction.RIGHT:
+                self.anim_objs["walk_right"].blit(surface_display, (x, y))
+            elif self.direction == Direction.DOWN:
+                self.anim_objs["walk_down"].blit(surface_display, (x, y))
+            elif self.direction == Direction.LEFT:
+                self.anim_objs["walk_left"].blit(surface_display, (x, y))
+        else:
+            self.moveConductor.stop()
+            if self.direction == Direction.UP:
+                surface_display.blit(self.image_up, (x, y))
+            elif self.direction == Direction.RIGHT:
+                surface_display.blit(self.image_right, (x, y))
+            elif self.direction == Direction.DOWN:
+                surface_display.blit(self.image_down, (x, y))
+            elif self.direction == Direction.LEFT:
+                surface_display.blit(self.image_left, (x, y))
