@@ -71,7 +71,8 @@ while True:
                 if hero.on_ground:
                     hero.jump = True
         elif event.type == KEYUP:
-            hero.is_moving = False
+            if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]:
+                 hero.is_moving = False
 
     # update hero location
     if hero.is_moving:
