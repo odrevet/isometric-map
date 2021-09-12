@@ -74,8 +74,10 @@ while True:
                 coords[1] -= 1
             if event.key == pygame.K_DOWN:
                 coords[1] += 1
-            if event.key == pygame.K_SPACE:
-                pass
+            if event.key == pygame.K_DELETE:
+                level.mapdata[coords[2]][coords[1]][coords[0]] = None
+            if event.key == pygame.K_RETURN:
+                level.mapdata[coords[2]][coords[1]][coords[0]] = [[0,0],[0,2],[6,2]]
 
         if __debug__:
             textsurface = font.render(
