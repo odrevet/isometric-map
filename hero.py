@@ -53,6 +53,7 @@ class Hero(pygame.sprite.Sprite):
         self.jump = False
         self.jump_max = CUBE_SIZE * 1.5
         self.jump_cur = 0
+        self.on_ground = None
         self.depth = CUBE_SIZE * 2
         self.size = CUBE_SIZE - 1
 
@@ -71,7 +72,17 @@ class Hero(pygame.sprite.Sprite):
         ]
 
     def draw(self, x, y, surface_display):
-        if self.is_moving == True:
+        if self.jump == True or self.on_ground == False:
+            self.moveConductor.stop()
+            if self.direction == Direction.UP:
+                surface_display.blit(self.jump_up, (x, y))
+            elif self.direction == Direction.RIGHT:
+                surface_display.blit(self.jump_right, (x, y))
+            elif self.direction == Direction.DOWN:
+                surface_display.blit(self.jump_down, (x, y))
+            elif self.direction == Direction.LEFT:
+                surface_display.blit(self.jump_left, (x, y))
+        elif self.is_moving == True:
             self.moveConductor.play()
             if self.direction == Direction.UP:
                 self.anim_objs["walk_up"].blit(surface_display, (x, y))
@@ -84,22 +95,10 @@ class Hero(pygame.sprite.Sprite):
         else:
             self.moveConductor.stop()
             if self.direction == Direction.UP:
-                if self.jump == False:
-                    surface_display.blit(self.still_up, (x, y))
-                else:
-                    surface_display.blit(self.jump_up, (x, y))
+                surface_display.blit(self.still_up, (x, y))
             elif self.direction == Direction.RIGHT:
-                if self.jump == False:
-                    surface_display.blit(self.still_right, (x, y))
-                else:
-                    surface_display.blit(self.jump_right, (x, y))
+                surface_display.blit(self.still_right, (x, y))
             elif self.direction == Direction.DOWN:
-                if self.jump == False:
-                    surface_display.blit(self.still_down, (x, y))
-                else:
-                    surface_display.blit(self.jump_down, (x, y))
+                surface_display.blit(self.still_down, (x, y))
             elif self.direction == Direction.LEFT:
-                if self.jump == False:
-                    surface_display.blit(self.still_left, (x, y))
-                else:
-                    surface_display.blit(self.jump_left, (x, y))
+                surface_display.blit(self.still_left, (x, y))

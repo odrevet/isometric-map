@@ -43,6 +43,7 @@ while True:
     surface_screen.fill(bgcolor)
     level.draw(hero, camera, surface_screen)
     [bl, br, tl, tr] = hero.get_coords()
+    hero.on_ground = hero_on_ground(hero, level)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -67,7 +68,7 @@ while True:
                 hero.direction = Direction.DOWN
 
             if event.key == pygame.K_SPACE:
-                if hero_on_ground(hero, level):
+                if hero.on_ground:
                     hero.jump = True
         elif event.type == KEYUP:
             hero.is_moving = False
@@ -137,7 +138,7 @@ while True:
             hero.jump_cur += 1
 
     # gravity
-    if hero.jump == False and not hero_on_ground(hero, level):
+    if hero.jump == False and not hero.on_ground:
         hero.z -= 1
 
     # debug
@@ -150,7 +151,7 @@ while True:
         surface_screen.blit(textsurface, (0, font_size * 0))
 
         textsurface = font.render(
-            f"x {hero.x} y {hero.y} z {hero.z} jump {hero.jump} ground {hero_on_ground(hero, level)}",
+            f"x {hero.x} y {hero.y} z {hero.z} jump {hero.jump} ground {hero.on_ground}",
             False,
             (255, 255, 255),
         )
