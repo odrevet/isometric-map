@@ -79,20 +79,19 @@ while True:
             if event.key == pygame.K_RETURN:
                 level.mapdata[coords[2]][coords[1]][coords[0]] = [[0,0],[0,2],[6,2]]
 
-        if __debug__:
-            textsurface = font.render(
-                f"Level size {level.size[0]}:{level.size[1]}:{level.size[2]}",
-                False,
-                (255, 255, 255),
-            )
-            surface_screen.blit(textsurface, (0, font_size * 0))
+        textsurface = font.render(
+            f"Level size {level.size[0]}:{level.size[1]}:{level.size[2]}",
+            False,
+            (255, 255, 255),
+        )
+        surface_screen.blit(textsurface, (0, font_size * 0))
 
-            textsurface = font.render(
-                f"{coords[0]} : {coords[1]} : {coords[2]} : {level.tile(coords[0],coords[1],coords[2])}",
-                False,
-                (255, 255, 255),
-            )
-            surface_screen.blit(textsurface, (0, font_size * 1))
+        textsurface = font.render(
+            f"{coords[0]} : {coords[1]} : {coords[2]} : {level.tile(coords[0],coords[1],coords[2])}",
+            False,
+            (255, 255, 255),
+        )
+        surface_screen.blit(textsurface, (0, font_size * 1))
 
         scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
         surface_window.blit(scaled_win, (0, 0))
