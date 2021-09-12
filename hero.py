@@ -18,7 +18,7 @@ class Hero(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.direction = Direction.DOWN
-        self.is_moving= False
+        self.is_moving = False
 
         self.image_up = pygame.image.load("res/ryle/up.png")
         self.image_down = pygame.image.load("res/ryle/down.png")

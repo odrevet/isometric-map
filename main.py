@@ -6,22 +6,16 @@ from hero import Direction, Hero
 from level import *
 
 
-def is_hero_not_on_ground(hero, level):
+def hero_on_ground(hero, level):
     return (
         level.tile(bl[0] // CUBE_SIZE, bl[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE)
-        is None
-        and level.tile(
-            br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE
-        )
-        is None
-        and level.tile(
-            tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE
-        )
-        is None
-        and level.tile(
-            tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE
-        )
-        is None
+        is not None
+        or level.tile(br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE)
+        is not None
+        or level.tile(tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE)
+        is not None
+        or level.tile(tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE)
+        is not None
     )
 
 
@@ -73,7 +67,7 @@ while True:
                 hero.direction = Direction.DOWN
 
             if event.key == pygame.K_SPACE:
-                if not is_hero_not_on_ground(hero, level):
+                if hero_on_ground(hero, level):
                     hero.jump = True
         elif event.type == KEYUP:
             hero.is_moving = False
@@ -143,7 +137,7 @@ while True:
             hero.jump_cur += 1
 
     # gravity
-    if hero.jump == False and is_hero_not_on_ground(hero, level):
+    if hero.jump == False and not hero_on_ground(hero, level):
         hero.z -= 1
 
     # debug
@@ -156,7 +150,7 @@ while True:
         surface_screen.blit(textsurface, (0, font_size * 0))
 
         textsurface = font.render(
-            f"x {hero.x} y {hero.y} z {hero.z} jump {hero.jump} fall {is_hero_not_on_ground(hero, level)}",
+            f"x {hero.x} y {hero.y} z {hero.z} jump {hero.jump} ground {hero_on_ground(hero, level)}",
             False,
             (255, 255, 255),
         )
