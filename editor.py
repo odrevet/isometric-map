@@ -15,7 +15,6 @@ resolution_screen = (320, 240)
 surface_window = pygame.display.set_mode(resolution_window)
 surface_screen = pygame.Surface(resolution_screen)
 pygame.display.set_caption("Isometric map")
-# pygame.key.set_repeat(1, 24)
 
 level = Level()
 level.read("data/level.map")
@@ -25,7 +24,10 @@ camera = [resolution_screen[0] / 2, resolution_screen[1] / 2]
 
 coords = [0, 0, 0]  # x y z
 
+clock = pygame.time.Clock()
+
 while True:
+    time_delta = clock.tick(60) / 1000.0
     surface_screen.fill(bgcolor)
     level.draw(hero, camera, surface_screen)
 
@@ -84,7 +86,7 @@ while True:
             surface_screen.blit(textsurface, (0, font_size * 0))
 
             textsurface = font.render(
-                f"{coords[0]} : {coords[1]} : {coords[2]} : {level.mapdata[coords[2]][coords[1]][coords[0]]}",
+                f"{coords[0]} : {coords[1]} : {coords[2]} : {level.tile(coords[0],coords[1],coords[2])}",
                 False,
                 (255, 255, 255),
             )
