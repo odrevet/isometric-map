@@ -72,7 +72,7 @@ while True:
                     hero.jump = True
         elif event.type == KEYUP:
             if event.key in [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]:
-                 hero.is_moving = False
+                hero.is_moving = False
 
     # update hero location
     if hero.is_moving:
@@ -164,6 +164,13 @@ while True:
             (255, 255, 255),
         )
         surface_screen.blit(textsurface, (0, font_size * 2))
+
+        textsurface = font.render(
+            f"Index: {hero.get_index()}",
+            False,
+            (255, 255, 255),
+        )
+        surface_screen.blit(textsurface, (0, font_size * 3))
 
     scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
     surface_window.blit(scaled_win, (0, 0))

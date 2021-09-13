@@ -58,17 +58,17 @@ class Hero(pygame.sprite.Sprite):
         self.size = CUBE_SIZE - 1
 
     def get_coords(self):
-        bl = [self.x, self.y + self.size]
-        br = [self.x + self.size, self.y + self.size]
-        tl = [self.x, self.y]
-        tr = [self.x + self.size, self.y]
+        bl = [self.x, self.y + self.size, self.z]
+        br = [self.x + self.size, self.y + self.size, self.z]
+        tl = [self.x, self.y, self.z]
+        tr = [self.x + self.size, self.y, self.z]
         return (bl, br, tl, tr)
 
     def get_index(self):
         return [
-            math.ceil(self.x / (TILE_SIZE * 4)),
-            math.ceil(self.y / (TILE_SIZE * 4)),
-            math.ceil(self.z / (TILE_SIZE * 4)),
+            self.x // CUBE_SIZE,
+            self.y // CUBE_SIZE,
+            self.z // CUBE_SIZE,
         ]
 
     def draw(self, x, y, surface_display):
