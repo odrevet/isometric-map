@@ -111,8 +111,8 @@ class Level(pygame.sprite.Sprite):
         hero_index = hero.get_index()
 
         for z in range(self.size[2]):
-            for x in range(self.size[1]):
-                for y in range(self.size[0]):
+            for x in range(self.size[0]):
+                for y in range(self.size[1]):
                     try:
                         if self.mapdata[z][y][x] is not None:
                             self.cube_draw(
