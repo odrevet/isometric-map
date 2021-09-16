@@ -24,6 +24,8 @@ camera = [resolution_screen[0] / 2, resolution_screen[1] / 2]
 
 coords = [0, 0, 0]  # x y z
 
+move_z = False
+
 clock = pygame.time.Clock()
 
 while True:
@@ -35,18 +37,18 @@ while True:
         (coords[0] * CUBE_SIZE, coords[1] * CUBE_SIZE + CUBE_SIZE)
     )
     br = cartesian_to_isometric(
-        (coords[0] * CUBE_SIZE + CUBE_SIZE, coords[1] * CUBE_SIZE + CUBE_SIZE)
+        (coords[0] * CUBE_SIZE + CUBE_SIZE, coords[1] * CUBE_SIZE + CUBE_SIZE - 1)
     )
     tl = cartesian_to_isometric((coords[0] * CUBE_SIZE, coords[1] * CUBE_SIZE))
     tr = cartesian_to_isometric(
-        (coords[0] * CUBE_SIZE + CUBE_SIZE, coords[1] * CUBE_SIZE)
+        (coords[0] * CUBE_SIZE + CUBE_SIZE, coords[1] * CUBE_SIZE - 1)
     )
 
     points = [
-        (bl[0] + camera[0], bl[1] + camera[1]),
-        (br[0] + camera[0], br[1] + camera[1]),
-        (tr[0] + camera[0], tr[1] + camera[1]),
-        (tl[0] + camera[0], tl[1] + camera[1]),
+        (bl[0] + camera[0], bl[1] + camera[1] - coords[2] * CUBE_SIZE),
+        (br[0] + camera[0], br[1] + camera[1] - coords[2] * CUBE_SIZE),
+        (tr[0] + camera[0], tr[1] + camera[1] - coords[2] * CUBE_SIZE),
+        (tl[0] + camera[0], tl[1] + camera[1] - coords[2] * CUBE_SIZE),
     ]
 
     pygame.draw.lines(
@@ -66,18 +68,31 @@ while True:
                 pygame.quit()
                 quit()
 
+            if event.key in (K_LSHIFT, K_RSHIFT):
+                move_z = True
+
             if event.key == pygame.K_LEFT:
                 coords[0] -= 1
             if event.key == pygame.K_RIGHT:
                 coords[0] += 1
             if event.key == pygame.K_UP:
-                coords[1] -= 1
+                if move_z == True:
+                    coords[2] += 1
+                else:
+                    coords[1] -= 1
             if event.key == pygame.K_DOWN:
-                coords[1] += 1
-            if event.key == pygame.K_DELETE:
+                if move_z == True:
+                    coords[2] -= 1
+                else:
+                    coords[1] += 1
+            if event.key == pygame.K_BACKSPACE:
                 level.mapdata[coords[2]][coords[1]][coords[0]] = None
             if event.key == pygame.K_RETURN:
                 level.mapdata[coords[2]][coords[1]][coords[0]] = [[0,0],[0,2],[6,2]]
+
+        elif event.type == pygame.KEYUP:
+            if event.key in (K_LSHIFT, K_RSHIFT):
+                move_z = False
 
         textsurface = font.render(
             f"Level size {level.size[0]}:{level.size[1]}:{level.size[2]}",
