@@ -120,17 +120,17 @@ class Level(pygame.sprite.Sprite):
         hero_index = hero.get_index()
 
         for z in range(self.size[2]):
-            to_draw = []
+            drawables = []
             if hero_index[2]== z:
-                to_draw.append(((hero.x // 16, hero.y // 16), hero))
+                drawables.append(((hero.x // CUBE_SIZE, hero.y // CUBE_SIZE, hero.z // CUBE_SIZE), hero))
 
             for x in range(self.size[0]):
                 for y in range(self.size[1]):
                     if self.mapdata[z][y][x] is not None:
-                        to_draw.append(((x, y), self.mapdata[z][y][x]))
+                        drawables.append(((x, y, z), self.mapdata[z][y][x]))
 
-            for elem in sorted(to_draw, key=cmp_to_key(compare)):
-                if isinstance(elem[1], Hero):
+            for drawable in sorted(drawables, key=cmp_to_key(compare)):
+                if isinstance(drawable[1], Hero):
                     hero.draw(
                         camera[0] + hero_iso_x - CUBE_SIZE,
                         camera[1] + hero_iso_y - hero.z - CUBE_SIZE,
@@ -141,14 +141,14 @@ class Level(pygame.sprite.Sprite):
                         surface_display,
                         self.image_tileset,
                         camera[0]
-                        + elem[0][0] * CUBE_SIZE
-                        - elem[0][1] * CUBE_SIZE
+                        + drawable[0][0] * CUBE_SIZE
+                        - drawable[0][1] * CUBE_SIZE
                         - CUBE_SIZE,
                         camera[1]
-                        + elem[0][0] * TILE_SIZE
-                        + elem[0][1] * TILE_SIZE
-                        - (CUBE_SIZE * z),
-                        elem[1],
+                        + drawable[0][0] * TILE_SIZE
+                        + drawable[0][1] * TILE_SIZE
+                        - (CUBE_SIZE * drawable[0][2]),
+                        drawable[1],
                     )               
 
         if __debug__:
