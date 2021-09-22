@@ -7,6 +7,7 @@ from hero import Hero
 from const import *
 from functools import cmp_to_key
 
+
 def cartesian_to_isometric(coord):
     return [coord[0] - coord[1], (coord[0] + coord[1]) // 2]
 
@@ -14,12 +15,6 @@ def cartesian_to_isometric(coord):
 def to_2d_coords(index, width):
     return [index % width, index // width]
 
-def compare(item1, item2):
-    a = item1[0]
-    b = item2[0]
-    if b[0] > a[0] or b[1] > a[1]:
-        return -1
-    return 1
 
 class Level(pygame.sprite.Sprite):
     def __init__(self):
@@ -113,43 +108,39 @@ class Level(pygame.sprite.Sprite):
                 ),
             )
 
-
-            
     def draw(self, hero, camera, surface_display):
         hero_iso_x, hero_iso_y = cartesian_to_isometric((hero.x, hero.y))
-        hero_index = hero.get_index()
+
+        drawables = []
+        drawables.append(((hero.x // CUBE_SIZE, hero.y // CUBE_SIZE, hero.z // CUBE_SIZE), hero, hero.x / CUBE_SIZE +  hero.y / CUBE_SIZE +  hero.z / CUBE_SIZE))
 
         for z in range(self.size[2]):
-            drawables = []
-            if hero_index[2]== z:
-                drawables.append(((hero.x // CUBE_SIZE, hero.y // CUBE_SIZE, hero.z // CUBE_SIZE), hero))
-
-            for x in range(self.size[0]):
-                for y in range(self.size[1]):
+            for y in range(self.size[1]):
+                for x in range(self.size[0]):
                     if self.mapdata[z][y][x] is not None:
-                        drawables.append(((x, y, z), self.mapdata[z][y][x]))
+                        drawables.append(((x, y, z), self.mapdata[z][y][x], x + y + z))
 
-            for drawable in sorted(drawables, key=cmp_to_key(compare)):
-                if isinstance(drawable[1], Hero):
-                    hero.draw(
-                        camera[0] + hero_iso_x - CUBE_SIZE,
-                        camera[1] + hero_iso_y - hero.z - CUBE_SIZE,
-                        surface_display,
-                    )
-                else:
-                    self.cube_draw(
-                        surface_display,
-                        self.image_tileset,
-                        camera[0]
-                        + drawable[0][0] * CUBE_SIZE
-                        - drawable[0][1] * CUBE_SIZE
-                        - CUBE_SIZE,
-                        camera[1]
-                        + drawable[0][0] * TILE_SIZE
-                        + drawable[0][1] * TILE_SIZE
-                        - (CUBE_SIZE * drawable[0][2]),
-                        drawable[1],
-                    )               
+        for drawable in sorted(drawables, key=lambda x: x[2]):
+            if isinstance(drawable[1], Hero):
+                hero.draw(
+                    camera[0] + hero_iso_x - CUBE_SIZE,
+                    camera[1] + hero_iso_y - hero.z - CUBE_SIZE,
+                    surface_display,
+                )
+            else:
+                self.cube_draw(
+                    surface_display,
+                    self.image_tileset,
+                    camera[0]
+                    + drawable[0][0] * CUBE_SIZE
+                    - drawable[0][1] * CUBE_SIZE
+                    - CUBE_SIZE,
+                    camera[1]
+                    + drawable[0][0] * TILE_SIZE
+                    + drawable[0][1] * TILE_SIZE
+                    - (CUBE_SIZE * drawable[0][2]),
+                    drawable[1],
+                )
 
         if __debug__:
             bl, br, tl, tr = hero.get_coords()
