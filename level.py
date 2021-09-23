@@ -112,7 +112,31 @@ class Level(pygame.sprite.Sprite):
         hero_iso_x, hero_iso_y = cartesian_to_isometric((hero.x, hero.y))
 
         drawables = []
-        drawables.append(((hero.x // CUBE_SIZE, hero.y // CUBE_SIZE, hero.z // CUBE_SIZE), hero, hero.x / CUBE_SIZE +  hero.y / CUBE_SIZE +  hero.z / CUBE_SIZE))
+
+        # top
+        drawables.append(
+            (
+                (hero.x // CUBE_SIZE, hero.y // CUBE_SIZE, hero.z // CUBE_SIZE),
+                hero,
+                hero.x / CUBE_SIZE + hero.y / CUBE_SIZE + hero.z / CUBE_SIZE + 1,
+                True,
+            )
+        )
+
+        # bottom
+        drawables.append(
+            (
+                (hero.x // CUBE_SIZE, hero.y // CUBE_SIZE, hero.z // CUBE_SIZE),
+                hero,
+                hero.x / CUBE_SIZE + hero.y / CUBE_SIZE + hero.z / CUBE_SIZE,
+                False,
+            )
+        )
+
+        hero_width = 32
+        hero_height = 48
+        surface_tmp = pygame.Surface((hero_width, hero_height), pygame.SRCALPHA)
+        hero.draw(0, 0, surface_tmp)
 
         for z in range(self.size[2]):
             for y in range(self.size[1]):
@@ -122,11 +146,30 @@ class Level(pygame.sprite.Sprite):
 
         for drawable in sorted(drawables, key=lambda x: x[2]):
             if isinstance(drawable[1], Hero):
-                hero.draw(
-                    camera[0] + hero_iso_x - CUBE_SIZE,
-                    camera[1] + hero_iso_y - hero.z - CUBE_SIZE,
-                    surface_display,
-                )
+                if drawable[3] == True:
+                    # blit hero top
+                    surface_display.blit(
+                        surface_tmp,
+                        (
+                            camera[0] + hero_iso_x - CUBE_SIZE,
+                            camera[1] + hero_iso_y - hero.z - CUBE_SIZE,
+                        ),
+                        (0, 0, hero_width, hero_height // 2),
+                    )
+                else:
+                    # blit hero bottom
+                    surface_display.blit(
+                        surface_tmp,
+                        (
+                            camera[0] + hero_iso_x - CUBE_SIZE,
+                            camera[1]
+                            + hero_iso_y
+                            - hero.z
+                            - CUBE_SIZE
+                            + hero_height // 2,
+                        ),
+                        (0, hero_height // 2, hero_width, hero_height // 2),
+                    )
             else:
                 self.cube_draw(
                     surface_display,
