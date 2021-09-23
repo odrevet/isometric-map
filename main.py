@@ -36,9 +36,6 @@ def hero_on_ground(hero, level):
 
 # init pygame
 pygame.init()
-pygame.font.init()
-font_size = 24
-font = pygame.font.SysFont("", font_size)
 bgcolor = (0, 0, 0)
 
 resolution_screen = (320, 240)
