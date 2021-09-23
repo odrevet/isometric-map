@@ -1,6 +1,13 @@
+import math
+
 import pygame
 from pygame.locals import *
-import math
+
+import pygame_gui
+from pygame_gui.ui_manager import UIManager
+from pygame_gui.elements.ui_text_box import UITextBox
+from pygame_gui.core import IncrementalThreadedResourceLoader
+from pygame_gui import UI_TEXT_BOX_LINK_CLICKED
 
 from hero import Direction, Hero
 from level import *
@@ -27,31 +34,48 @@ def hero_on_ground(hero, level):
     )
 
 
+# init pygame
 pygame.init()
 pygame.font.init()
 font_size = 24
 font = pygame.font.SysFont("", font_size)
 bgcolor = (0, 0, 0)
-resolution_window = (640, 480)
+
 resolution_screen = (320, 240)
+resolution_window = (640, 480)
 surface_window = pygame.display.set_mode(resolution_window)
 surface_screen = pygame.Surface(resolution_screen)
 pygame.display.set_caption("Isometric map")
+clock = pygame.time.Clock()
+camera = [resolution_screen[0] / 2, resolution_screen[1] / 2]
 
+# init GUI
+ui_manager = pygame_gui.UIManager(resolution_screen, "data/themes/classic.json")
+debug_textbox = UITextBox(
+    '',
+    pygame.Rect((0, 0), (320, 70)),
+    manager=ui_manager,
+    object_id="#debug_textbox",
+)
+
+# init level
 level = Level()
 level.read("data/level.map")
 
+# init hero
 hero = Hero()
-camera = [resolution_screen[0] / 2, resolution_screen[1] / 2]
 
-clock = pygame.time.Clock()
 
 while True:
     # logic
     time_delta = clock.tick(60) / 1000.0
     [bl, br, tl, tr] = hero.get_coords()
     hero.on_ground = hero_on_ground(hero, level)
-    hero.zindex = hero.position.x / CUBE_SIZE + hero.position.y / CUBE_SIZE + hero.position.z / CUBE_SIZE
+    hero.zindex = (
+        hero.position.x / CUBE_SIZE
+        + hero.position.y / CUBE_SIZE
+        + hero.position.z / CUBE_SIZE
+    )
 
     # events
     for event in pygame.event.get():
@@ -173,34 +197,17 @@ while True:
 
     # debug
     if __debug__:
-        textsurface = font.render(
-            f"Level size {level.size[0]}:{level.size[1]}:{level.size[2]}",
-            False,
-            (255, 255, 255),
-        )
-        surface_screen.blit(textsurface, (0, font_size * 0))
+        debug_text = f"Level size {level.size[0]}:{level.size[1]}:{level.size[2]} <br/>"
+        debug_text += f"x {hero.position.x} y {hero.position.y} z {hero.position.z}<br/>jump {hero.jump} ground {hero.on_ground}"
+        debug_textbox.html_text = debug_text
+        debug_textbox.rebuild()
+        ui_manager.draw_ui(surface_screen)
 
-        textsurface = font.render(
-            f"x {hero.position.x} y {hero.position.y} z {hero.position.z} jump {hero.jump} ground {hero.on_ground}",
-            False,
-            (255, 255, 255),
-        )
-        surface_screen.blit(textsurface, (0, font_size * 1))
 
-        textsurface = font.render(
-            f"bl {bl} br {br} tl {tl} tr {tr}",
-            False,
-            (255, 255, 255),
-        )
-        surface_screen.blit(textsurface, (0, font_size * 2))
+    ui_manager.update(time_delta)
 
-        textsurface = font.render(
-            f"Index: {hero.get_index()}",
-            False,
-            (255, 255, 255),
-        )
-        surface_screen.blit(textsurface, (0, font_size * 3))
-
+    # stretch display
     scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
     surface_window.blit(scaled_win, (0, 0))
+
     pygame.display.update()
