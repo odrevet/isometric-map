@@ -58,6 +58,20 @@ while True:
         points,
     )
 
+    points = [
+        (bl[0] + camera[0], bl[1] + camera[1] - coords[2] * CUBE_SIZE + CUBE_SIZE),
+        (br[0] + camera[0], br[1] + camera[1] - coords[2] * CUBE_SIZE + CUBE_SIZE),
+        (tr[0] + camera[0], tr[1] + camera[1] - coords[2] * CUBE_SIZE + CUBE_SIZE),
+        (tl[0] + camera[0], tl[1] + camera[1] - coords[2] * CUBE_SIZE + CUBE_SIZE),
+    ]
+
+    pygame.draw.lines(
+        surface_screen,
+        (255, 255, 255),
+        True,
+        points,
+    )
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
