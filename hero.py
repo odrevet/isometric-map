@@ -1,11 +1,11 @@
 from enum import Enum
-import math
+from point3d import Point3d
 
 import pygame
 import pyganim
 
+from drawable import Drawable
 from const import *
-
 
 class Direction(Enum):
     UP = 0
@@ -14,7 +14,7 @@ class Direction(Enum):
     LEFT = 3
 
 
-class Hero(pygame.sprite.Sprite):
+class Hero(Drawable):
     def __init__(self):
         super().__init__()
         self.direction = Direction.DOWN
@@ -47,9 +47,8 @@ class Hero(pygame.sprite.Sprite):
 
         self.moveConductor = pyganim.PygConductor(self.anim_objs)
 
-        self.x = 0
-        self.y = 0
-        self.z = CUBE_SIZE
+        self.position = Point3d(0, 0, CUBE_SIZE)
+
         self.jump = False
         self.jump_max = CUBE_SIZE * 1.5
         self.jump_cur = 0
@@ -58,17 +57,17 @@ class Hero(pygame.sprite.Sprite):
         self.size = CUBE_SIZE - 1
 
     def get_coords(self):
-        bl = [self.x, self.y + self.size, self.z]
-        br = [self.x + self.size, self.y + self.size, self.z]
-        tl = [self.x, self.y, self.z]
-        tr = [self.x + self.size, self.y, self.z]
+        bl = [self.position.x, self.position.y + self.size, self.position.z]
+        br = [self.position.x + self.size, self.position.y + self.size, self.position.z]
+        tl = [self.position.x, self.position.y, self.position.z]
+        tr = [self.position.x + self.size, self.position.y, self.position.z]
         return (bl, br, tl, tr)
 
     def get_index(self):
         return [
-            self.x // CUBE_SIZE,
-            self.y // CUBE_SIZE,
-            self.z // CUBE_SIZE,
+            self.position.x // CUBE_SIZE,
+            self.position.y // CUBE_SIZE,
+            self.position.z // CUBE_SIZE,
         ]
 
     def draw(self, x, y, surface_display):

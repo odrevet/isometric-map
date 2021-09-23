@@ -2,10 +2,9 @@ import pygame
 from pygame import surface
 from pygame.locals import *
 import csv
-from hero import Hero
 
+from hero import Hero
 from const import *
-from functools import cmp_to_key
 
 
 def cartesian_to_isometric(coord):
@@ -76,6 +75,7 @@ class Level(pygame.sprite.Sprite):
             print(f"Index error at {x}:{y}:{z}")
             pass
 
+
     def cube_draw(self, surface_display, image_tileset, x, y, tile):
         top, left, right = tile
 
@@ -109,16 +109,16 @@ class Level(pygame.sprite.Sprite):
             )
 
     def draw(self, hero, camera, surface_display):
-        hero_iso_x, hero_iso_y = cartesian_to_isometric((hero.x, hero.y))
+        hero_iso_x, hero_iso_y = cartesian_to_isometric((hero.position.x, hero.position.y))
 
         drawables = []
 
         # top
         drawables.append(
             (
-                (hero.x // CUBE_SIZE, hero.y // CUBE_SIZE, hero.z // CUBE_SIZE),
+                (hero.position.x // CUBE_SIZE, hero.position.y // CUBE_SIZE, hero.position.z // CUBE_SIZE),
                 hero,
-                hero.x / CUBE_SIZE + hero.y / CUBE_SIZE + hero.z / CUBE_SIZE + 1,
+                hero.position.x / CUBE_SIZE + hero.position.y / CUBE_SIZE + hero.position.z / CUBE_SIZE + 1,
                 True,
             )
         )
@@ -126,9 +126,9 @@ class Level(pygame.sprite.Sprite):
         # bottom
         drawables.append(
             (
-                (hero.x // CUBE_SIZE, hero.y // CUBE_SIZE, hero.z // CUBE_SIZE),
+                (hero.position.x // CUBE_SIZE, hero.position.y // CUBE_SIZE, hero.position.z // CUBE_SIZE),
                 hero,
-                hero.x / CUBE_SIZE + hero.y / CUBE_SIZE + hero.z / CUBE_SIZE,
+                hero.position.x / CUBE_SIZE + hero.position.y / CUBE_SIZE + hero.position.z / CUBE_SIZE,
                 False,
             )
         )
@@ -152,7 +152,7 @@ class Level(pygame.sprite.Sprite):
                         surface_tmp,
                         (
                             camera[0] + hero_iso_x - CUBE_SIZE,
-                            camera[1] + hero_iso_y - hero.z - CUBE_SIZE,
+                            camera[1] + hero_iso_y - hero.position.z - CUBE_SIZE,
                         ),
                         (0, 0, hero_width, hero_height // 2),
                     )
@@ -164,7 +164,7 @@ class Level(pygame.sprite.Sprite):
                             camera[0] + hero_iso_x - CUBE_SIZE,
                             camera[1]
                             + hero_iso_y
-                            - hero.z
+                            - hero.position.z
                             - CUBE_SIZE
                             + hero_height // 2,
                         ),
@@ -193,14 +193,14 @@ class Level(pygame.sprite.Sprite):
             tr = cartesian_to_isometric(tr)
 
             points = [
-                (bl[0] + camera[0], bl[1] + camera[1] - hero.z + CUBE_SIZE),
-                (br[0] + camera[0], br[1] + camera[1] - hero.z + CUBE_SIZE),
-                (br[0] + camera[0], br[1] + camera[1] - hero.z + CUBE_SIZE),
-                (tr[0] + camera[0], tr[1] + camera[1] - hero.z + CUBE_SIZE),
-                (tl[0] + camera[0], tl[1] + camera[1] - hero.z + CUBE_SIZE),
-                (tr[0] + camera[0], tr[1] + camera[1] - hero.z + CUBE_SIZE),
-                (tl[0] + camera[0], tl[1] + camera[1] - hero.z + CUBE_SIZE),
-                (bl[0] + camera[0], bl[1] + camera[1] - hero.z + CUBE_SIZE),
+                (bl[0] + camera[0], bl[1] + camera[1] - hero.position.z + CUBE_SIZE),
+                (br[0] + camera[0], br[1] + camera[1] - hero.position.z + CUBE_SIZE),
+                (br[0] + camera[0], br[1] + camera[1] - hero.position.z + CUBE_SIZE),
+                (tr[0] + camera[0], tr[1] + camera[1] - hero.position.z + CUBE_SIZE),
+                (tl[0] + camera[0], tl[1] + camera[1] - hero.position.z + CUBE_SIZE),
+                (tr[0] + camera[0], tr[1] + camera[1] - hero.position.z + CUBE_SIZE),
+                (tl[0] + camera[0], tl[1] + camera[1] - hero.position.z + CUBE_SIZE),
+                (bl[0] + camera[0], bl[1] + camera[1] - hero.position.z + CUBE_SIZE),
             ]
             pygame.draw.lines(
                 surface_display,

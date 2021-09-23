@@ -8,13 +8,21 @@ from level import *
 
 def hero_on_ground(hero, level):
     return (
-        level.tile(bl[0] // CUBE_SIZE, bl[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE)
+        level.tile(
+            bl[0] // CUBE_SIZE, bl[1] // CUBE_SIZE, (hero.position.z - 1) // CUBE_SIZE
+        )
         is not None
-        or level.tile(br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE)
+        or level.tile(
+            br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, (hero.position.z - 1) // CUBE_SIZE
+        )
         is not None
-        or level.tile(tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE)
+        or level.tile(
+            tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, (hero.position.z - 1) // CUBE_SIZE
+        )
         is not None
-        or level.tile(tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, (hero.z - 1) // CUBE_SIZE)
+        or level.tile(
+            tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, (hero.position.z - 1) // CUBE_SIZE
+        )
         is not None
     )
 
@@ -78,56 +86,72 @@ while True:
     if hero.is_moving:
         if hero.direction == Direction.UP:
             if (
-                hero.y - 1 >= 0
+                hero.position.y - 1 >= 0
                 and level.tile(
-                    tl[0] // CUBE_SIZE, (tl[1] - 1) // CUBE_SIZE, hero.z // CUBE_SIZE
+                    tl[0] // CUBE_SIZE,
+                    (tl[1] - 1) // CUBE_SIZE,
+                    hero.position.z // CUBE_SIZE,
                 )
                 is None
                 and level.tile(
-                    tr[0] // CUBE_SIZE, (tr[1] - 1) // CUBE_SIZE, hero.z // CUBE_SIZE
+                    tr[0] // CUBE_SIZE,
+                    (tr[1] - 1) // CUBE_SIZE,
+                    hero.position.z // CUBE_SIZE,
                 )
                 is None
             ):
-                hero.y -= 1
+                hero.position.y -= 1
         elif hero.direction == Direction.RIGHT:
             if (
-                math.ceil((hero.x + 1) / (CUBE_SIZE)) < level.size[0]
+                math.ceil((hero.position.x + 1) / (CUBE_SIZE)) < level.size[0]
                 and level.tile(
-                    (tr[0] + 1) // CUBE_SIZE, tr[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    (tr[0] + 1) // CUBE_SIZE,
+                    tr[1] // CUBE_SIZE,
+                    hero.position.z // CUBE_SIZE,
                 )
                 is None
                 and level.tile(
-                    (br[0] + 1) // CUBE_SIZE, br[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    (br[0] + 1) // CUBE_SIZE,
+                    br[1] // CUBE_SIZE,
+                    hero.position.z // CUBE_SIZE,
                 )
                 is None
             ):
-                hero.x += 1
+                hero.position.x += 1
         elif hero.direction == Direction.DOWN:
             if (
-                math.ceil((hero.y + 1) / (CUBE_SIZE)) < level.size[1]
+                math.ceil((hero.position.y + 1) / (CUBE_SIZE)) < level.size[1]
                 and level.tile(
-                    bl[0] // CUBE_SIZE, (bl[1] + 1) // CUBE_SIZE, hero.z // CUBE_SIZE
+                    bl[0] // CUBE_SIZE,
+                    (bl[1] + 1) // CUBE_SIZE,
+                    hero.position.z // CUBE_SIZE,
                 )
                 is None
                 and level.tile(
-                    br[0] // CUBE_SIZE, (br[1] + 1) // CUBE_SIZE, hero.z // CUBE_SIZE
+                    br[0] // CUBE_SIZE,
+                    (br[1] + 1) // CUBE_SIZE,
+                    hero.position.z // CUBE_SIZE,
                 )
                 is None
             ):
-                hero.y += 1
+                hero.position.y += 1
         elif hero.direction == Direction.LEFT:
             if (
-                hero.x - 1 >= 0
+                hero.position.x - 1 >= 0
                 and level.tile(
-                    (tl[0] - 1) // CUBE_SIZE, tl[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    (tl[0] - 1) // CUBE_SIZE,
+                    tl[1] // CUBE_SIZE,
+                    hero.position.z // CUBE_SIZE,
                 )
                 is None
                 and level.tile(
-                    (bl[0] - 1) // CUBE_SIZE, bl[1] // CUBE_SIZE, hero.z // CUBE_SIZE
+                    (bl[0] - 1) // CUBE_SIZE,
+                    bl[1] // CUBE_SIZE,
+                    hero.position.z // CUBE_SIZE,
                 )
                 is None
             ):
-                hero.x -= 1
+                hero.position.x -= 1
 
     # jump
     if hero.jump == True:
@@ -135,12 +159,12 @@ while True:
             hero.jump = False
             hero.jump_cur = 0
         else:
-            hero.z += 1
+            hero.position.z += 1
             hero.jump_cur += 1
 
     # gravity
     if hero.jump == False and not hero.on_ground:
-        hero.z -= 1
+        hero.position.z -= 1
 
     # debug
     if __debug__:
@@ -152,7 +176,7 @@ while True:
         surface_screen.blit(textsurface, (0, font_size * 0))
 
         textsurface = font.render(
-            f"x {hero.x} y {hero.y} z {hero.z} jump {hero.jump} ground {hero.on_ground}",
+            f"x {hero.position.x} y {hero.position.y} z {hero.position.z} jump {hero.jump} ground {hero.on_ground}",
             False,
             (255, 255, 255),
         )
