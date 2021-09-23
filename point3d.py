@@ -6,3 +6,6 @@ class Point3d():
 
     def sum(self):
         return self.x + self.y + self.z
+
+    def array(self):
+        return [self.x, self.y, self.z]

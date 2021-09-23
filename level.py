@@ -75,7 +75,6 @@ class Level(pygame.sprite.Sprite):
             print(f"Index error at {x}:{y}:{z}")
             pass
 
-
     def cube_draw(self, surface_display, image_tileset, x, y, tile):
         top, left, right = tile
 
@@ -109,16 +108,22 @@ class Level(pygame.sprite.Sprite):
             )
 
     def draw(self, hero, camera, surface_display):
-        hero_iso_x, hero_iso_y = cartesian_to_isometric((hero.position.x, hero.position.y))
+        hero_iso_x, hero_iso_y = cartesian_to_isometric(
+            (hero.position.x, hero.position.y)
+        )
 
         drawables = []
 
         # top
         drawables.append(
             (
-                (hero.position.x // CUBE_SIZE, hero.position.y // CUBE_SIZE, hero.position.z // CUBE_SIZE),
+                (
+                    hero.position.x // CUBE_SIZE,
+                    hero.position.y // CUBE_SIZE,
+                    hero.position.z // CUBE_SIZE,
+                ),
                 hero,
-                hero.position.x / CUBE_SIZE + hero.position.y / CUBE_SIZE + hero.position.z / CUBE_SIZE + 1,
+                hero.zindex + 1,
                 True,
             )
         )
@@ -126,9 +131,13 @@ class Level(pygame.sprite.Sprite):
         # bottom
         drawables.append(
             (
-                (hero.position.x // CUBE_SIZE, hero.position.y // CUBE_SIZE, hero.position.z // CUBE_SIZE),
+                (
+                    hero.position.x // CUBE_SIZE,
+                    hero.position.y // CUBE_SIZE,
+                    hero.position.z // CUBE_SIZE,
+                ),
                 hero,
-                hero.position.x / CUBE_SIZE + hero.position.y / CUBE_SIZE + hero.position.z / CUBE_SIZE,
+                hero.zindex,
                 False,
             )
         )

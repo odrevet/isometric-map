@@ -47,12 +47,13 @@ camera = [resolution_screen[0] / 2, resolution_screen[1] / 2]
 clock = pygame.time.Clock()
 
 while True:
+    # logic
     time_delta = clock.tick(60) / 1000.0
-    surface_screen.fill(bgcolor)
-    level.draw(hero, camera, surface_screen)
     [bl, br, tl, tr] = hero.get_coords()
     hero.on_ground = hero_on_ground(hero, level)
+    hero.zindex = hero.position.x / CUBE_SIZE + hero.position.y / CUBE_SIZE + hero.position.z / CUBE_SIZE
 
+    # events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -165,6 +166,10 @@ while True:
     # gravity
     if hero.jump == False and not hero.on_ground:
         hero.position.z -= 1
+
+    # draw
+    surface_screen.fill(bgcolor)
+    level.draw(hero, camera, surface_screen)
 
     # debug
     if __debug__:
