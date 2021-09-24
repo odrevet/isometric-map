@@ -197,6 +197,35 @@ while True:
         debug_textbox.rebuild()
         ui_manager.draw_ui(surface_screen)
 
+        # draw lines around hero
+        # get hero coords and find isometric locations
+        bl, br, tl, tr = list(
+            map(
+                (lambda coord: cartesian_to_isometric(coord.list())),
+                hero.get_coords(),
+            )
+        )
+
+        # adjust all point with camera and hero z position
+        points = list(
+            map(
+                (
+                    lambda point: (
+                        point.x + camera.x,
+                        point.y + camera.y - hero.position.z + Cube.SIZE,
+                    )
+                ),
+                [bl, br, br, tr, tl, tr, tl, bl],
+            )
+        )
+
+        pygame.draw.lines(
+            surface_screen,
+            (255, 255, 255),
+            False,
+            points,
+        )
+
     ui_manager.update(time_delta)
 
     # stretch display

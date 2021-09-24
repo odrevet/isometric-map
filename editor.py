@@ -4,7 +4,6 @@ from pygame.locals import *
 import pygame_gui
 from pygame_gui.elements.ui_text_box import UITextBox
 
-from hero import Hero
 from level import *
 from const import *
 from cube import Cube
@@ -37,9 +36,6 @@ debug_textbox = UITextBox(
 # init level
 level = Level()
 level.read("data/level.map")
-
-# init hero
-hero = Hero()
 
 # init cursor
 cursor = Cursor()
@@ -110,7 +106,7 @@ while True:
 
     # Draw
     surface_screen.fill(bgcolor)
-    level.draw(hero, camera, surface_screen)
+    level.draw([], camera, surface_screen)
     cursor.draw(surface_screen, camera)
 
     # Draw level boundaries

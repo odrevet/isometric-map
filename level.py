@@ -79,20 +79,20 @@ class Level(pygame.sprite.Sprite):
     def draw(self, drawables_sprites, camera, surface_display):
         # Work In Progress: split drawables into chunks when needed
         drawables = []
-        hero = drawables_sprites[0]
-
-        hero_top = Drawable(hero.position.x, hero.position.y, hero.position.z)
-        hero_top.zindex = sum(list(map((lambda x: x / Cube.SIZE), hero_top.position.list()))) + 1
-        hero_top.is_top = True
-        hero_bottom = Drawable(hero.position.x, hero.position.y, hero.position.z)
-        hero_bottom.zindex = sum(list(map((lambda x: x / Cube.SIZE), hero_bottom.position.list())))
-        hero_bottom.is_top = False
-        drawables.append(hero_top)
-        drawables.append(hero_bottom)
-        hero_width = 32
-        hero_height = 48
-        surface_tmp = pygame.Surface((hero_width, hero_height), pygame.SRCALPHA)
-        hero.draw(0, 0, surface_tmp)
+        if len(drawables_sprites) > 0:
+            hero = drawables_sprites[0]
+            hero_top = Drawable(hero.position.x, hero.position.y, hero.position.z)
+            hero_top.zindex = sum(list(map((lambda x: x / Cube.SIZE), hero_top.position.list()))) + 1
+            hero_top.is_top = True
+            hero_bottom = Drawable(hero.position.x, hero.position.y, hero.position.z)
+            hero_bottom.zindex = sum(list(map((lambda x: x / Cube.SIZE), hero_bottom.position.list())))
+            hero_bottom.is_top = False
+            drawables.append(hero_top)
+            drawables.append(hero_bottom)
+            hero_width = 32
+            hero_height = 48
+            surface_tmp = pygame.Surface((hero_width, hero_height), pygame.SRCALPHA)
+            hero.draw(0, 0, surface_tmp)
 
         for z in range(self.size.z):
             for y in range(self.size.y):
@@ -145,33 +145,3 @@ class Level(pygame.sprite.Sprite):
                         (0, hero_height // 2, hero_width, hero_height // 2),
                     )
 
-
-        if __debug__:
-            # draw lines around hero
-            # get hero coords and find isometric locations
-            bl, br, tl, tr = list(
-                map(
-                    (lambda coord: cartesian_to_isometric(coord.list())),
-                    hero.get_coords(),
-                )
-            )
-
-            # adjust all point with camera and hero z position
-            points = list(
-                map(
-                    (
-                        lambda point: (
-                            point.x + camera.x,
-                            point.y + camera.y - hero.position.z + Cube.SIZE,
-                        )
-                    ),
-                    [bl, br, br, tr, tl, tr, tl, bl],
-                )
-            )
-
-            pygame.draw.lines(
-                surface_display,
-                (255, 255, 255),
-                False,
-                points,
-            )
