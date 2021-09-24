@@ -73,7 +73,7 @@ while True:
                 else:
                     cursor.position.y += 1
             if event.key == pygame.K_BACKSPACE:
-                level.mapdata[cursor.position.z][cursor.position.y][
+                level.cubes[cursor.position.z][cursor.position.y][
                     cursor.position.x
                 ] = None
             if event.key == pygame.K_RETURN:
@@ -96,7 +96,7 @@ while True:
                     cube.position = Point3d(
                         cursor.position.x, cursor.position.y, cursor.position.z
                     )
-                    level.mapdata[cursor.position.z][cursor.position.y][
+                    level.cubes[cursor.position.z][cursor.position.y][
                         cursor.position.x
                     ] = cube
 

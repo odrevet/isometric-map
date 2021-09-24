@@ -13,9 +13,7 @@ from utils import *
 class Level(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        # 3d array of Cubes
-        self.mapdata = []
-
+        self.cubes = []
         self.image_tileset = pygame.image.load("res/tileset.png")
         self.size = Point3d()
 
@@ -28,22 +26,22 @@ class Level(pygame.sprite.Sprite):
 
         position = Point3d()
 
-        self.mapdata.append([])  # first floor
+        self.cubes.append([])  # first floor
         for row in level:
             if row[0] == "-":
-                self.mapdata.append([])  # append a floor
+                self.cubes.append([])  # append a floor
                 position.x, position.y = 0, 0
                 position.z += 1
                 continue
 
-            self.mapdata[position.z].append([])
+            self.cubes[position.z].append([])
             for tile in row:
                 if position.x > self.size.x:
                     self.size.x = position.x
                 if position.y > self.size.y:
                     self.size.y = position.y
 
-                self.mapdata[position.z][position.y].append([])
+                self.cubes[position.z][position.y].append([])
                 if tile:
                     coords = []
                     for index in tile.split(","):
@@ -58,9 +56,9 @@ class Level(pygame.sprite.Sprite):
                             coords.append(None)
                     cube = Cube(coords)
                     cube.position = Point3d(position.x, position.y, position.z)
-                    self.mapdata[position.z][position.y][position.x] = cube
+                    self.cubes[position.z][position.y][position.x] = cube
                 else:
-                    self.mapdata[position.z][position.y][position.x] = None
+                    self.cubes[position.z][position.y][position.x] = None
                 position.x += 1
             position.y += 1
             position.x = 0
@@ -71,7 +69,7 @@ class Level(pygame.sprite.Sprite):
 
     def get_cube(self, x, y, z):
         try:
-            return self.mapdata[z][y][x]
+            return self.cubes[z][y][x]
         except IndexError:
             print(f"No Cube at {x}:{y}:{z}")
             pass
@@ -97,9 +95,9 @@ class Level(pygame.sprite.Sprite):
         for z in range(self.size.z):
             for y in range(self.size.y):
                 for x in range(self.size.x):
-                    if self.mapdata[z][y][x] is not None:
-                        self.mapdata[z][y][x].zindex = x + y + z
-                        drawables.append(self.mapdata[z][y][x])
+                    if self.cubes[z][y][x] is not None:
+                        self.cubes[z][y][x].zindex = x + y + z
+                        drawables.append(self.cubes[z][y][x])
 
         for drawable in sorted(drawables, key=lambda drawable: drawable.zindex):
             if isinstance(drawable, Cube):
