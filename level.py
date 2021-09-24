@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 import csv
 
-from hero import Hero
+from drawable import Drawable
 from cube import Cube
 from const import *
 from point3d import Point3d
@@ -75,28 +75,38 @@ class Level(pygame.sprite.Sprite):
             pass
 
     def draw(self, drawables_sprites, camera, surface_display):
-        # Work In Progress: split drawables into chunks when needed
         drawables = []
-        if len(drawables_sprites) > 0:
-            hero = drawables_sprites[0]
-            hero_top = DrawableChunk(hero.position.x, hero.position.y, hero.position.z)
-            hero_top.zindex = (
-                sum(list(map((lambda x: x / Cube.SIZE), hero_top.position.list()))) + 1
+
+        # Work In Progress: split drawables into chunks when needed
+        for drawable in drawables_sprites:
+            # assum that only hero is in drawable_sprites
+            drawable_top = DrawableChunk(
+                drawable.position.x, drawable.position.y, drawable.position.z
             )
-            hero_top.number = 0
-            hero_bottom = DrawableChunk(
-                hero.position.x, hero.position.y, hero.position.z
+            drawable_top.zindex = (
+                sum(list(map((lambda x: x / Cube.SIZE), drawable_top.position.list())))
+                + 1
             )
-            hero_bottom.zindex = sum(
-                list(map((lambda x: x / Cube.SIZE), hero_bottom.position.list()))
+            drawable_top.number = 0
+
+            drawable_bottom = DrawableChunk(
+                drawable.position.x, drawable.position.y, drawable.position.z
             )
-            hero_bottom.number = 1
-            drawables.append(hero_top)
-            drawables.append(hero_bottom)
-            hero_width = 32
-            hero_height = 48
-            surface_tmp = pygame.Surface((hero_width, hero_height), pygame.SRCALPHA)
-            hero.draw(0, 0, surface_tmp)
+            drawable_bottom.zindex = sum(
+                list(map((lambda x: x / Cube.SIZE), drawable_bottom.position.list()))
+            )
+            drawable_bottom.number = 1
+
+            drawables.append(drawable_top)
+            drawables.append(drawable_bottom)
+
+            drawable_width = 32
+            drawable_height = 48
+
+            surface_tmp = pygame.Surface(
+                (drawable_width, drawable_height), pygame.SRCALPHA
+            )
+            drawable.draw(0, 0, surface_tmp)
 
         for z in range(self.size.z):
             for y in range(self.size.y):
@@ -124,7 +134,7 @@ class Level(pygame.sprite.Sprite):
                     (drawable.position.x, drawable.position.y)
                 )
 
-                z_shift = (hero_height // 2) * drawable.number
+                z_shift = (drawable_height // 2) * drawable.number
                 surface_display.blit(
                     surface_tmp,
                     (
@@ -135,5 +145,5 @@ class Level(pygame.sprite.Sprite):
                         - Cube.SIZE
                         + z_shift,
                     ),
-                    (0, z_shift, hero_width, hero_height // 2),
+                    (0, z_shift, drawable_width, drawable_height // 2),
                 )
