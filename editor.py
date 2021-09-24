@@ -1,77 +1,54 @@
 import pygame
 from pygame.locals import *
 
+import pygame_gui
+from pygame_gui.elements.ui_text_box import UITextBox
+
 from hero import Hero
 from level import *
 from const import *
+from cube import Cube
+from cursor import Cursor
+from point2d import Point2d
 
+# init pygame
 pygame.init()
 pygame.font.init()
 font_size = 24
 font = pygame.font.SysFont("", font_size)
 bgcolor = (0, 0, 0)
-resolution_window = (640, 480)
-resolution_screen = (320, 240)
-surface_window = pygame.display.set_mode(resolution_window)
-surface_screen = pygame.Surface(resolution_screen)
-pygame.display.set_caption("Isometric map")
+resolution_window = Point2d(640, 480)
+resolution_screen = Point2d(320, 240)
+surface_window = pygame.display.set_mode(resolution_window.list())
+surface_screen = pygame.Surface(resolution_screen.list())
+pygame.display.set_caption("Isometric Map Editor")
+camera = Point2d(resolution_screen.x / 2, resolution_screen.y / 2)
+clock = pygame.time.Clock()
 
+# init GUI
+ui_manager = pygame_gui.UIManager(resolution_screen.list(), "data/themes/classic.json")
+debug_textbox = UITextBox(
+    "test",
+    pygame.Rect((0, 0), (resolution_screen.x, resolution_screen.y // 3)),
+    manager=ui_manager,
+    object_id="#toolbar_textbox",
+)
+
+# init level
 level = Level()
 level.read("data/level.map")
 
+# init hero
 hero = Hero()
-camera = [resolution_screen[0] / 2, resolution_screen[1] / 2]
 
-coords = [0, 0, 0]  # x y z
-
+# init cursor
+cursor = Cursor()
 move_z = False
-
-clock = pygame.time.Clock()
 
 while True:
     time_delta = clock.tick(60) / 1000.0
-    surface_screen.fill(bgcolor)
-    level.draw(hero, camera, surface_screen)
 
-    bl = cartesian_to_isometric(
-        (coords[0] * CUBE_SIZE, coords[1] * CUBE_SIZE + CUBE_SIZE)
-    )
-    br = cartesian_to_isometric(
-        (coords[0] * CUBE_SIZE + CUBE_SIZE, coords[1] * CUBE_SIZE + CUBE_SIZE - 1)
-    )
-    tl = cartesian_to_isometric((coords[0] * CUBE_SIZE, coords[1] * CUBE_SIZE))
-    tr = cartesian_to_isometric(
-        (coords[0] * CUBE_SIZE + CUBE_SIZE, coords[1] * CUBE_SIZE - 1)
-    )
-
-    points = [
-        (bl[0] + camera[0], bl[1] + camera[1] - coords[2] * CUBE_SIZE),
-        (br[0] + camera[0], br[1] + camera[1] - coords[2] * CUBE_SIZE),
-        (tr[0] + camera[0], tr[1] + camera[1] - coords[2] * CUBE_SIZE),
-        (tl[0] + camera[0], tl[1] + camera[1] - coords[2] * CUBE_SIZE),
-    ]
-
-    pygame.draw.lines(
-        surface_screen,
-        (255, 255, 255),
-        True,
-        points,
-    )
-
-    points = [
-        (bl[0] + camera[0], bl[1] + camera[1] - coords[2] * CUBE_SIZE + CUBE_SIZE),
-        (br[0] + camera[0], br[1] + camera[1] - coords[2] * CUBE_SIZE + CUBE_SIZE),
-        (tr[0] + camera[0], tr[1] + camera[1] - coords[2] * CUBE_SIZE + CUBE_SIZE),
-        (tl[0] + camera[0], tl[1] + camera[1] - coords[2] * CUBE_SIZE + CUBE_SIZE),
-    ]
-
-    pygame.draw.lines(
-        surface_screen,
-        (255, 255, 255),
-        True,
-        points,
-    )
-
+    # Events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -86,42 +63,103 @@ while True:
                 move_z = True
 
             if event.key == pygame.K_LEFT:
-                coords[0] -= 1
+                cursor.position.x -= 1
             if event.key == pygame.K_RIGHT:
-                coords[0] += 1
+                cursor.position.x += 1
             if event.key == pygame.K_UP:
                 if move_z == True:
-                    coords[2] += 1
+                    cursor.position.z += 1
                 else:
-                    coords[1] -= 1
+                    cursor.position.y -= 1
             if event.key == pygame.K_DOWN:
                 if move_z == True:
-                    coords[2] -= 1
+                    cursor.position.z -= 1
                 else:
-                    coords[1] += 1
+                    cursor.position.y += 1
             if event.key == pygame.K_BACKSPACE:
-                level.mapdata[coords[2]][coords[1]][coords[0]] = None
+                level.mapdata[cursor.position.z][cursor.position.y][
+                    cursor.position.x
+                ] = None
             if event.key == pygame.K_RETURN:
-                level.mapdata[coords[2]][coords[1]][coords[0]] = [[0,0],[0,2],[6,2]]
+                if (
+                    cursor.position.x < 0
+                    or cursor.position.y < 0
+                    or cursor.position.z < 0
+                    or cursor.position.x > level.size.x * Cube.SIZE
+                    or cursor.position.y > level.size.y * Cube.SIZE
+                    or cursor.position.z > level.size.z * Cube.SIZE
+                ):
+                    print("out of bound")
+                else:
+                    coords = [
+                        [0, 0],
+                        [0, 2],
+                        [6, 2],
+                    ]
+                    cube = Cube(coords)
+                    cube.position = Point3d(
+                        cursor.position.x, cursor.position.y, cursor.position.z
+                    )
+                    level.mapdata[cursor.position.z][cursor.position.y][
+                        cursor.position.x
+                    ] = cube
 
         elif event.type == pygame.KEYUP:
             if event.key in (K_LSHIFT, K_RSHIFT):
                 move_z = False
 
-        textsurface = font.render(
-            f"Level size {level.size[0]}:{level.size[1]}:{level.size[2]}",
-            False,
-            (255, 255, 255),
-        )
-        surface_screen.blit(textsurface, (0, font_size * 0))
+    # Draw
+    surface_screen.fill(bgcolor)
+    level.draw(hero, camera, surface_screen)
+    cursor.draw(surface_screen, camera)
 
-        textsurface = font.render(
-            f"{coords[0]} : {coords[1]} : {coords[2]} : {level.tile(coords[0],coords[1],coords[2])}",
-            False,
-            (255, 255, 255),
+    # Draw level boundaries
+    bl = cartesian_to_isometric((0, level.size.y * Cube.SIZE + Cube.SIZE))
+    br = cartesian_to_isometric(
+        (
+            level.size.x * Cube.SIZE + Cube.SIZE,
+            level.size.y * Cube.SIZE + Cube.SIZE,
         )
-        surface_screen.blit(textsurface, (0, font_size * 1))
+    )
+    tl = cartesian_to_isometric((0, 0))
+    tr = cartesian_to_isometric((level.size.x * Cube.SIZE + Cube.SIZE, 0))
 
-        scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
-        surface_window.blit(scaled_win, (0, 0))
-        pygame.display.update()
+    points = [
+        (bl.x + camera.x, bl.y + camera.y),
+        (br.x + camera.x, br.y + camera.y),
+        (tr.x + camera.x, tr.y + camera.y),
+        (tl.x + camera.x, tl.y + camera.y),
+    ]
+
+    pygame.draw.lines(
+        surface_screen,
+        (255, 255, 255),
+        True,
+        points,
+    )
+
+    points = [
+        (bl.x + camera.x, bl.y + camera.y - level.size.y * Cube.SIZE),
+        (br.x + camera.x, br.y + camera.y - level.size.y * Cube.SIZE),
+        (tr.x + camera.x, tr.y + camera.y - level.size.y * Cube.SIZE),
+        (tl.x + camera.x, tl.y + camera.y - level.size.y * Cube.SIZE),
+    ]
+
+    pygame.draw.lines(
+        surface_screen,
+        (255, 255, 255),
+        True,
+        points,
+    )
+
+    # Draw HUD
+    debug_text = f"Level size {level.size.x}:{level.size.y}:{level.size.z} <br/>"
+    debug_text += f"Cursor {cursor.position.x}:{cursor.position.y}:{cursor.position.z}<br/>{level.get_cube(cursor.position.x,cursor.position.y,cursor.position.z).coords  if level.get_cube(cursor.position.x,cursor.position.y,cursor.position.z) is not None else None}"
+    debug_textbox.html_text = debug_text
+    debug_textbox.rebuild()
+    ui_manager.draw_ui(surface_screen)
+    ui_manager.update(time_delta)
+
+    scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
+    surface_window.blit(scaled_win, (0, 0))
+    pygame.display.update()

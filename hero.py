@@ -1,11 +1,11 @@
-from enum import Enum
-from point3d import Point3d
-
 import pygame
 import pyganim
 
+from enum import Enum
 from drawable import Drawable
 from const import *
+from cube import Cube
+from point3d import Point3d
 
 class Direction(Enum):
     UP = 0
@@ -15,8 +15,8 @@ class Direction(Enum):
 
 
 class Hero(Drawable):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, x=0, y=0, z=0):
+        super().__init__(x, y, z)
         self.direction = Direction.DOWN
         self.is_moving = False
 
@@ -47,28 +47,19 @@ class Hero(Drawable):
 
         self.moveConductor = pyganim.PygConductor(self.anim_objs)
 
-        self.position = Point3d(0, 0, CUBE_SIZE)
-
         self.jump = False
-        self.jump_max = CUBE_SIZE * 1.5
+        self.jump_max = Cube.SIZE * 1.5
         self.jump_cur = 0
         self.on_ground = None
-        self.depth = CUBE_SIZE * 2
-        self.size = CUBE_SIZE - 1
+        self.depth = Cube.SIZE * 2
+        self.size = Cube.SIZE - 1
 
     def get_coords(self):
-        bl = [self.position.x, self.position.y + self.size, self.position.z]
-        br = [self.position.x + self.size, self.position.y + self.size, self.position.z]
-        tl = [self.position.x, self.position.y, self.position.z]
-        tr = [self.position.x + self.size, self.position.y, self.position.z]
+        bl = Point3d(self.position.x, self.position.y + self.size, self.position.z)
+        br = Point3d(self.position.x + self.size, self.position.y + self.size, self.position.z)
+        tl = Point3d(self.position.x, self.position.y, self.position.z)
+        tr = Point3d(self.position.x + self.size, self.position.y, self.position.z)
         return (bl, br, tl, tr)
-
-    def get_index(self):
-        return [
-            self.position.x // CUBE_SIZE,
-            self.position.y // CUBE_SIZE,
-            self.position.z // CUBE_SIZE,
-        ]
 
     def draw(self, x, y, surface_display):
         if self.jump == True or self.on_ground == False:

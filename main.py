@@ -4,31 +4,30 @@ import pygame
 from pygame.locals import *
 
 import pygame_gui
-from pygame_gui.ui_manager import UIManager
 from pygame_gui.elements.ui_text_box import UITextBox
-from pygame_gui.core import IncrementalThreadedResourceLoader
-from pygame_gui import UI_TEXT_BOX_LINK_CLICKED
 
 from hero import Direction, Hero
 from level import *
+from cube import Cube
+from point2d import Point2d
 
 
 def hero_on_ground(hero, level):
     return (
-        level.tile(
-            bl[0] // CUBE_SIZE, bl[1] // CUBE_SIZE, (hero.position.z - 1) // CUBE_SIZE
+        level.get_cube(
+            bl.x // Cube.SIZE, bl.y // Cube.SIZE, (hero.position.z - 1) // Cube.SIZE
         )
         is not None
-        or level.tile(
-            br[0] // CUBE_SIZE, br[1] // CUBE_SIZE, (hero.position.z - 1) // CUBE_SIZE
+        or level.get_cube(
+            br.x // Cube.SIZE, br.y // Cube.SIZE, (hero.position.z - 1) // Cube.SIZE
         )
         is not None
-        or level.tile(
-            tl[0] // CUBE_SIZE, tl[1] // CUBE_SIZE, (hero.position.z - 1) // CUBE_SIZE
+        or level.get_cube(
+            tl.x // Cube.SIZE, tl.y // Cube.SIZE, (hero.position.z - 1) // Cube.SIZE
         )
         is not None
-        or level.tile(
-            tr[0] // CUBE_SIZE, tr[1] // CUBE_SIZE, (hero.position.z - 1) // CUBE_SIZE
+        or level.get_cube(
+            tr.x // Cube.SIZE, tr.y // Cube.SIZE, (hero.position.z - 1) // Cube.SIZE
         )
         is not None
     )
@@ -38,18 +37,18 @@ def hero_on_ground(hero, level):
 pygame.init()
 bgcolor = (0, 0, 0)
 
-resolution_screen = (320, 240)
-resolution_window = (640, 480)
-surface_window = pygame.display.set_mode(resolution_window)
-surface_screen = pygame.Surface(resolution_screen)
+resolution_screen = Point2d(320, 240)
+resolution_window = Point2d(640, 480)
+surface_window = pygame.display.set_mode(resolution_window.list())
+surface_screen = pygame.Surface(resolution_screen.list())
 pygame.display.set_caption("Isometric map")
 clock = pygame.time.Clock()
-camera = [resolution_screen[0] / 2, resolution_screen[1] / 2]
+camera = Point2d(resolution_screen.x // 2, resolution_screen.y // 2)
 
 # init GUI
-ui_manager = pygame_gui.UIManager(resolution_screen, "data/themes/classic.json")
+ui_manager = pygame_gui.UIManager(resolution_screen.list(), "data/themes/classic.json")
 debug_textbox = UITextBox(
-    '',
+    "",
     pygame.Rect((0, 0), (320, 70)),
     manager=ui_manager,
     object_id="#debug_textbox",
@@ -60,7 +59,7 @@ level = Level()
 level.read("data/level.map")
 
 # init hero
-hero = Hero()
+hero = Hero(z=Cube.SIZE)
 
 
 while True:
@@ -68,11 +67,7 @@ while True:
     time_delta = clock.tick(60) / 1000.0
     [bl, br, tl, tr] = hero.get_coords()
     hero.on_ground = hero_on_ground(hero, level)
-    hero.zindex = (
-        hero.position.x / CUBE_SIZE
-        + hero.position.y / CUBE_SIZE
-        + hero.position.z / CUBE_SIZE
-    )
+    hero.zindex = sum(list(map((lambda x: x / Cube.SIZE), hero.position.list())))
 
     # events
     for event in pygame.event.get():
@@ -109,50 +104,50 @@ while True:
         if hero.direction == Direction.UP:
             if (
                 hero.position.y - 1 >= 0
-                and level.tile(
-                    tl[0] // CUBE_SIZE,
-                    (tl[1] - 1) // CUBE_SIZE,
-                    hero.position.z // CUBE_SIZE,
+                and level.get_cube(
+                    tl.x // Cube.SIZE,
+                    (tl.y - 1) // Cube.SIZE,
+                    hero.position.z // Cube.SIZE,
                 )
                 is None
-                and level.tile(
-                    tr[0] // CUBE_SIZE,
-                    (tr[1] - 1) // CUBE_SIZE,
-                    hero.position.z // CUBE_SIZE,
+                and level.get_cube(
+                    tr.x // Cube.SIZE,
+                    (tr.y - 1) // Cube.SIZE,
+                    hero.position.z // Cube.SIZE,
                 )
                 is None
             ):
                 hero.position.y -= 1
         elif hero.direction == Direction.RIGHT:
             if (
-                math.ceil((hero.position.x + 1) / (CUBE_SIZE)) < level.size[0]
-                and level.tile(
-                    (tr[0] + 1) // CUBE_SIZE,
-                    tr[1] // CUBE_SIZE,
-                    hero.position.z // CUBE_SIZE,
+                math.ceil((hero.position.x + 1) / (Cube.SIZE)) < level.size.x
+                and level.get_cube(
+                    (tr.x + 1) // Cube.SIZE,
+                    tr.y // Cube.SIZE,
+                    hero.position.z // Cube.SIZE,
                 )
                 is None
-                and level.tile(
-                    (br[0] + 1) // CUBE_SIZE,
-                    br[1] // CUBE_SIZE,
-                    hero.position.z // CUBE_SIZE,
+                and level.get_cube(
+                    (br.x + 1) // Cube.SIZE,
+                    br.y // Cube.SIZE,
+                    hero.position.z // Cube.SIZE,
                 )
                 is None
             ):
                 hero.position.x += 1
         elif hero.direction == Direction.DOWN:
             if (
-                math.ceil((hero.position.y + 1) / (CUBE_SIZE)) < level.size[1]
-                and level.tile(
-                    bl[0] // CUBE_SIZE,
-                    (bl[1] + 1) // CUBE_SIZE,
-                    hero.position.z // CUBE_SIZE,
+                math.ceil((hero.position.y + 1) / (Cube.SIZE)) < level.size.y
+                and level.get_cube(
+                    bl.x // Cube.SIZE,
+                    (bl.y + 1) // Cube.SIZE,
+                    hero.position.z // Cube.SIZE,
                 )
                 is None
-                and level.tile(
-                    br[0] // CUBE_SIZE,
-                    (br[1] + 1) // CUBE_SIZE,
-                    hero.position.z // CUBE_SIZE,
+                and level.get_cube(
+                    br.x // Cube.SIZE,
+                    (br.y + 1) // Cube.SIZE,
+                    hero.position.z // Cube.SIZE,
                 )
                 is None
             ):
@@ -160,16 +155,16 @@ while True:
         elif hero.direction == Direction.LEFT:
             if (
                 hero.position.x - 1 >= 0
-                and level.tile(
-                    (tl[0] - 1) // CUBE_SIZE,
-                    tl[1] // CUBE_SIZE,
-                    hero.position.z // CUBE_SIZE,
+                and level.get_cube(
+                    (tl.x - 1) // Cube.SIZE,
+                    tl.y // Cube.SIZE,
+                    hero.position.z // Cube.SIZE,
                 )
                 is None
-                and level.tile(
-                    (bl[0] - 1) // CUBE_SIZE,
-                    bl[1] // CUBE_SIZE,
-                    hero.position.z // CUBE_SIZE,
+                and level.get_cube(
+                    (bl.x - 1) // Cube.SIZE,
+                    bl.y // Cube.SIZE,
+                    hero.position.z // Cube.SIZE,
                 )
                 is None
             ):
@@ -194,12 +189,11 @@ while True:
 
     # debug
     if __debug__:
-        debug_text = f"Level size {level.size[0]}:{level.size[1]}:{level.size[2]} <br/>"
+        debug_text = f"Level size {level.size.x}:{level.size.y}:{level.size.z} <br/>"
         debug_text += f"x {hero.position.x} y {hero.position.y} z {hero.position.z}<br/>jump {hero.jump} ground {hero.on_ground}"
         debug_textbox.html_text = debug_text
         debug_textbox.rebuild()
         ui_manager.draw_ui(surface_screen)
-
 
     ui_manager.update(time_delta)
 

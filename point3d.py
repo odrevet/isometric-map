@@ -4,8 +4,5 @@ class Point3d():
         self.y = y
         self.z = z
 
-    def sum(self):
-        return self.x + self.y + self.z
-
-    def array(self):
+    def list(self):
         return [self.x, self.y, self.z]
