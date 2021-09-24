@@ -80,10 +80,14 @@ class Level(pygame.sprite.Sprite):
         if len(drawables_sprites) > 0:
             hero = drawables_sprites[0]
             hero_top = Drawable(hero.position.x, hero.position.y, hero.position.z)
-            hero_top.zindex = sum(list(map((lambda x: x / Cube.SIZE), hero_top.position.list()))) + 1
+            hero_top.zindex = (
+                sum(list(map((lambda x: x / Cube.SIZE), hero_top.position.list()))) + 1
+            )
             hero_top.is_top = True
             hero_bottom = Drawable(hero.position.x, hero.position.y, hero.position.z)
-            hero_bottom.zindex = sum(list(map((lambda x: x / Cube.SIZE), hero_bottom.position.list())))
+            hero_bottom.zindex = sum(
+                list(map((lambda x: x / Cube.SIZE), hero_bottom.position.list()))
+            )
             hero_bottom.is_top = False
             drawables.append(hero_top)
             drawables.append(hero_bottom)
@@ -117,8 +121,8 @@ class Level(pygame.sprite.Sprite):
                 hero_iso = cartesian_to_isometric(
                     (drawable.position.x, drawable.position.y)
                 )
-                
-                if(drawable.is_top == True):
+
+                if drawable.is_top == True:
                     # blit hero top
                     surface_display.blit(
                         surface_tmp,
@@ -142,4 +146,3 @@ class Level(pygame.sprite.Sprite):
                         ),
                         (0, hero_height // 2, hero_width, hero_height // 2),
                     )
-

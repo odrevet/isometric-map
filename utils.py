@@ -1,5 +1,6 @@
 from point2d import Point2d
 
+
 def cartesian_to_isometric(coord):
     return Point2d(coord[0] - coord[1], (coord[0] + coord[1]) // 2)
 

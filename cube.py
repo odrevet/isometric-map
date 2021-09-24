@@ -1,6 +1,7 @@
 from drawable import Drawable
 from const import TILE_SIZE
 
+
 class Cube(Drawable):
     SIZE = TILE_SIZE * 2
 

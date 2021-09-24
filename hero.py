@@ -7,6 +7,7 @@ from const import *
 from cube import Cube
 from point3d import Point3d
 
+
 class Direction(Enum):
     UP = 0
     RIGHT = 1
@@ -56,7 +57,9 @@ class Hero(Drawable):
 
     def get_coords(self):
         bl = Point3d(self.position.x, self.position.y + self.size, self.position.z)
-        br = Point3d(self.position.x + self.size, self.position.y + self.size, self.position.z)
+        br = Point3d(
+            self.position.x + self.size, self.position.y + self.size, self.position.z
+        )
         tl = Point3d(self.position.x, self.position.y, self.position.z)
         tr = Point3d(self.position.x + self.size, self.position.y, self.position.z)
         return (bl, br, tl, tr)
