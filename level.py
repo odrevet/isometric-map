@@ -1,3 +1,4 @@
+from drawable import Drawable
 import pygame
 from pygame.locals import *
 import csv
@@ -75,30 +76,19 @@ class Level(pygame.sprite.Sprite):
             print(f"No Cube at {x}:{y}:{z}")
             pass
 
-    def draw(self, hero, camera, surface_display):
-        hero_iso = cartesian_to_isometric((hero.position.x, hero.position.y))
-
-        # object, zindex, is_hero_top
+    def draw(self, drawables_sprites, camera, surface_display):
+        # Work In Progress: split drawables into chunks when needed
         drawables = []
+        hero = drawables_sprites[0]
 
-        # top
-        drawables.append(
-            (
-                hero,
-                hero.zindex + 1,
-                True,
-            )
-        )
-
-        # bottom
-        drawables.append(
-            (
-                hero,
-                hero.zindex,
-                False,
-            )
-        )
-
+        hero_top = Drawable(hero.position.x, hero.position.y, hero.position.z)
+        hero_top.zindex = sum(list(map((lambda x: x / Cube.SIZE), hero_top.position.list()))) + 1
+        hero_top.is_top = True
+        hero_bottom = Drawable(hero.position.x, hero.position.y, hero.position.z)
+        hero_bottom.zindex = sum(list(map((lambda x: x / Cube.SIZE), hero_bottom.position.list())))
+        hero_bottom.is_top = False
+        drawables.append(hero_top)
+        drawables.append(hero_bottom)
         hero_width = 32
         hero_height = 48
         surface_tmp = pygame.Surface((hero_width, hero_height), pygame.SRCALPHA)
@@ -109,22 +99,34 @@ class Level(pygame.sprite.Sprite):
                 for x in range(self.size.x):
                     if self.mapdata[z][y][x] is not None:
                         self.mapdata[z][y][x].zindex = x + y + z
-                        drawables.append(
-                            (
-                                self.mapdata[z][y][x],
-                                self.mapdata[z][y][x].zindex,
-                            )
-                        )
+                        drawables.append(self.mapdata[z][y][x])
 
-        for drawable in sorted(drawables, key=lambda x: x[1]):
-            if isinstance(drawable[0], Hero):
-                if drawable[2] == True:
+        for drawable in sorted(drawables, key=lambda drawable: drawable.zindex):
+            if isinstance(drawable, Cube):
+                drawable.draw(
+                    surface_display,
+                    self.image_tileset,
+                    camera.x
+                    + drawable.position.x * Cube.SIZE
+                    - drawable.position.y * Cube.SIZE
+                    - Cube.SIZE,
+                    camera.y
+                    + drawable.position.x * TILE_SIZE
+                    + drawable.position.y * TILE_SIZE
+                    - (Cube.SIZE * drawable.position.z),
+                )
+            elif isinstance(drawable, Drawable):
+                hero_iso = cartesian_to_isometric(
+                    (drawable.position.x, drawable.position.y)
+                )
+                
+                if(drawable.is_top == True):
                     # blit hero top
                     surface_display.blit(
                         surface_tmp,
                         (
                             camera.x + hero_iso.x - Cube.SIZE,
-                            camera.y + hero_iso.y - hero.position.z - Cube.SIZE,
+                            camera.y + hero_iso.y - drawable.position.z - Cube.SIZE,
                         ),
                         (0, 0, hero_width, hero_height // 2),
                     )
@@ -136,25 +138,13 @@ class Level(pygame.sprite.Sprite):
                             camera.x + hero_iso.x - Cube.SIZE,
                             camera.y
                             + hero_iso.y
-                            - hero.position.z
+                            - drawable.position.z
                             - Cube.SIZE
                             + hero_height // 2,
                         ),
                         (0, hero_height // 2, hero_width, hero_height // 2),
                     )
-            else:
-                drawable[0].draw(
-                    surface_display,
-                    self.image_tileset,
-                    camera.x
-                    + drawable[0].position.x * Cube.SIZE
-                    - drawable[0].position.y * Cube.SIZE
-                    - Cube.SIZE,
-                    camera.y
-                    + drawable[0].position.x * TILE_SIZE
-                    + drawable[0].position.y * TILE_SIZE
-                    - (Cube.SIZE * drawable[0].position.z),
-                )
+
 
         if __debug__:
             # draw lines around hero

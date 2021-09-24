@@ -60,7 +60,9 @@ level.read("data/level.map")
 
 # init hero
 hero = Hero(z=Cube.SIZE)
-
+hero.zindex = 0
+drawables = []
+drawables.append(hero)
 
 while True:
     # logic
@@ -185,7 +187,7 @@ while True:
 
     # draw
     surface_screen.fill(bgcolor)
-    level.draw(hero, camera, surface_screen)
+    level.draw(drawables, camera, surface_screen)
 
     # debug
     if __debug__:
