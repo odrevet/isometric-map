@@ -1,4 +1,3 @@
-from drawable import Drawable
 import pygame
 from pygame.locals import *
 import csv
@@ -8,6 +7,7 @@ from cube import Cube
 from const import *
 from point3d import Point3d
 from utils import *
+from drawable_chunk import DrawableChunk
 
 
 class Level(pygame.sprite.Sprite):
@@ -79,16 +79,18 @@ class Level(pygame.sprite.Sprite):
         drawables = []
         if len(drawables_sprites) > 0:
             hero = drawables_sprites[0]
-            hero_top = Drawable(hero.position.x, hero.position.y, hero.position.z)
+            hero_top = DrawableChunk(hero.position.x, hero.position.y, hero.position.z)
             hero_top.zindex = (
                 sum(list(map((lambda x: x / Cube.SIZE), hero_top.position.list()))) + 1
             )
-            hero_top.is_top = True
-            hero_bottom = Drawable(hero.position.x, hero.position.y, hero.position.z)
+            hero_top.number = 0
+            hero_bottom = DrawableChunk(
+                hero.position.x, hero.position.y, hero.position.z
+            )
             hero_bottom.zindex = sum(
                 list(map((lambda x: x / Cube.SIZE), hero_bottom.position.list()))
             )
-            hero_bottom.is_top = False
+            hero_bottom.number = 1
             drawables.append(hero_top)
             drawables.append(hero_bottom)
             hero_width = 32
@@ -117,32 +119,21 @@ class Level(pygame.sprite.Sprite):
                     + drawable.position.y * TILE_SIZE
                     - (Cube.SIZE * drawable.position.z),
                 )
-            elif isinstance(drawable, Drawable):
-                hero_iso = cartesian_to_isometric(
+            elif isinstance(drawable, DrawableChunk):
+                drawable_iso = cartesian_to_isometric(
                     (drawable.position.x, drawable.position.y)
                 )
 
-                if drawable.is_top == True:
-                    # blit hero top
-                    surface_display.blit(
-                        surface_tmp,
-                        (
-                            camera.x + hero_iso.x - Cube.SIZE,
-                            camera.y + hero_iso.y - drawable.position.z - Cube.SIZE,
-                        ),
-                        (0, 0, hero_width, hero_height // 2),
-                    )
-                else:
-                    # blit hero bottom
-                    surface_display.blit(
-                        surface_tmp,
-                        (
-                            camera.x + hero_iso.x - Cube.SIZE,
-                            camera.y
-                            + hero_iso.y
-                            - drawable.position.z
-                            - Cube.SIZE
-                            + hero_height // 2,
-                        ),
-                        (0, hero_height // 2, hero_width, hero_height // 2),
-                    )
+                z_shift = (hero_height // 2) * drawable.number
+                surface_display.blit(
+                    surface_tmp,
+                    (
+                        camera.x + drawable_iso.x - Cube.SIZE,
+                        camera.y
+                        + drawable_iso.y
+                        - drawable.position.z
+                        - Cube.SIZE
+                        + z_shift,
+                    ),
+                    (0, z_shift, hero_width, hero_height // 2),
+                )
