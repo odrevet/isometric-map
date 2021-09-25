@@ -65,13 +65,8 @@ class Level(pygame.sprite.Sprite):
     def get_cube(self, x, y, z):
         for i in range(len(self.cubes)):
             cube = self.cubes[i]
-            if (
-                cube.position.x == x
-                and cube.position.y == y
-                and cube.position.z == z
-            ):
+            if cube.position.x == x and cube.position.y == y and cube.position.z == z:
                 return cube
-
 
     def draw(self, drawables_sprites, camera, surface_display):
         drawables = []
@@ -79,33 +74,32 @@ class Level(pygame.sprite.Sprite):
         # Work In Progress: split drawables into chunks when needed
         for drawable in drawables_sprites:
             # assum that only hero is in drawable_sprites
-            drawable_top = DrawableChunk(
-                drawable.position.x, drawable.position.y, drawable.position.z
-            )
-            drawable_top.zindex = (
-                sum(list(map((lambda x: x / Cube.SIZE), drawable_top.position.list())))
-                + 1
-            )
-            drawable_top.number = 0
-
-            drawable_bottom = DrawableChunk(
-                drawable.position.x, drawable.position.y, drawable.position.z
-            )
-            drawable_bottom.zindex = sum(
-                list(map((lambda x: x / Cube.SIZE), drawable_bottom.position.list()))
-            )
-            drawable_bottom.number = 1
-
-            drawables.append(drawable_top)
-            drawables.append(drawable_bottom)
-
             drawable_width = 32
             drawable_height = 48
 
+            # draw in a temporary surface
             surface_tmp = pygame.Surface(
                 (drawable_width, drawable_height), pygame.SRCALPHA
             )
             drawable.draw(0, 0, surface_tmp)
+
+            # assum 2 chunks
+            nb_chunk = 2  # drawable_height // Cube.SIZE
+            for number in range(nb_chunk):
+                drawable = DrawableChunk(
+                    drawable.position.x,
+                    drawable.position.y,
+                    drawable.position.z + number,
+                )
+                drawable.zindex = (
+                    sum(list(map((lambda x: x / Cube.SIZE), drawable.position.list())))
+                    + number
+                )
+
+                drawable.number = nb_chunk - number - 1
+                drawable.surface = surface_tmp
+                drawable.size = Point2d(drawable_width, drawable_height)
+                drawables.append(drawable)
 
         for cube in self.cubes:
             drawables.append(cube)
@@ -129,9 +123,9 @@ class Level(pygame.sprite.Sprite):
                     (drawable.position.x, drawable.position.y)
                 )
 
-                z_shift = (drawable_height // 2) * drawable.number
+                z_shift = (drawable_height // 2 - 1) * drawable.number
                 surface_display.blit(
-                    surface_tmp,
+                    drawable.surface,
                     (
                         camera.x + drawable_iso.x - Cube.SIZE,
                         camera.y
