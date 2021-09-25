@@ -73,8 +73,8 @@ hero = Hero(z=Cube.SIZE)
 
 # create drawables
 pot = Pot(Cube.SIZE, Cube.SIZE, Cube.SIZE * 3)
-chest = Chest(Cube.SIZE * 2, 0, Cube.SIZE)
-gold = Gold(Cube.SIZE * 3, 0, Cube.SIZE)
+chest = Chest(Cube.SIZE * 2, 0, 0)
+gold = Gold(Cube.SIZE * 2, Cube.SIZE * 2, 0)
 
 # drawables
 drawables = []
