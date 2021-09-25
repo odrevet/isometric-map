@@ -76,7 +76,8 @@ while True:
                 cube_index = level.get_cube_index(
                     cursor.position.x, cursor.position.y, cursor.position.z
                 )
-                del level.cubes[cube_index]
+                if cube_index is not None:
+                    del level.cubes[cube_index]
             if event.key == pygame.K_RETURN:
                 if (
                     cursor.position.x < 0
