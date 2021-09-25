@@ -57,6 +57,10 @@ debug_textbox = UITextBox(
     object_id="#debug_textbox",
 )
 
+# Music
+pygame.mixer.music.load("res/music/overworld_2.mid")
+pygame.mixer.music.play()
+
 # init level
 level = Level()
 level.read("data/level.map")
