@@ -100,8 +100,9 @@ class Level(pygame.sprite.Sprite):
                     drawable = DrawableChunk(
                         drawable.position.x,
                         drawable.position.y,
-                        drawable.position.z + number,
+                        drawable.position.z,
                     )
+
                     drawable.zindex = (
                         sum(
                             list(
@@ -137,7 +138,7 @@ class Level(pygame.sprite.Sprite):
                     (drawable.position.x, drawable.position.y)
                 )
                 if isinstance(drawable, DrawableChunk):
-                    z_shift = (drawable_height // 2 - 1) * drawable.number
+                    z_shift = (drawable_height // 2) * drawable.number
                     surface_display.blit(
                         drawable.surface,
                         (
