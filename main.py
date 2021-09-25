@@ -7,6 +7,7 @@ import pygame_gui
 from pygame_gui.elements.ui_text_box import UITextBox
 
 from hero import Direction, Hero
+from pot import Pot
 from level import *
 from cube import Cube
 from point2d import Point2d
@@ -60,16 +61,23 @@ level.read("data/level.map")
 
 # init hero
 hero = Hero(z=Cube.SIZE)
-hero.zindex = 0
+
+# create a pot
+pot = Pot(Cube.SIZE, Cube.SIZE, Cube.SIZE * 3)
+
+# drawables
 drawables = []
 drawables.append(hero)
+drawables.append(pot)
+
 
 while True:
     # logic
     time_delta = clock.tick(60) / 1000.0
     [bl, br, tl, tr] = hero.get_coords()
     hero.on_ground = hero_on_ground(hero, level)
-    hero.zindex = sum(list(map((lambda x: x / Cube.SIZE), hero.position.list())))
+    hero.zindex = sum(list(map((lambda x: x // Cube.SIZE), hero.position.list())))
+    pot.zindex = sum(list(map((lambda x: x // Cube.SIZE), pot.position.list())))
 
     # events
     for event in pygame.event.get():

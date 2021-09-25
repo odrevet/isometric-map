@@ -8,6 +8,8 @@ from const import *
 from point3d import Point3d
 from utils import *
 from drawable_chunk import DrawableChunk
+from hero import Hero
+from pot import Pot
 
 
 class Level(pygame.sprite.Sprite):
@@ -79,32 +81,40 @@ class Level(pygame.sprite.Sprite):
 
         # Work In Progress: split drawables into chunks when needed
         for drawable in drawables_sprites:
-            # assum that only hero is in drawable_sprites
-            drawable_width = 32
-            drawable_height = 48
 
-            # draw in a temporary surface
-            surface_tmp = pygame.Surface(
-                (drawable_width, drawable_height), pygame.SRCALPHA
-            )
-            drawable.draw(0, 0, surface_tmp)
+            if isinstance(drawable, Hero):
+                # assum that only hero is in drawable_sprites
+                drawable_width = 32
+                drawable_height = 48
 
-            # assum 2 chunks
-            nb_chunk = 2  # drawable_height // Cube.SIZE
-            for number in range(nb_chunk):
-                drawable = DrawableChunk(
-                    drawable.position.x,
-                    drawable.position.y,
-                    drawable.position.z + number,
+                # draw in a temporary surface
+                surface_tmp = pygame.Surface(
+                    (drawable_width, drawable_height), pygame.SRCALPHA
                 )
-                drawable.zindex = (
-                    sum(list(map((lambda x: x / Cube.SIZE), drawable.position.list())))
-                    + number
-                )
+                drawable.draw(0, 0, surface_tmp)
 
-                drawable.number = nb_chunk - number - 1
-                drawable.surface = surface_tmp
-                drawable.size = Point2d(drawable_width, drawable_height)
+                # assum 2 chunks
+                nb_chunk = 2  # drawable_height // Cube.SIZE
+                for number in range(nb_chunk):
+                    drawable = DrawableChunk(
+                        drawable.position.x,
+                        drawable.position.y,
+                        drawable.position.z + number,
+                    )
+                    drawable.zindex = (
+                        sum(
+                            list(
+                                map((lambda x: x / Cube.SIZE), drawable.position.list())
+                            )
+                        )
+                        + number
+                    )
+
+                    drawable.number = nb_chunk - number - 1
+                    drawable.surface = surface_tmp
+                    drawable.size = Point2d(drawable_width, drawable_height)
+                    drawables.append(drawable)
+            else:
                 drawables.append(drawable)
 
         for drawable in sorted(drawables, key=lambda drawable: drawable.zindex):
@@ -138,4 +148,15 @@ class Level(pygame.sprite.Sprite):
                         + z_shift,
                     ),
                     (0, z_shift, drawable_width, drawable_height // 2),
+                )
+            elif isinstance(drawable, Pot):
+                print("DRAW POT")
+                drawable_iso = cartesian_to_isometric(
+                    (drawable.position.x, drawable.position.y)
+                )
+
+                drawable.draw(
+                    camera.x + drawable_iso.x - TILE_SIZE * 2,
+                    camera.y + drawable_iso.y - drawable.position.z - TILE_SIZE * 2,
+                    surface_display,
                 )
