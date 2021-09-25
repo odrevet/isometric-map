@@ -9,7 +9,7 @@ class Cube(Drawable):
         super().__init__()
         self.coords = coords
 
-    def draw(self, surface_display, image_tileset, x, y):
+    def draw(self, x, y, surface_display, image_tileset):
         top, left, right = self.coords
 
         if top is not None:

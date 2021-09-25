@@ -135,7 +135,7 @@ class Level(pygame.sprite.Sprite):
                     + drawable.position.y * TILE_SIZE
                     - (Cube.SIZE * drawable.position.z)
                 )
-                drawable.draw(surface_display, self.image_tileset, x, y)
+                drawable.draw(x, y, surface_display, self.image_tileset)
             else:
                 drawable_iso = cartesian_to_isometric(
                     (drawable.position.x, drawable.position.y)
