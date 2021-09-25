@@ -5,26 +5,26 @@
 * pyganim
 
 ```
-pip3 install pygame pygame_gui pyganim
+pip install pygame pygame_gui pyganim
 ```
 
 # Run 
 
 * Game 
 ```
-python3 main.py 
+python main.py 
 ```
 
 * Game without on screen debug
 
 ```
-python3 -O main.py 
+python -O main.py 
 ```
 
 * Editor
 
 ```
-python3 editor.py
+python editor.py
 ```
 
 # Screenshot
