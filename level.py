@@ -123,18 +123,19 @@ class Level(pygame.sprite.Sprite):
 
         for drawable in sorted(drawables, key=lambda drawable: drawable.zindex):
             if isinstance(drawable, Cube):
-                drawable.draw(
-                    surface_display,
-                    self.image_tileset,
+                x = (
                     camera.x
                     + drawable.position.x * Cube.SIZE
                     - drawable.position.y * Cube.SIZE
-                    - Cube.SIZE,
+                    - Cube.SIZE
+                )
+                y = (
                     camera.y
                     + drawable.position.x * TILE_SIZE
                     + drawable.position.y * TILE_SIZE
-                    - (Cube.SIZE * drawable.position.z),
+                    - (Cube.SIZE * drawable.position.z)
                 )
+                drawable.draw(surface_display, self.image_tileset, x, y)
             else:
                 drawable_iso = cartesian_to_isometric(
                     (drawable.position.x, drawable.position.y)
