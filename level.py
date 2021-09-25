@@ -63,18 +63,15 @@ class Level(pygame.sprite.Sprite):
         self.size.z = position.z + 1
 
     def get_cube(self, x, y, z):
-        try:
-            for i in range(len(self.cubes)):
-                cube = self.cubes[i]
-                if (
-                    cube.position.x == x
-                    and cube.position.y == y
-                    and cube.position.z == z
-                ):
-                    return cube
-        except IndexError:
-            print(f"No Cube at {x}:{y}:{z}")
-            pass
+        for i in range(len(self.cubes)):
+            cube = self.cubes[i]
+            if (
+                cube.position.x == x
+                and cube.position.y == y
+                and cube.position.z == z
+            ):
+                return cube
+
 
     def draw(self, drawables_sprites, camera, surface_display):
         drawables = []
