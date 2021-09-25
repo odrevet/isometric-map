@@ -26,22 +26,18 @@ class Level(pygame.sprite.Sprite):
 
         position = Point3d()
 
-        self.cubes.append([])  # first floor
         for row in level:
             if row[0] == "-":
-                self.cubes.append([])  # append a floor
                 position.x, position.y = 0, 0
                 position.z += 1
                 continue
 
-            self.cubes[position.z].append([])
             for tile in row:
                 if position.x > self.size.x:
                     self.size.x = position.x
                 if position.y > self.size.y:
                     self.size.y = position.y
 
-                self.cubes[position.z][position.y].append([])
                 if tile:
                     coords = []
                     for index in tile.split(","):
@@ -56,9 +52,8 @@ class Level(pygame.sprite.Sprite):
                             coords.append(None)
                     cube = Cube(coords)
                     cube.position = Point3d(position.x, position.y, position.z)
-                    self.cubes[position.z][position.y][position.x] = cube
-                else:
-                    self.cubes[position.z][position.y][position.x] = None
+                    cube.zindex = sum(cube.position.list())
+                    self.cubes.append(cube)
                 position.x += 1
             position.y += 1
             position.x = 0
@@ -69,7 +64,14 @@ class Level(pygame.sprite.Sprite):
 
     def get_cube(self, x, y, z):
         try:
-            return self.cubes[z][y][x]
+            for i in range(len(self.cubes)):
+                cube = self.cubes[i]
+                if (
+                    cube.position.x == x
+                    and cube.position.y == y
+                    and cube.position.z == z
+                ):
+                    return cube
         except IndexError:
             print(f"No Cube at {x}:{y}:{z}")
             pass
@@ -108,12 +110,8 @@ class Level(pygame.sprite.Sprite):
             )
             drawable.draw(0, 0, surface_tmp)
 
-        for z in range(self.size.z):
-            for y in range(self.size.y):
-                for x in range(self.size.x):
-                    if self.cubes[z][y][x] is not None:
-                        self.cubes[z][y][x].zindex = x + y + z
-                        drawables.append(self.cubes[z][y][x])
+        for cube in self.cubes:
+            drawables.append(cube)
 
         for drawable in sorted(drawables, key=lambda drawable: drawable.zindex):
             if isinstance(drawable, Cube):
