@@ -89,8 +89,10 @@ while True:
     time_delta = clock.tick(60) / 1000.0
     [bl, br, tl, tr] = hero.get_coords()
     hero.on_ground = hero_on_ground(hero, level)
-    hero.zindex = sum(list(map((lambda x: x // Cube.SIZE), hero.position.list())))
-    pot.zindex = sum(list(map((lambda x: x // Cube.SIZE), pot.position.list())))
+    hero.update_zindex()
+    pot.update_zindex()
+    chest.update_zindex()
+    gold.update_zindex()
 
     # events
     for event in pygame.event.get():
@@ -226,7 +228,7 @@ while True:
             )
         )
 
-        # adjust all point with camera and hero z position
+        # adjust all points with camera and hero z position
         points = list(
             map(
                 (

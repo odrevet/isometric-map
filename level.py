@@ -55,6 +55,7 @@ class Level(pygame.sprite.Sprite):
                         else:
                             coords.append(None)
                     cube = Cube(coords)
+                    # Caution: cube positions are indexes !
                     cube.position = Point3d(position.x, position.y, position.z)
                     cube.zindex = sum(cube.position.list())
                     self.cubes.append(cube)
@@ -100,18 +101,7 @@ class Level(pygame.sprite.Sprite):
                         drawable.position.z,
                     )
 
-                    drawable_chunk.zindex = (
-                        sum(
-                            list(
-                                map(
-                                    (lambda x: x / Cube.SIZE),
-                                    drawable_chunk.position.list(),
-                                )
-                            )
-                        )
-                        + number
-                    )
-
+                    drawable_chunk.zindex += number
                     drawable_chunk.number = nb_chunk - number - 1
                     drawable_chunk.surface = surface_tmp
                     drawable_chunk.size = Point2d(
