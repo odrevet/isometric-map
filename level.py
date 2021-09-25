@@ -141,15 +141,4 @@ class Level(pygame.sprite.Sprite):
                 )
                 x = camera.x + drawable_iso.x - Cube.SIZE
                 y = camera.y + drawable_iso.y - drawable.position.z - Cube.SIZE
-                if isinstance(drawable, DrawableChunk):
-                    z_shift = (drawable.size.y // 2) * drawable.number
-                    surface_display.blit(
-                        drawable.surface,
-                        (
-                            x,
-                            y + z_shift,
-                        ),
-                        (0, z_shift, drawable.size.x, drawable.size.y // 2),
-                    )
-                else:
-                    drawable.draw(x, y, surface_display)
+                drawable.draw(x, y, surface_display)
