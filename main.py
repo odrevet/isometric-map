@@ -8,6 +8,8 @@ from pygame_gui.elements.ui_text_box import UITextBox
 
 from hero import Direction, Hero
 from pot import Pot
+from chest import Chest
+from gold import Gold
 from level import *
 from cube import Cube
 from point2d import Point2d
@@ -62,13 +64,17 @@ level.read("data/level.map")
 # init hero
 hero = Hero(z=Cube.SIZE)
 
-# create a pot
+# create drawables
 pot = Pot(Cube.SIZE, Cube.SIZE, Cube.SIZE * 3)
+chest = Chest(Cube.SIZE * 2, 0, Cube.SIZE)
+gold = Gold(Cube.SIZE * 3, 0, Cube.SIZE)
 
 # drawables
 drawables = []
 drawables.append(hero)
 drawables.append(pot)
+drawables.append(chest)
+drawables.append(gold)
 
 
 while True:

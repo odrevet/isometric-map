@@ -10,6 +10,8 @@ from utils import *
 from drawable_chunk import DrawableChunk
 from hero import Hero
 from pot import Pot
+from chest import Chest
+from gold import Gold
 
 
 class Level(pygame.sprite.Sprite):
@@ -149,8 +151,11 @@ class Level(pygame.sprite.Sprite):
                     ),
                     (0, z_shift, drawable_width, drawable_height // 2),
                 )
-            elif isinstance(drawable, Pot):
-                print("DRAW POT")
+            elif (
+                isinstance(drawable, Chest)
+                or isinstance(drawable, Pot)
+                or isinstance(drawable, Gold)
+            ):
                 drawable_iso = cartesian_to_isometric(
                     (drawable.position.x, drawable.position.y)
                 )
