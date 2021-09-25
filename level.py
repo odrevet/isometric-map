@@ -75,7 +75,7 @@ class Level(pygame.sprite.Sprite):
                 return i
 
     def draw(self, drawables_sprites, camera, surface_display):
-        drawables = []
+        drawables = self.cubes.copy()
 
         # Work In Progress: split drawables into chunks when needed
         for drawable in drawables_sprites:
@@ -106,9 +106,6 @@ class Level(pygame.sprite.Sprite):
                 drawable.surface = surface_tmp
                 drawable.size = Point2d(drawable_width, drawable_height)
                 drawables.append(drawable)
-
-        for cube in self.cubes:
-            drawables.append(cube)
 
         for drawable in sorted(drawables, key=lambda drawable: drawable.zindex):
             if isinstance(drawable, Cube):
