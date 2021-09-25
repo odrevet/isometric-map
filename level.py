@@ -103,7 +103,10 @@ class Level(pygame.sprite.Sprite):
                     drawable_chunk.zindex = (
                         sum(
                             list(
-                                map((lambda x: x / Cube.SIZE), drawable_chunk.position.list())
+                                map(
+                                    (lambda x: x / Cube.SIZE),
+                                    drawable_chunk.position.list(),
+                                )
                             )
                         )
                         + number
@@ -111,7 +114,9 @@ class Level(pygame.sprite.Sprite):
 
                     drawable_chunk.number = nb_chunk - number - 1
                     drawable_chunk.surface = surface_tmp
-                    drawable_chunk.size = Point2d(drawable.drawable_width, drawable.drawable_height)
+                    drawable_chunk.size = Point2d(
+                        drawable.drawable_width, drawable.drawable_height
+                    )
                     drawables.append(drawable_chunk)
             else:
                 drawables.append(drawable)
@@ -134,23 +139,17 @@ class Level(pygame.sprite.Sprite):
                 drawable_iso = cartesian_to_isometric(
                     (drawable.position.x, drawable.position.y)
                 )
+                x = camera.x + drawable_iso.x - Cube.SIZE
+                y = camera.y + drawable_iso.y - drawable.position.z - Cube.SIZE
                 if isinstance(drawable, DrawableChunk):
                     z_shift = (drawable.size.y // 2) * drawable.number
                     surface_display.blit(
                         drawable.surface,
                         (
-                            camera.x + drawable_iso.x - Cube.SIZE,
-                            camera.y
-                            + drawable_iso.y
-                            - drawable.position.z
-                            - Cube.SIZE
-                            + z_shift,
+                            x,
+                            y + z_shift,
                         ),
                         (0, z_shift, drawable.size.x, drawable.size.y // 2),
                     )
                 else:
-                    drawable.draw(
-                        camera.x + drawable_iso.x - Cube.SIZE,
-                        camera.y + drawable_iso.y - drawable.position.z - Cube.SIZE,
-                        surface_display,
-                    )
+                    drawable.draw(x, y, surface_display)
