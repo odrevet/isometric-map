@@ -52,7 +52,7 @@ camera = Point2d(resolution_screen.x // 2, resolution_screen.y // 2)
 ui_manager = pygame_gui.UIManager(resolution_screen.list(), "data/themes/classic.json")
 debug_textbox = UITextBox(
     "",
-    pygame.Rect((0, 0), (320, 70)),
+    pygame.Rect((0, 0), (320, 35)),
     manager=ui_manager,
     object_id="#debug_textbox",
 )
@@ -209,8 +209,7 @@ while True:
 
     # debug
     if __debug__:
-        debug_text = f"Level size {level.size.x}:{level.size.y}:{level.size.z} <br/>"
-        debug_text += f"x {hero.position.x} y {hero.position.y} z {hero.position.z}<br/>jump {hero.jump} ground {hero.on_ground}"
+        debug_text = f"{level.size.x}:{level.size.y}:{level.size.z} {hero.position.x}:{hero.position.y}:{hero.position.z}"
         debug_textbox.html_text = debug_text
         debug_textbox.rebuild()
         ui_manager.draw_ui(surface_screen)
