@@ -73,9 +73,10 @@ while True:
                 else:
                     cursor.position.y += 1
             if event.key == pygame.K_BACKSPACE:
-                level.cubes[cursor.position.z][cursor.position.y][
-                    cursor.position.x
-                ] = None
+                cube_index = level.get_cube_index(
+                    cursor.position.x, cursor.position.y, cursor.position.z
+                )
+                del level.cubes[cube_index]
             if event.key == pygame.K_RETURN:
                 if (
                     cursor.position.x < 0
@@ -87,6 +88,7 @@ while True:
                 ):
                     print("out of bound")
                 else:
+                    # create a new cube
                     coords = [
                         [0, 0],
                         [0, 2],
@@ -96,9 +98,17 @@ while True:
                     cube.position = Point3d(
                         cursor.position.x, cursor.position.y, cursor.position.z
                     )
-                    level.cubes[cursor.position.z][cursor.position.y][
-                        cursor.position.x
-                    ] = cube
+
+                    # assign new cube to level
+                    cube_index = level.get_cube_index(
+                        cursor.position.x // Cube.SIZE,
+                        cursor.position.y // Cube.SIZE,
+                        cursor.position.z // Cube.SIZE,
+                    )
+                    if cube_index is None:
+                        level.cubes[cube_index] = cube
+                    else:
+                        print("WIP")
 
         elif event.type == pygame.KEYUP:
             if event.key in (K_LSHIFT, K_RSHIFT):
