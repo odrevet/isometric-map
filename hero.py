@@ -55,6 +55,9 @@ class Hero(Drawable):
         self.depth = Cube.SIZE * 2
         self.size = Cube.SIZE - 1
 
+        self.drawable_width = 32
+        self.drawable_height = 48
+
     def get_coords(self):
         bl = Point3d(self.position.x, self.position.y + self.size, self.position.z)
         br = Point3d(

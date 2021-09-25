@@ -84,38 +84,35 @@ class Level(pygame.sprite.Sprite):
         # Work In Progress: split drawables into chunks when needed
         for drawable in drawables_sprites:
             if isinstance(drawable, Hero):
-                # assum that only hero is in drawable_sprites
-                drawable_width = 32
-                drawable_height = 48
-
+                # assum that only hero needs chunk display
                 # draw in a temporary surface
                 surface_tmp = pygame.Surface(
-                    (drawable_width, drawable_height), pygame.SRCALPHA
+                    (drawable.drawable_width, drawable.drawable_height), pygame.SRCALPHA
                 )
                 drawable.draw(0, 0, surface_tmp)
 
                 # assum 2 chunks
                 nb_chunk = 2  # drawable_height // Cube.SIZE
                 for number in range(nb_chunk):
-                    drawable = DrawableChunk(
+                    drawable_chunk = DrawableChunk(
                         drawable.position.x,
                         drawable.position.y,
                         drawable.position.z,
                     )
 
-                    drawable.zindex = (
+                    drawable_chunk.zindex = (
                         sum(
                             list(
-                                map((lambda x: x / Cube.SIZE), drawable.position.list())
+                                map((lambda x: x / Cube.SIZE), drawable_chunk.position.list())
                             )
                         )
                         + number
                     )
 
-                    drawable.number = nb_chunk - number - 1
-                    drawable.surface = surface_tmp
-                    drawable.size = Point2d(drawable_width, drawable_height)
-                    drawables.append(drawable)
+                    drawable_chunk.number = nb_chunk - number - 1
+                    drawable_chunk.surface = surface_tmp
+                    drawable_chunk.size = Point2d(drawable.drawable_width, drawable.drawable_height)
+                    drawables.append(drawable_chunk)
             else:
                 drawables.append(drawable)
 
@@ -138,7 +135,7 @@ class Level(pygame.sprite.Sprite):
                     (drawable.position.x, drawable.position.y)
                 )
                 if isinstance(drawable, DrawableChunk):
-                    z_shift = (drawable_height // 2) * drawable.number
+                    z_shift = (drawable.size.y // 2) * drawable.number
                     surface_display.blit(
                         drawable.surface,
                         (
@@ -149,7 +146,7 @@ class Level(pygame.sprite.Sprite):
                             - Cube.SIZE
                             + z_shift,
                         ),
-                        (0, z_shift, drawable_width, drawable_height // 2),
+                        (0, z_shift, drawable.size.x, drawable.size.y // 2),
                     )
                 else:
                     drawable.draw(
