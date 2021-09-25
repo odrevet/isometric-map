@@ -83,7 +83,6 @@ class Level(pygame.sprite.Sprite):
 
         # Work In Progress: split drawables into chunks when needed
         for drawable in drawables_sprites:
-
             if isinstance(drawable, Hero):
                 # assum that only hero is in drawable_sprites
                 drawable_width = 32
@@ -133,35 +132,27 @@ class Level(pygame.sprite.Sprite):
                     + drawable.position.y * TILE_SIZE
                     - (Cube.SIZE * drawable.position.z),
                 )
-            elif isinstance(drawable, DrawableChunk):
+            else:
                 drawable_iso = cartesian_to_isometric(
                     (drawable.position.x, drawable.position.y)
                 )
-
-                z_shift = (drawable_height // 2 - 1) * drawable.number
-                surface_display.blit(
-                    drawable.surface,
-                    (
+                if isinstance(drawable, DrawableChunk):
+                    z_shift = (drawable_height // 2 - 1) * drawable.number
+                    surface_display.blit(
+                        drawable.surface,
+                        (
+                            camera.x + drawable_iso.x - Cube.SIZE,
+                            camera.y
+                            + drawable_iso.y
+                            - drawable.position.z
+                            - Cube.SIZE
+                            + z_shift,
+                        ),
+                        (0, z_shift, drawable_width, drawable_height // 2),
+                    )
+                else:
+                    drawable.draw(
                         camera.x + drawable_iso.x - Cube.SIZE,
-                        camera.y
-                        + drawable_iso.y
-                        - drawable.position.z
-                        - Cube.SIZE
-                        + z_shift,
-                    ),
-                    (0, z_shift, drawable_width, drawable_height // 2),
-                )
-            elif (
-                isinstance(drawable, Chest)
-                or isinstance(drawable, Pot)
-                or isinstance(drawable, Gold)
-            ):
-                drawable_iso = cartesian_to_isometric(
-                    (drawable.position.x, drawable.position.y)
-                )
-
-                drawable.draw(
-                    camera.x + drawable_iso.x - TILE_SIZE * 2,
-                    camera.y + drawable_iso.y - drawable.position.z - TILE_SIZE * 2,
-                    surface_display,
-                )
+                        camera.y + drawable_iso.y - drawable.position.z - Cube.SIZE,
+                        surface_display,
+                    )
