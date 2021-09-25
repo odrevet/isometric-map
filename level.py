@@ -2,16 +2,12 @@ import pygame
 from pygame.locals import *
 import csv
 
-from drawable import Drawable
 from cube import Cube
 from const import *
 from point3d import Point3d
 from utils import *
 from drawable_chunk import DrawableChunk
 from hero import Hero
-from pot import Pot
-from chest import Chest
-from gold import Gold
 
 
 class Level(pygame.sprite.Sprite):
