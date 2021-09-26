@@ -160,8 +160,8 @@ while True:
     )
 
     # Draw HUD
-    debug_text = f"Level size {level.size.x}:{level.size.y}:{level.size.z} <br/>"
-    debug_text += f"Cursor {cursor.position.x}:{cursor.position.y}:{cursor.position.z}<br/>{level.get_cube(cursor.position.x,cursor.position.y,cursor.position.z)}"
+    debug_text = f"Level size {level.size.x}:{level.size.y}:{level.size.z} | "
+    debug_text += f"Cursor at {cursor.position.x}:{cursor.position.y}:{cursor.position.z}<br/>{level.get_cube(cursor.position.x,cursor.position.y,cursor.position.z)}"
     debug_textbox.html_text = debug_text
     debug_textbox.rebuild()
     ui_manager.draw_ui(surface_screen)
