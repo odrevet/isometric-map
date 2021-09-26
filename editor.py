@@ -10,6 +10,11 @@ from cube import Cube
 from cursor import Cursor
 from point2d import Point2d
 
+def save(level):
+    current_floor = 0
+    for cube in level.cubes:
+        print(cube.coords[0])
+
 # init pygame
 pygame.init()
 pygame.font.init()
@@ -54,6 +59,9 @@ while True:
             if event.key == pygame.K_q:
                 pygame.quit()
                 quit()
+
+            if event.key == pygame.K_s:
+                save(level)
 
             if event.key in (K_LSHIFT, K_RSHIFT):
                 move_z = True
