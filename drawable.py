@@ -18,4 +18,4 @@ class Drawable(ABC):
         pass
 
     def __str__(self):
-        return f"{type(self)} at {self.position} zindex {self.zindex}"
+        return f"{type(self).__name__} at {self.position} zindex {self.zindex}"
