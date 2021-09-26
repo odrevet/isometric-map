@@ -45,7 +45,7 @@ class Level(pygame.sprite.Sprite):
                             coords.append(
                                 to_2d_coords(
                                     int(index),
-                                    self.image_tileset.get_width() / TILE_SIZE,
+                                    self.image_tileset.get_width() // TILE_SIZE,
                                 )
                             )
                         else:
