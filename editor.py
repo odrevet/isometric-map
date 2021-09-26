@@ -83,9 +83,9 @@ while True:
                     cursor.position.x < 0
                     or cursor.position.y < 0
                     or cursor.position.z < 0
-                    or cursor.position.x > level.size.x * Cube.SIZE
-                    or cursor.position.y > level.size.y * Cube.SIZE
-                    or cursor.position.z > level.size.z * Cube.SIZE
+                    or cursor.position.x > level.size.x
+                    or cursor.position.y > level.size.y
+                    or cursor.position.z > level.size.z
                 ):
                     print("out of bound")
                 else:
@@ -109,7 +109,7 @@ while True:
                     if cube_index is None:
                         level.cubes[cube_index] = cube
                     else:
-                        print("WIP")
+                        print(cube_index)
 
         elif event.type == pygame.KEYUP:
             if event.key in (K_LSHIFT, K_RSHIFT):
@@ -161,7 +161,7 @@ while True:
 
     # Draw HUD
     debug_text = f"Level size {level.size.x}:{level.size.y}:{level.size.z} <br/>"
-    debug_text += f"Cursor {cursor.position.x}:{cursor.position.y}:{cursor.position.z}<br/>{level.get_cube(cursor.position.x,cursor.position.y,cursor.position.z).coords  if level.get_cube(cursor.position.x,cursor.position.y,cursor.position.z) is not None else None}"
+    debug_text += f"Cursor {cursor.position.x}:{cursor.position.y}:{cursor.position.z}<br/>{level.get_cube(cursor.position.x,cursor.position.y,cursor.position.z)}"
     debug_textbox.html_text = debug_text
     debug_textbox.rebuild()
     ui_manager.draw_ui(surface_screen)
