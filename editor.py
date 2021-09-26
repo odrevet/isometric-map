@@ -10,10 +10,22 @@ from cube import Cube
 from cursor import Cursor
 from point2d import Point2d
 
+
+def to_1d_coords(position, width):
+    return position.x + width * position.y
+
+
 def save(level):
-    current_floor = 0
+    tileset_width = level.image_tileset.get_width() // TILE_SIZE
+    out = ""
     for cube in level.cubes:
-        print(cube.coords[0])
+        out += '"'
+        for coord in cube.coords:
+            if coord:
+                out += f"{to_1d_coords(cube.coords[0], tileset_width)}"
+            out += ","
+        out += '",'
+    print(out)
 
 # init pygame
 pygame.init()
