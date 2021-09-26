@@ -89,27 +89,31 @@ while True:
                 ):
                     print("out of bound")
                 else:
-                    # create a new cube
-                    coords = [
-                        [0, 0],
-                        [0, 2],
-                        [6, 2],
-                    ]
-                    cube = Cube(coords)
-                    cube.position = Point3d(
-                        cursor.position.x, cursor.position.y, cursor.position.z
-                    )
-
-                    # assign new cube to level
                     cube_index = level.get_cube_index(
-                        cursor.position.x // Cube.SIZE,
-                        cursor.position.y // Cube.SIZE,
-                        cursor.position.z // Cube.SIZE,
+                        cursor.position.x,
+                        cursor.position.y,
+                        cursor.position.z,
                     )
                     if cube_index is None:
-                        level.cubes[cube_index] = cube
-                    else:
-                        print(cube_index)
+                        cube = Cube(
+                            coords=[
+                                Point2d(0, 0),
+                                Point2d(0, 2),
+                                Point2d(6, 2),
+                            ]
+                        )
+                        cube.position = Point3d(
+                            cursor.position.x * Cube.SIZE,
+                            cursor.position.y * Cube.SIZE,
+                            cursor.position.z * Cube.SIZE,
+                        )
+                        cube.indexes = Point3d(
+                            cursor.position.x,
+                            cursor.position.y,
+                            cursor.position.z,
+                        )
+                        cube.update_zindex()
+                        level.cubes.append(cube)
 
         elif event.type == pygame.KEYUP:
             if event.key in (K_LSHIFT, K_RSHIFT):
