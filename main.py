@@ -83,16 +83,14 @@ drawables.append(pot)
 drawables.append(chest)
 drawables.append(gold)
 
-
 while True:
     # logic
     time_delta = clock.tick(60) / 1000.0
     [bl, br, tl, tr] = hero.get_coords()
     hero.on_ground = hero_on_ground(hero, level)
-    hero.update_zindex()
-    pot.update_zindex()
-    chest.update_zindex()
-    gold.update_zindex()
+
+    for drawable in drawables:
+        drawable.update_zindex()
 
     # events
     for event in pygame.event.get():

@@ -79,11 +79,11 @@ class Level(pygame.sprite.Sprite):
             if cube.indexes.x == x and cube.indexes.y == y and cube.indexes.z == z:
                 return i
 
-    def draw(self, drawables_sprites, camera, surface_display):
-        drawables = self.cubes.copy()
+    def draw(self, drawables, camera, surface_display):
+        drawables_with_chunks = []
 
         # Work In Progress: split drawables into chunks when needed
-        for drawable in drawables_sprites:
+        for drawable in drawables:
             if isinstance(drawable, Hero):
                 # assum that only hero needs chunk display
                 # draw in a temporary surface
@@ -119,11 +119,15 @@ class Level(pygame.sprite.Sprite):
                     drawable_chunk.size = Point2d(
                         drawable.drawable_width, drawable.drawable_height
                     )
-                    drawables.append(drawable_chunk)
+                    drawables_with_chunks.append(drawable_chunk)
             else:
-                drawables.append(drawable)
+                drawables_with_chunks.append(drawable)
 
-        for drawable in sorted(drawables, key=lambda drawable: drawable.zindex):
+        sorted_drawables = sorted(
+            self.cubes + drawables_with_chunks, key=lambda drawable: drawable.zindex
+        )
+
+        for drawable in sorted_drawables:
             drawable_iso = cartesian_to_isometric(
                 (drawable.position.x, drawable.position.y)
             )
