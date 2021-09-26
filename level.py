@@ -126,7 +126,7 @@ class Level(pygame.sprite.Sprite):
         sorted_drawables = sorted(
             self.cubes + drawables_with_chunks, key=lambda drawable: drawable.zindex
         )
-
+        
         for drawable in sorted_drawables:
             drawable_iso = cartesian_to_isometric(
                 (drawable.position.x, drawable.position.y)

@@ -16,3 +16,6 @@ class Drawable(ABC):
 
     def draw(self, x, y, surface_display):
         pass
+
+    def __str__(self):
+        return f"{type(self)} at {self.position} zindex {self.zindex}"
