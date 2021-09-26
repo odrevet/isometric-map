@@ -101,6 +101,7 @@ class Level(pygame.sprite.Sprite):
                         drawable.position.z,
                     )
 
+                    # TODO fix drawing when hero jump
                     drawable_chunk.zindex = (
                         sum(
                             list(
