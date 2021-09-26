@@ -5,3 +5,6 @@ class Point2d:
 
     def list(self):
         return [self.x, self.y]
+
+    def __str__(self):
+        return f"{self.x}:{self.y}"

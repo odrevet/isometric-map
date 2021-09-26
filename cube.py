@@ -42,3 +42,6 @@ class Cube(Drawable):
                     TILE_SIZE * 3,
                 ),
             )
+
+    def __str__(self):
+        return f"Cube {self.coords[0]}:{self.coords[1]}:{self.coords[2]} at {self.position}"
