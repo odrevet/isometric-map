@@ -1,5 +1,6 @@
 from drawable import Drawable
 from const import TILE_SIZE
+from point3d import Point3d
 
 
 class Cube(Drawable):
@@ -8,6 +9,7 @@ class Cube(Drawable):
     def __init__(self, coords):
         super().__init__()
         self.coords = coords
+        self.indexes = Point3d(0, 0, 0)
 
     def draw(self, x, y, surface_display, image_tileset):
         top, left, right = self.coords

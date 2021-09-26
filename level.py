@@ -51,9 +51,13 @@ class Level(pygame.sprite.Sprite):
                         else:
                             coords.append(None)
                     cube = Cube(coords)
-                    # Caution: cube positions are indexes !
-                    cube.position = Point3d(position.x, position.y, position.z)
-                    cube.zindex = sum(cube.position.list())
+                    cube.position = Point3d(
+                        position.x * Cube.SIZE,
+                        position.y * Cube.SIZE,
+                        position.z * Cube.SIZE,
+                    )
+                    cube.indexes = Point3d(position.x, position.y, position.z)
+                    cube.zindex = sum(cube.indexes.list())
                     self.cubes.append(cube)
                 position.x += 1
             position.y += 1
@@ -66,13 +70,13 @@ class Level(pygame.sprite.Sprite):
     def get_cube(self, x, y, z):
         for i in range(len(self.cubes)):
             cube = self.cubes[i]
-            if cube.position.x == x and cube.position.y == y and cube.position.z == z:
+            if cube.indexes.x == x and cube.indexes.y == y and cube.indexes.z == z:
                 return cube
 
     def get_cube_index(self, x, y, z):
         for i in range(len(self.cubes)):
             cube = self.cubes[i]
-            if cube.position.x == x and cube.position.y == y and cube.position.z == z:
+            if cube.indexes.x == x and cube.indexes.y == y and cube.indexes.z == z:
                 return i
 
     def draw(self, drawables_sprites, camera, surface_display):
@@ -120,17 +124,12 @@ class Level(pygame.sprite.Sprite):
 
         for drawable in sorted(drawables, key=lambda drawable: drawable.zindex):
             if isinstance(drawable, Cube):
-                x = (
-                    camera.x
-                    + drawable.position.x * Cube.SIZE
-                    - drawable.position.y * Cube.SIZE
-                    - Cube.SIZE
-                )
+                x = camera.x + drawable.position.x - drawable.position.y - Cube.SIZE
                 y = (
                     camera.y
-                    + drawable.position.x * TILE_SIZE
-                    + drawable.position.y * TILE_SIZE
-                    - (Cube.SIZE * drawable.position.z)
+                    + drawable.indexes.x * TILE_SIZE
+                    + drawable.indexes.y * TILE_SIZE
+                    - drawable.position.z
                 )
                 drawable.draw(x, y, surface_display, self.image_tileset)
             else:
