@@ -6,4 +6,4 @@ def cartesian_to_isometric(coord):
 
 
 def to_2d_coords(index, width):
-    return [index % width, index // width]
+    return Point2d(index % width, index // width)

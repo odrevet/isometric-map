@@ -18,15 +18,15 @@ class Cube(Drawable):
             surface_display.blit(
                 image_tileset,
                 (x, y),
-                (top[0] * TILE_SIZE, top[1] * TILE_SIZE, Cube.SIZE * 2, Cube.SIZE),
+                (top.x * TILE_SIZE, top.y * TILE_SIZE, Cube.SIZE * 2, Cube.SIZE),
             )
         if left is not None:
             surface_display.blit(
                 image_tileset,
                 (x, y + TILE_SIZE),
                 (
-                    left[0] * TILE_SIZE,
-                    left[1] * TILE_SIZE,
+                    left.x * TILE_SIZE,
+                    left.y * TILE_SIZE,
                     TILE_SIZE * 2,
                     TILE_SIZE * 3,
                 ),
@@ -36,8 +36,8 @@ class Cube(Drawable):
                 image_tileset,
                 (x + TILE_SIZE * 2, y + TILE_SIZE),
                 (
-                    right[0] * TILE_SIZE,
-                    right[1] * TILE_SIZE,
+                    right.x * TILE_SIZE,
+                    right.y * TILE_SIZE,
                     TILE_SIZE * 2,
                     TILE_SIZE * 3,
                 ),
