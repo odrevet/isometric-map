@@ -1,6 +1,7 @@
+from parse import parse
+
 import pygame
 from pygame.locals import *
-import csv
 
 from cube import Cube
 from const import *
@@ -18,54 +19,38 @@ class Level(pygame.sprite.Sprite):
         self.size = Point3d()
 
     def read(self, filename):
-        with open(filename, newline="") as file:
-            reader = csv.reader(file, delimiter=",")
-            level = []
-            for row in reader:
-                level.append(row[:])
+        tileset_width = self.image_tileset.get_width() // TILE_SIZE
+        with open(filename) as f:
+            lines = [line.rstrip() for line in f]
+            self.size = Point3d(3, 3, 3)
+            for line in lines:
+                r = parse("{:d}:{:d}:{:d} {:d}:{:d}:{:d}", line)
 
-        position = Point3d()
+                c0 = to_2d_coords(
+                    r[3],
+                    tileset_width,
+                )
 
-        for row in level:
-            if row[0] == "-":
-                position.x, position.y = 0, 0
-                position.z += 1
-                continue
+                c1 = to_2d_coords(
+                    r[4],
+                    tileset_width,
+                )
 
-            for tile in row:
-                if position.x > self.size.x:
-                    self.size.x = position.x
-                if position.y > self.size.y:
-                    self.size.y = position.y
+                c2 = to_2d_coords(
+                    r[5],
+                    tileset_width,
+                )
 
-                if tile:
-                    coords = []
-                    for index in tile.split(","):
-                        if index:
-                            coords.append(
-                                to_2d_coords(
-                                    int(index),
-                                    self.image_tileset.get_width() // TILE_SIZE,
-                                )
-                            )
-                        else:
-                            coords.append(None)
-                    cube = Cube(coords)
-                    cube.position = Point3d(
-                        position.x * Cube.SIZE,
-                        position.y * Cube.SIZE,
-                        position.z * Cube.SIZE,
-                    )
-                    cube.indexes = Point3d(position.x, position.y, position.z)
-                    cube.zindex = sum(cube.indexes.list())
-                    self.cubes.append(cube)
-                position.x += 1
-            position.y += 1
-            position.x = 0
+                coords = [c0, c1, c2]
 
-        self.size.x += 1
-        self.size.y += 1
-        self.size.z = position.z + 1
+                cube = Cube(coords)
+                cube.position = Point3d(
+                    r[0] * Cube.SIZE, r[1] * Cube.SIZE, r[2] * Cube.SIZE
+                )
+
+                cube.indexes = Point3d(r[0], r[1], r[2])
+                cube.zindex = sum(cube.indexes.list())
+                self.cubes.append(cube)
 
     def get_cube(self, x, y, z):
         for i in range(len(self.cubes)):
@@ -126,7 +111,7 @@ class Level(pygame.sprite.Sprite):
         sorted_drawables = sorted(
             self.cubes + drawables_with_chunks, key=lambda drawable: drawable.zindex
         )
-        
+
         for drawable in sorted_drawables:
             drawable_iso = cartesian_to_isometric(
                 (drawable.position.x, drawable.position.y)

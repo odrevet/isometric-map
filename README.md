@@ -3,9 +3,10 @@
 * pygame
 * pygame_gui
 * pyganim
+* parse
 
 ```
-pip install pygame pygame_gui pyganim
+pip install pygame pygame_gui pyganim parse
 ```
 
 # Run 

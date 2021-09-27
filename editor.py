@@ -16,19 +16,14 @@ def to_1d_coords(position, width):
 
 
 def save(level):
-    floor = 0
     tileset_width = level.image_tileset.get_width() // TILE_SIZE
-    out = ""
+    f = open("data/level.map", "w")
     for cube in level.cubes:
-        if floor != cube.indexes.z:
-            out += "\n-\n"
-        out += '"'
-        for coord in cube.coords:
-            if coord:
-                out += f"{to_1d_coords(coord, tileset_width)}"
-            out += ","
-        out += '",'
-    print(out)
+        c0 = to_1d_coords(cube.coords[0], tileset_width)
+        c1 = to_1d_coords(cube.coords[1], tileset_width)
+        c2 = to_1d_coords(cube.coords[2], tileset_width)
+        f.write(f"{cube.indexes.x}:{cube.indexes.y}:{cube.indexes.z} {c0}:{c1}:{c2}\n")
+
 
 # init pygame
 pygame.init()
