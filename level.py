@@ -22,7 +22,6 @@ class Level(pygame.sprite.Sprite):
         tileset_width = self.image_tileset.get_width() // TILE_SIZE
         with open(filename) as f:
             lines = [line.rstrip() for line in f]
-            self.size = Point3d(3, 3, 3)
             for line in lines:
                 r = parse("{:d}:{:d}:{:d} {:d}:{:d}:{:d}", line)
 
@@ -51,6 +50,19 @@ class Level(pygame.sprite.Sprite):
                 cube.indexes = Point3d(r[0], r[1], r[2])
                 cube.zindex = sum(cube.indexes.list())
                 self.cubes.append(cube)
+
+                if self.size.x < r[0]:
+                    self.size.x = r[0]
+
+                if self.size.y < r[1]:
+                    self.size.y = r[1]
+
+                if self.size.z < r[2]:
+                    self.size.z = r[2]
+
+            self.size.x += 1
+            self.size.y += 1
+            self.size.z += 1
 
     def get_cube(self, x, y, z):
         for i in range(len(self.cubes)):
