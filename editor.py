@@ -10,6 +10,32 @@ from cube import Cube
 from cursor import Cursor
 from point2d import Point2d
 
+def add_cube(level, cursor):
+    cube_index = level.get_cube_index(
+        cursor.position.x,
+        cursor.position.y,
+        cursor.position.z,
+    )
+    if cube_index is None:
+        cube = Cube(
+            coords=[
+                Point2d(0, 0),
+                Point2d(0, 2),
+                Point2d(6, 2),
+            ]
+        )
+        cube.position = Point3d(
+            cursor.position.x * Cube.SIZE,
+            cursor.position.y * Cube.SIZE,
+            cursor.position.z * Cube.SIZE,
+        )
+        cube.indexes = Point3d(
+            cursor.position.x,
+            cursor.position.y,
+            cursor.position.z,
+        )
+        cube.update_zindex()
+        level.cubes.append(cube)
 
 def to_1d_coords(position, width):
     return position.x + width * position.y
@@ -105,33 +131,19 @@ while True:
                     or cursor.position.y > level.size.y
                     or cursor.position.z > level.size.z
                 ):
-                    print("out of bound")
+                    if cursor.position.x < 0:
+                        x = cursor.position.x
+                        level.size.x += -(cursor.position.x)
+                        for cube in level.cubes:
+                            cube.position.x -= cursor.position.x * Cube.SIZE
+                            cube.indexes.x -= cursor.position.x
+                            cube.update_zindex()
+
+                        cursor.position.x -= x
+                        add_cube(level, cursor)
+
                 else:
-                    cube_index = level.get_cube_index(
-                        cursor.position.x,
-                        cursor.position.y,
-                        cursor.position.z,
-                    )
-                    if cube_index is None:
-                        cube = Cube(
-                            coords=[
-                                Point2d(0, 0),
-                                Point2d(0, 2),
-                                Point2d(6, 2),
-                            ]
-                        )
-                        cube.position = Point3d(
-                            cursor.position.x * Cube.SIZE,
-                            cursor.position.y * Cube.SIZE,
-                            cursor.position.z * Cube.SIZE,
-                        )
-                        cube.indexes = Point3d(
-                            cursor.position.x,
-                            cursor.position.y,
-                            cursor.position.z,
-                        )
-                        cube.update_zindex()
-                        level.cubes.append(cube)
+                    add_cube(level, cursor)
 
         elif event.type == pygame.KEYUP:
             if event.key in (K_LSHIFT, K_RSHIFT):
