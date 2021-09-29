@@ -133,17 +133,30 @@ while True:
                 ):
                     if cursor.position.x < 0:
                         x = cursor.position.x
-                        level.size.x += -(cursor.position.x)
+                        level.size.x += abs(cursor.position.x)
                         for cube in level.cubes:
                             cube.position.x -= cursor.position.x * Cube.SIZE
                             cube.indexes.x -= cursor.position.x
                             cube.update_zindex()
-
                         cursor.position.x -= x
-                        add_cube(level, cursor)
+                    elif cursor.position.x > 0:
+                        x = cursor.position.x
+                        level.size.x = cursor.position.x
+                    elif cursor.position.y < 0:
+                        y = cursor.position.y
+                        level.size.y += abs(cursor.position.y)
+                        for cube in level.cubes:
+                            cube.position.y -= cursor.position.y * Cube.SIZE
+                            cube.indexes.y -= cursor.position.y
+                            cube.update_zindex()
 
-                else:
-                    add_cube(level, cursor)
+                        cursor.position.y -= y
+                        add_cube(level, cursor)
+                    elif cursor.position.y > 0:
+                        y = cursor.position.y
+                        level.size.y = cursor.position.y
+                
+                add_cube(level, cursor)
 
         elif event.type == pygame.KEYUP:
             if event.key in (K_LSHIFT, K_RSHIFT):

@@ -78,10 +78,10 @@ gold = Gold(Cube.SIZE * 2, Cube.SIZE * 2, 0)
 
 # drawables
 drawables = []
-drawables.append(hero)
 drawables.append(pot)
 drawables.append(chest)
 drawables.append(gold)
+drawables.append(hero)
 
 while True:
     # logic
