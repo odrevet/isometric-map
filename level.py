@@ -103,7 +103,7 @@ class Level(pygame.sprite.Sprite):
                         sum(
                             list(
                                 map(
-                                    (lambda x: x // Cube.SIZE),
+                                    (lambda x: x / Cube.SIZE),
                                     drawable_chunk.position.list(),
                                 )
                             )
