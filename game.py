@@ -63,30 +63,10 @@ class Game:
     def hero_on_ground(self, coords):
         [bl, br, tl, tr] = coords
         return (
-            self.level.get_cube(
-                bl.x // Cube.SIZE,
-                bl.y // Cube.SIZE,
-                (self.hero.position.z - 1) // Cube.SIZE,
-            )
-            is not None
-            or self.level.get_cube(
-                br.x // Cube.SIZE,
-                br.y // Cube.SIZE,
-                (self.hero.position.z - 1) // Cube.SIZE,
-            )
-            is not None
-            or self.level.get_cube(
-                tl.x // Cube.SIZE,
-                tl.y // Cube.SIZE,
-                (self.hero.position.z - 1) // Cube.SIZE,
-            )
-            is not None
-            or self.level.get_cube(
-                tr.x // Cube.SIZE,
-                tr.y // Cube.SIZE,
-                (self.hero.position.z - 1) // Cube.SIZE,
-            )
-            is not None
+            self.get_at(bl.x, bl.y, (self.hero.position.z - 1)) is not None
+            or self.get_at(br.x, br.y, (self.hero.position.z - 1)) is not None
+            or self.get_at(tl.x, tl.y, (self.hero.position.z - 1)) is not None
+            or self.get_at(tr.x, tr.y, (self.hero.position.z - 1)) is not None
         )
 
     def events(self):
@@ -132,6 +112,9 @@ class Game:
                 ]:
                     self.hero.is_moving = False
 
+    def get_at(self, x, y, z):
+        return self.level.get_cube(x // Cube.SIZE, y // Cube.SIZE, z // Cube.SIZE)
+
     def update(self):
         time_delta = self.clock.tick(60) / 1000.0
         [bl, br, tl, tr] = self.hero.get_coords()
@@ -147,71 +130,31 @@ class Game:
             if self.hero.direction == Direction.UP:
                 if (
                     self.hero.position.y - 1 >= 0
-                    and self.level.get_cube(
-                        tl.x // Cube.SIZE,
-                        (tl.y - 1) // Cube.SIZE,
-                        self.hero.position.z // Cube.SIZE,
-                    )
-                    is None
-                    and self.level.get_cube(
-                        tr.x // Cube.SIZE,
-                        (tr.y - 1) // Cube.SIZE,
-                        self.hero.position.z // Cube.SIZE,
-                    )
-                    is None
+                    and self.get_at(tl.x, (tl.y - 1), self.hero.position.z) is None
+                    and self.get_at(tr.x, (tr.y - 1), self.hero.position.z) is None
                 ):
                     self.hero.position.y -= 1
             elif self.hero.direction == Direction.RIGHT:
                 if (
                     math.ceil((self.hero.position.x + 1) / (Cube.SIZE))
                     < self.level.size.x
-                    and self.level.get_cube(
-                        (tr.x + 1) // Cube.SIZE,
-                        tr.y // Cube.SIZE,
-                        self.hero.position.z // Cube.SIZE,
-                    )
-                    is None
-                    and self.level.get_cube(
-                        (br.x + 1) // Cube.SIZE,
-                        br.y // Cube.SIZE,
-                        self.hero.position.z // Cube.SIZE,
-                    )
-                    is None
+                    and self.get_at((tr.x + 1), tr.y, self.hero.position.z) is None
+                    and self.get_at((br.x + 1), br.y, self.hero.position.z) is None
                 ):
                     self.hero.position.x += 1
             elif self.hero.direction == Direction.DOWN:
                 if (
                     math.ceil((self.hero.position.y + 1) / (Cube.SIZE))
                     < self.level.size.y
-                    and self.level.get_cube(
-                        bl.x // Cube.SIZE,
-                        (bl.y + 1) // Cube.SIZE,
-                        self.hero.position.z // Cube.SIZE,
-                    )
-                    is None
-                    and self.level.get_cube(
-                        br.x // Cube.SIZE,
-                        (br.y + 1) // Cube.SIZE,
-                        self.hero.position.z // Cube.SIZE,
-                    )
-                    is None
+                    and self.get_at(bl.x, (bl.y + 1), self.hero.position.z) is None
+                    and self.get_at(br.x, (br.y + 1), self.hero.position.z) is None
                 ):
                     self.hero.position.y += 1
             elif self.hero.direction == Direction.LEFT:
                 if (
                     self.hero.position.x - 1 >= 0
-                    and self.level.get_cube(
-                        (tl.x - 1) // Cube.SIZE,
-                        tl.y // Cube.SIZE,
-                        self.hero.position.z // Cube.SIZE,
-                    )
-                    is None
-                    and self.level.get_cube(
-                        (bl.x - 1) // Cube.SIZE,
-                        bl.y // Cube.SIZE,
-                        self.hero.position.z // Cube.SIZE,
-                    )
-                    is None
+                    and self.get_at((tl.x - 1), tl.y, self.hero.position.z) is None
+                    and self.get_at((bl.x - 1), bl.y, self.hero.position.z) is None
                 ):
                     self.hero.position.x -= 1
 
