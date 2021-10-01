@@ -7,6 +7,7 @@ from utils import *
 from cube import Cube
 from hero import Direction
 
+
 class Game:
     def __init__(self) -> None:
         self.level = None
@@ -88,15 +89,7 @@ class Game:
             is not None
         )
 
-    def update(self):
-        time_delta = self.clock.tick(60) / 1000.0
-        [bl, br, tl, tr] = self.hero.get_coords()
-        self.hero.on_ground = self.hero_on_ground([bl, br, tl, tr])
-
-        for drawable in self.drawables:
-            drawable.update_zindex()
-
-        # events
+    def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -139,6 +132,16 @@ class Game:
                 ]:
                     self.hero.is_moving = False
 
+    def update(self):
+        time_delta = self.clock.tick(60) / 1000.0
+        [bl, br, tl, tr] = self.hero.get_coords()
+        self.hero.on_ground = self.hero_on_ground([bl, br, tl, tr])
+
+        for drawable in self.drawables:
+            drawable.update_zindex()
+
+        self.events()
+
         # update hero location
         if self.hero.is_moving:
             if self.hero.direction == Direction.UP:
@@ -160,7 +163,8 @@ class Game:
                     self.hero.position.y -= 1
             elif self.hero.direction == Direction.RIGHT:
                 if (
-                    math.ceil((self.hero.position.x + 1) / (Cube.SIZE)) < self.level.size.x
+                    math.ceil((self.hero.position.x + 1) / (Cube.SIZE))
+                    < self.level.size.x
                     and self.level.get_cube(
                         (tr.x + 1) // Cube.SIZE,
                         tr.y // Cube.SIZE,
@@ -177,7 +181,8 @@ class Game:
                     self.hero.position.x += 1
             elif self.hero.direction == Direction.DOWN:
                 if (
-                    math.ceil((self.hero.position.y + 1) / (Cube.SIZE)) < self.level.size.y
+                    math.ceil((self.hero.position.y + 1) / (Cube.SIZE))
+                    < self.level.size.y
                     and self.level.get_cube(
                         bl.x // Cube.SIZE,
                         (bl.y + 1) // Cube.SIZE,
