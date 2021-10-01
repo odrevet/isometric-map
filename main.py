@@ -10,7 +10,7 @@ from chest import Chest
 from gold import Gold
 from level import *
 from cube import Cube
-from point2d import Point2d
+from point3d import Point3d
 from game import Game
 
 
@@ -22,7 +22,7 @@ resolution_window = Point2d(640, 480)
 surface_window = pygame.display.set_mode(resolution_window.list())
 surface_screen = pygame.Surface(resolution_screen.list())
 pygame.display.set_caption("Isometric map")
-camera = Point2d(resolution_screen.x // 2, resolution_screen.y // 2)
+camera = Point3d(resolution_screen.x // 2, resolution_screen.y // 2, 0)
 
 game = Game()
 
