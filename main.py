@@ -72,9 +72,9 @@ level.read("data/level.map")
 hero = Hero(z=Cube.SIZE)
 
 # create drawables
-pot = Pot(Cube.SIZE, Cube.SIZE, Cube.SIZE * 3)
-chest = Chest(Cube.SIZE * 2, 0, 0)
-gold = Gold(Cube.SIZE * 2, Cube.SIZE * 2, 0)
+pot = Pot(Cube.SIZE, Cube.SIZE, Cube.SIZE * 4)
+chest = Chest(Cube.SIZE * 2, 0, Cube.SIZE)
+gold = Gold(Cube.SIZE * 2, Cube.SIZE * 2, Cube.SIZE)
 
 # drawables
 drawables = []
@@ -114,6 +114,11 @@ while True:
             if event.key == pygame.K_DOWN:
                 hero.is_moving = True
                 hero.direction = Direction.DOWN
+            
+            if __debug__ and event.key == pygame.K_d:
+                sorted_drawables = sorted(level.cubes + drawables, key=lambda drawable: drawable.zindex)
+                for drawable in sorted_drawables:
+                    print(drawable)
 
             if event.key == pygame.K_SPACE:
                 if hero.on_ground:

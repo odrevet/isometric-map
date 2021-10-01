@@ -10,6 +10,7 @@ from cube import Cube
 from cursor import Cursor
 from point2d import Point2d
 
+
 def add_cube(level, cursor):
     cube_index = level.get_cube_index(
         cursor.position.x,
@@ -37,6 +38,7 @@ def add_cube(level, cursor):
         cube.update_zindex()
         level.cubes.append(cube)
 
+
 def to_1d_coords(position, width):
     return position.x + width * position.y
 
@@ -62,7 +64,7 @@ resolution_screen = Point2d(320, 240)
 surface_window = pygame.display.set_mode(resolution_window.list())
 surface_screen = pygame.Surface(resolution_screen.list())
 pygame.display.set_caption("Isometric Map Editor")
-camera = Point2d(resolution_screen.x / 2, resolution_screen.y / 2)
+camera = Point3d(resolution_screen.x / 2, resolution_screen.y / 2, 0)
 clock = pygame.time.Clock()
 
 # init GUI
@@ -104,59 +106,55 @@ while True:
 
             if event.key == pygame.K_LEFT:
                 cursor.position.x -= 1
+
             if event.key == pygame.K_RIGHT:
                 cursor.position.x += 1
+
             if event.key == pygame.K_UP:
                 if move_z == True:
                     cursor.position.z += 1
                 else:
                     cursor.position.y -= 1
+
             if event.key == pygame.K_DOWN:
                 if move_z == True:
                     cursor.position.z -= 1
                 else:
                     cursor.position.y += 1
+
             if event.key == pygame.K_BACKSPACE:
                 cube_index = level.get_cube_index(
                     cursor.position.x, cursor.position.y, cursor.position.z
                 )
                 if cube_index is not None:
                     del level.cubes[cube_index]
-            if event.key == pygame.K_RETURN:
-                if (
-                    cursor.position.x < 0
-                    or cursor.position.y < 0
-                    or cursor.position.z < 0
-                    or cursor.position.x > level.size.x
-                    or cursor.position.y > level.size.y
-                    or cursor.position.z > level.size.z
-                ):
-                    if cursor.position.x < 0:
-                        x = cursor.position.x
-                        level.size.x += abs(cursor.position.x)
-                        for cube in level.cubes:
-                            cube.position.x -= cursor.position.x * Cube.SIZE
-                            cube.indexes.x -= cursor.position.x
-                            cube.update_zindex()
-                        cursor.position.x -= x
-                    elif cursor.position.x > 0:
-                        x = cursor.position.x
-                        level.size.x = cursor.position.x
-                    elif cursor.position.y < 0:
-                        y = cursor.position.y
-                        level.size.y += abs(cursor.position.y)
-                        for cube in level.cubes:
-                            cube.position.y -= cursor.position.y * Cube.SIZE
-                            cube.indexes.y -= cursor.position.y
-                            cube.update_zindex()
+                    level.update_size()
 
-                        cursor.position.y -= y
-                        add_cube(level, cursor)
-                    elif cursor.position.y > 0:
-                        y = cursor.position.y
-                        level.size.y = cursor.position.y
-                
+            if event.key == pygame.K_RETURN:
+                if cursor.position.x < 0:
+                    x = cursor.position.x
+                    for cube in level.cubes:
+                        cube.position.x -= cursor.position.x * Cube.SIZE
+                        cube.indexes.x -= cursor.position.x
+                        cube.update_zindex()
+                    cursor.position.x -= x
+
+                if cursor.position.y < 0:
+                    y = cursor.position.y
+                    for cube in level.cubes:
+                        cube.position.y -= cursor.position.y * Cube.SIZE
+                        cube.indexes.y -= cursor.position.y
+                        cube.update_zindex()
+                    cursor.position.y -= y
+
                 add_cube(level, cursor)
+                level.update_size()
+
+            if event.key == pygame.K_c:
+                camera.x = cursor.position.x
+                camera.y = cursor.position.y
+                camera.z = cursor.position.z
+
 
         elif event.type == pygame.KEYUP:
             if event.key in (K_LSHIFT, K_RSHIFT):

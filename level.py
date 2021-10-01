@@ -51,18 +51,18 @@ class Level(pygame.sprite.Sprite):
                 cube.zindex = sum(cube.indexes.list())
                 self.cubes.append(cube)
 
-                if self.size.x < r[0]:
-                    self.size.x = r[0]
+            self.update_size()
+    
+    def update_size(self):
+        for cube in self.cubes:
+            if self.size.x < cube.indexes.x + 1:
+                self.size.x = cube.indexes.x + 1
 
-                if self.size.y < r[1]:
-                    self.size.y = r[1]
+            if self.size.y < cube.indexes.y + 1:
+                self.size.y = cube.indexes.y + 1
 
-                if self.size.z < r[2]:
-                    self.size.z = r[2]
-
-            self.size.x += 1
-            self.size.y += 1
-            self.size.z += 1
+            if self.size.z < cube.indexes.z + 1:
+                self.size.z = cube.indexes.z + 1
 
     def get_cube(self, x, y, z):
         for i in range(len(self.cubes)):
@@ -95,7 +95,7 @@ class Level(pygame.sprite.Sprite):
                     drawable_chunk = DrawableChunk(
                         drawable.position.x,
                         drawable.position.y,
-                        drawable.position.z,
+                        drawable.position.z + 16, # Shift
                     )
 
                     # TODO fix drawing when hero jump
@@ -108,7 +108,7 @@ class Level(pygame.sprite.Sprite):
                                 )
                             )
                         )
-                        + number
+                        + number - 1
                     )
 
                     drawable_chunk.number = nb_chunk - number - 1
@@ -134,4 +134,4 @@ class Level(pygame.sprite.Sprite):
             if isinstance(drawable, Cube):
                 drawable.draw(x, y, surface_display, self.image_tileset)
             else:
-                drawable.draw(x, y - Cube.SIZE, surface_display)
+                drawable.draw(x, y, surface_display)
