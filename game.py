@@ -1,12 +1,15 @@
 import math
 
 import pygame
+from pygame import draw
 from pygame.locals import *
 
 from utils import *
 from cube import Cube
 from hero import Direction
-
+from gold import Gold
+from chest import Chest
+from point3d import Point3d
 
 class Game:
     def __init__(self) -> None:
@@ -26,7 +29,7 @@ class Game:
 
         # debug
         if __debug__:
-            debug_text = f"{self.level.size.x}:{self.level.size.y}:{self.level.size.z} {self.hero.position.x}:{self.hero.position.y}:{self.hero.position.z}"
+            debug_text = f"{self.level.size.x}:{self.level.size.y}:{self.level.size.z} {self.hero.position.x}:{self.hero.position.y}:{self.hero.position.z}  {self.hero.gold}G"
             self.debug_textbox.html_text = debug_text
             self.debug_textbox.rebuild()
             self.ui_manager.draw_ui(surface_screen)
@@ -113,7 +116,23 @@ class Game:
                     self.hero.is_moving = False
 
     def get_at(self, x, y, z):
-        return self.level.get_cube(x // Cube.SIZE, y // Cube.SIZE, z // Cube.SIZE)
+        index_x = x // Cube.SIZE
+        index_y = y // Cube.SIZE
+        index_z = z // Cube.SIZE
+
+        cube = self.level.get_cube(index_x, index_y, index_z)
+
+        if cube is not None:
+            return cube
+
+        #for drawable in self.drawables:
+        #    index = Point3d(drawable.position.x // Cube.SIZE, drawable.position.y // Cube.SIZE, drawable.position.z // Cube.SIZE)
+        #    if index.x == index_x and index.y == index_y and index.z == index_z:
+        #        print(drawable)
+        #        return drawable
+
+        return None
+
 
     def update(self):
         time_delta = self.clock.tick(60) / 1000.0
@@ -124,6 +143,19 @@ class Game:
             drawable.update_zindex()
 
         self.events()
+
+        # check collectible
+        drawable_index = 0
+        for drawable in self.drawables:
+            if self.hero == drawable:
+                continue
+
+            if self.hero.intersect(drawable):
+                if isinstance(drawable, Gold):
+                    self.hero.gold += 5
+                    del self.drawables[drawable_index]
+
+            drawable_index += 1
 
         # update hero location
         if self.hero.is_moving:

@@ -52,19 +52,23 @@ class Hero(Drawable):
         self.jump_max = Cube.SIZE * 1.5
         self.jump_cur = 0
         self.on_ground = None
-        self.depth = Cube.SIZE * 2
-        self.size = Cube.SIZE - 1
 
         self.drawable_width = 32
         self.drawable_height = 48
+        self.size = Point3d(Cube.SIZE - 1, Cube.SIZE - 1, 48)
+
+        self.gold = 0
+        self.life = 6
 
     def get_coords(self):
-        bl = Point3d(self.position.x, self.position.y + self.size, self.position.z)
+        bl = Point3d(self.position.x, self.position.y + self.size.y, self.position.z)
         br = Point3d(
-            self.position.x + self.size, self.position.y + self.size, self.position.z
+            self.position.x + self.size.x,
+            self.position.y + self.size.y,
+            self.position.z,
         )
         tl = Point3d(self.position.x, self.position.y, self.position.z)
-        tr = Point3d(self.position.x + self.size, self.position.y, self.position.z)
+        tr = Point3d(self.position.x + self.size.x, self.position.y, self.position.z)
         return (bl, br, tl, tr)
 
     def draw(self, x, y, surface_display):

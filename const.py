@@ -1,1 +1,2 @@
 TILE_SIZE = 8
+CUBE_SIZE = 16

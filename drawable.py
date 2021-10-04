@@ -1,7 +1,7 @@
 from abc import ABC
 
-from pygame.display import update
 from point3d import Point3d
+from const import CUBE_SIZE
 
 
 class Drawable(ABC):
@@ -9,10 +9,20 @@ class Drawable(ABC):
         self.position = Point3d(x, y, z)
         self.zindex = 0
         self.update_zindex()
+        self.size = Point3d(0,0,0)
 
     def update_zindex(self):
-        cube_size = 16  # TODO get from Cube
-        self.zindex = sum(list(map((lambda x: x // cube_size), self.position.list())))
+        self.zindex = sum(
+            list(map((lambda position: position // CUBE_SIZE), self.position.list()))
+        )
+
+    def intersect(self, other):
+        return (
+            self.position.y + self.size.y > other.position.y
+            and self.position.y < other.position.y + other.size.y
+            and self.position.x + self.size.x > other.position.x
+            and self.position.x < other.position.x + other.size.x
+        )
 
     def draw(self, x, y, surface_display):
         pass
