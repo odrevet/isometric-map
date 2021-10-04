@@ -9,7 +9,7 @@ class Drawable(ABC):
         self.position = Point3d(x, y, z)
         self.zindex = 0
         self.update_zindex()
-        self.size = Point3d(0,0,0)
+        self.size = Point3d(0, 0, 0)
 
     def update_zindex(self):
         self.zindex = sum(
@@ -28,12 +28,12 @@ class Drawable(ABC):
 
     def intersect_point3d(self, point3d):
         return (
-            self.position.y + self.size.y > point3d.y
-            and self.position.y < point3d.y
-            and self.position.x + self.size.x > point3d.x
-            and self.position.x < point3d.x
-            and self.position.z + self.size.z > point3d.z
-            and self.position.z < point3d.z
+            self.position.y + self.size.y >= point3d.y
+            and self.position.y <= point3d.y
+            and self.position.x + self.size.x >= point3d.x
+            and self.position.x <= point3d.x
+            and self.position.z + self.size.z >= point3d.z
+            and self.position.z <= point3d.z
         )
 
     def draw(self, x, y, surface_display):
