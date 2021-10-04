@@ -26,6 +26,16 @@ class Drawable(ABC):
             and self.position.z < other.position.z + other.size.z
         )
 
+    def intersect_point3d(self, point3d):
+        return (
+            self.position.y + self.size.y > point3d.y
+            and self.position.y < point3d.y
+            and self.position.x + self.size.x > point3d.x
+            and self.position.x < point3d.x
+            and self.position.z + self.size.z > point3d.z
+            and self.position.z < point3d.z
+        )
+
     def draw(self, x, y, surface_display):
         pass
 

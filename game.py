@@ -125,11 +125,10 @@ class Game:
         if cube is not None:
             return cube
 
-        #for drawable in self.drawables:
-        #    index = Point3d(drawable.position.x // Cube.SIZE, drawable.position.y // Cube.SIZE, drawable.position.z // Cube.SIZE)
-        #    if index.x == index_x and index.y == index_y and index.z == index_z:
-        #        print(drawable)
-        #        return drawable
+        for drawable in self.drawables:
+            if drawable.intersect_point3d(Point3d(x, y, z)):
+                print(drawable)
+                return drawable
 
         return None
 
