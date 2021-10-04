@@ -22,6 +22,8 @@ class Drawable(ABC):
             and self.position.y < other.position.y + other.size.y
             and self.position.x + self.size.x > other.position.x
             and self.position.x < other.position.x + other.size.x
+            and self.position.z + self.size.z > other.position.z
+            and self.position.z < other.position.z + other.size.z
         )
 
     def draw(self, x, y, surface_display):
