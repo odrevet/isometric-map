@@ -10,9 +10,8 @@ from chest import Chest
 from gold import Gold
 from level import *
 from cube import Cube
-from point3d import Point3d
+from point2d import Point2d
 from game import Game
-
 
 # init pygame
 pygame.init()
@@ -22,7 +21,7 @@ resolution_window = Point2d(640, 480)
 surface_window = pygame.display.set_mode(resolution_window.list())
 surface_screen = pygame.Surface(resolution_screen.list())
 pygame.display.set_caption("Isometric map")
-camera = Point3d(resolution_screen.x // 2, resolution_screen.y // 2, 0)
+camera = Point2d(0, 0)
 
 game = Game()
 
@@ -38,10 +37,10 @@ game.debug_textbox = UITextBox(
 )
 
 # Music
-#try:
+# try:
 #    pygame.mixer.music.load("res/music/overworld_2.mid")
 #    pygame.mixer.music.play()
-#except:
+# except:
 #    pass
 
 # init level
@@ -50,21 +49,30 @@ game.level.read("data/level.map")
 
 # init hero
 hero = Hero(z=Cube.SIZE)
-game.hero = hero 
+game.hero = hero
 
 # create drawables
-pot = Pot(Cube.SIZE * 5, Cube.SIZE * 1.5, Cube.SIZE)
+pot = Pot(Cube.SIZE * 3, Cube.SIZE * 3.5, Cube.SIZE)
+pot2 = Pot(Cube.SIZE * 4, Cube.SIZE * 3.5, Cube.SIZE)
 chest = Chest(Cube.SIZE * 2, Cube.SIZE, Cube.SIZE)
 gold = Gold(Cube.SIZE * 2, Cube.SIZE * 2, Cube.SIZE)
+gold2 = Gold(Cube.SIZE, Cube.SIZE * 4, Cube.SIZE)
+gold2.amount = 7
+
 
 # add drawables
 game.add_drawable(pot)
+game.add_drawable(pot2)
 game.add_drawable(chest)
 game.add_drawable(gold)
+game.add_drawable(gold2)
 game.add_drawable(hero)
 
 while True:
     game.update()
+    camera = cartesian_to_isometric((hero.position.x, hero.position.y))
+    camera.x = resolution_screen.x // 2 - camera.x
+    camera.y = resolution_screen.y // 2 - camera.y + hero.position.z
     game.draw(camera, surface_screen)
 
     scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())

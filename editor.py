@@ -64,7 +64,7 @@ resolution_screen = Point2d(320, 240)
 surface_window = pygame.display.set_mode(resolution_window.list())
 surface_screen = pygame.Surface(resolution_screen.list())
 pygame.display.set_caption("Isometric Map Editor")
-camera = Point3d(resolution_screen.x / 2, resolution_screen.y / 2, 0)
+camera = Point2d(0, 0)
 clock = pygame.time.Clock()
 
 # init GUI
@@ -151,10 +151,13 @@ while True:
                 level.update_size()
 
             if event.key == pygame.K_c:
-                camera.x = cursor.position.x
-                camera.y = cursor.position.y
-                camera.z = cursor.position.z
-
+                camera = cartesian_to_isometric(
+                    (cursor.position.x * Cube.SIZE, cursor.position.y * Cube.SIZE)
+                )
+                camera.x = resolution_screen.x // 2 - camera.x
+                camera.y = (
+                    resolution_screen.y // 2 - camera.y + cursor.position.z * Cube.SIZE
+                )
 
         elif event.type == pygame.KEYUP:
             if event.key in (K_LSHIFT, K_RSHIFT):

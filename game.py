@@ -1,4 +1,5 @@
 import math
+from copy import copy
 
 import pygame
 from pygame import draw
@@ -10,6 +11,7 @@ from hero import Direction
 from gold import Gold
 from chest import Chest
 from point3d import Point3d
+
 
 class Game:
     def __init__(self) -> None:
@@ -63,13 +65,13 @@ class Game:
                 points,
             )
 
-    def hero_on_ground(self, coords):
-        [bl, br, tl, tr] = coords
-        return (
-            self.get_at(bl.x, bl.y, (self.hero.position.z - 1)) is not None
-            or self.get_at(br.x, br.y, (self.hero.position.z - 1)) is not None
-            or self.get_at(tl.x, tl.y, (self.hero.position.z - 1)) is not None
-            or self.get_at(tr.x, tr.y, (self.hero.position.z - 1)) is not None
+    def hero_on_ground(self):
+        [bl, br, tl, tr] = self.hero.get_coords()
+        return not(
+            self.not_solid(self.get_at(bl.x, bl.y, (self.hero.position.z - 1))) 
+            and self.not_solid(self.get_at(br.x, br.y, (self.hero.position.z - 1)))
+            and self.not_solid(self.get_at(tl.x, tl.y, (self.hero.position.z - 1)))
+            and self.not_solid(self.get_at(tr.x, tr.y, (self.hero.position.z - 1)))
         )
 
     def events(self):
@@ -127,16 +129,19 @@ class Game:
 
         for drawable in self.drawables:
             if drawable.intersect_point3d(Point3d(x, y, z)):
-                print(drawable)
                 return drawable
 
         return None
 
+    def not_solid(self, drawable):
+        return drawable is None or (drawable is not None and drawable.solid == False)
 
     def update(self):
         time_delta = self.clock.tick(60) / 1000.0
-        [bl, br, tl, tr] = self.hero.get_coords()
-        self.hero.on_ground = self.hero_on_ground([bl, br, tl, tr])
+        self.hero.on_ground = self.hero_on_ground()
+
+        for drawable in self.drawables:
+            drawable.update_zindex()
 
         for drawable in self.drawables:
             drawable.update_zindex()
@@ -151,43 +156,72 @@ class Game:
 
             if self.hero.intersect(drawable):
                 if isinstance(drawable, Gold):
-                    self.hero.gold += 5
+                    self.hero.gold += drawable.amount
                     del self.drawables[drawable_index]
 
             drawable_index += 1
 
         # update hero location
         if self.hero.is_moving:
+            next_pos = copy(self.hero.position)
+
             if self.hero.direction == Direction.UP:
-                if (
-                    self.hero.position.y - 1 >= 0
-                    and self.get_at(tl.x, (tl.y - 1), self.hero.position.z) is None
-                    and self.get_at(tr.x, (tr.y - 1), self.hero.position.z) is None
-                ):
-                    self.hero.position.y -= 1
+                next_pos.y -= 1
+
+                if next_pos.y >= 0:
+                    at_top_left = self.get_at(next_pos.x, next_pos.y, next_pos.z)
+                    at_top_right = self.get_at(
+                        next_pos.x + self.hero.size.x, next_pos.y, next_pos.z
+                    )
+
+                    if self.not_solid(at_top_left) and self.not_solid(at_top_right):
+                        self.hero.position = copy(next_pos)
+
             elif self.hero.direction == Direction.RIGHT:
-                if (
-                    math.ceil((self.hero.position.x + 1) / (Cube.SIZE))
-                    < self.level.size.x
-                    and self.get_at((tr.x + 1), tr.y, self.hero.position.z) is None
-                    and self.get_at((br.x + 1), br.y, self.hero.position.z) is None
-                ):
-                    self.hero.position.x += 1
+                next_pos.x += 1
+
+                if next_pos.x + self.hero.size.x < self.level.size.x * Cube.SIZE:
+                    at_top_right = self.get_at(
+                        next_pos.x + self.hero.size.x, next_pos.y, next_pos.z
+                    )
+                    at_btm_right = self.get_at(
+                        next_pos.x + self.hero.size.x,
+                        next_pos.y + self.hero.size.y,
+                        next_pos.z,
+                    )
+
+                    if self.not_solid(at_top_right) and self.not_solid(at_btm_right):
+                        self.hero.position = copy(next_pos)
+
             elif self.hero.direction == Direction.DOWN:
-                if (
-                    math.ceil((self.hero.position.y + 1) / (Cube.SIZE))
-                    < self.level.size.y
-                    and self.get_at(bl.x, (bl.y + 1), self.hero.position.z) is None
-                    and self.get_at(br.x, (br.y + 1), self.hero.position.z) is None
-                ):
-                    self.hero.position.y += 1
+                next_pos.y += 1
+
+                if next_pos.y + self.hero.size.y < self.level.size.y * Cube.SIZE:
+                    at_btm_left = self.get_at(
+                        next_pos.x, next_pos.y + self.hero.size.y, next_pos.z
+                    )
+                    at_btm_right = self.get_at(
+                        next_pos.x + self.hero.size.x,
+                        next_pos.y + self.hero.size.y,
+                        next_pos.z,
+                    )
+
+                    if self.not_solid(at_btm_left) and self.not_solid(at_btm_right):
+                        self.hero.position = copy(next_pos)
+
             elif self.hero.direction == Direction.LEFT:
-                if (
-                    self.hero.position.x - 1 >= 0
-                    and self.get_at((tl.x - 1), tl.y, self.hero.position.z) is None
-                    and self.get_at((bl.x - 1), bl.y, self.hero.position.z) is None
-                ):
-                    self.hero.position.x -= 1
+                next_pos.x -= 1
+
+                if next_pos.x > 0:
+                    at_top_left = self.get_at(next_pos.x, next_pos.y, next_pos.z)
+                    at_btm_left = self.get_at(
+                        next_pos.x,
+                        next_pos.y + self.hero.size.y,
+                        next_pos.z,
+                    )
+
+                    if self.not_solid(at_top_left) and self.not_solid(at_btm_left):
+                        self.hero.position = copy(next_pos)
 
         # jump
         if self.hero.jump == True:
