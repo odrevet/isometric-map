@@ -1,3 +1,6 @@
+import argparse
+from os.path import exists
+
 import pygame
 from pygame.locals import *
 
@@ -43,15 +46,27 @@ def to_1d_coords(position, width):
     return position.x + width * position.y
 
 
-def save(level):
+def save(level, filename):
     tileset_width = level.image_tileset.get_width() // TILE_SIZE
-    f = open("data/level.map", "w")
+    f = open(filename, "w")
     for cube in level.cubes:
         c0 = to_1d_coords(cube.coords[0], tileset_width)
         c1 = to_1d_coords(cube.coords[1], tileset_width)
         c2 = to_1d_coords(cube.coords[2], tileset_width)
         f.write(f"{cube.indexes.x}:{cube.indexes.y}:{cube.indexes.z} {c0}:{c1}:{c2}\n")
 
+
+def center_camera():
+    camera = cartesian_to_isometric(
+        (cursor.position.x * Cube.SIZE, cursor.position.y * Cube.SIZE)
+    )
+    camera.x = resolution_screen.x // 2 - camera.x
+    camera.y = resolution_screen.y // 2 - camera.y + cursor.position.z * Cube.SIZE
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--level", type=str, required=True)
+args = vars(parser.parse_args())
 
 # init pygame
 pygame.init()
@@ -78,7 +93,9 @@ debug_textbox = UITextBox(
 
 # init level
 level = Level()
-level.read("data/level.map")
+
+if exists(args["level"]):
+    level.read(args["level"])
 
 # init cursor
 cursor = Cursor()
@@ -86,6 +103,13 @@ move_z = False
 
 while True:
     time_delta = clock.tick(60) / 1000.0
+
+    # center camera on cursor
+    camera = cartesian_to_isometric(
+        (cursor.position.x * Cube.SIZE, cursor.position.y * Cube.SIZE)
+    )
+    camera.x = resolution_screen.x // 2 - camera.x
+    camera.y = resolution_screen.y // 2 - camera.y + cursor.position.z * Cube.SIZE
 
     # Events
     for event in pygame.event.get():
@@ -99,7 +123,7 @@ while True:
                 quit()
 
             if event.key == pygame.K_s:
-                save(level)
+                save(level, args["level"])
 
             if event.key in (K_LSHIFT, K_RSHIFT):
                 move_z = True
@@ -150,22 +174,13 @@ while True:
                 add_cube(level, cursor)
                 level.update_size()
 
-            if event.key == pygame.K_c:
-                camera = cartesian_to_isometric(
-                    (cursor.position.x * Cube.SIZE, cursor.position.y * Cube.SIZE)
-                )
-                camera.x = resolution_screen.x // 2 - camera.x
-                camera.y = (
-                    resolution_screen.y // 2 - camera.y + cursor.position.z * Cube.SIZE
-                )
-
         elif event.type == pygame.KEYUP:
             if event.key in (K_LSHIFT, K_RSHIFT):
                 move_z = False
 
     # Draw
     surface_screen.fill(bgcolor)
-    level.draw([], camera, surface_screen)
+    level.draw(camera, surface_screen)
     cursor.draw(surface_screen, camera)
 
     # Draw level boundaries

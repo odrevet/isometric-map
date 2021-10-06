@@ -11,7 +11,7 @@ class Drawable(ABC):
         self.update_zindex()
         self.size = Point3d(0, 0, 0)
         self.solid = True
-        self.draggable= False
+        self.draggable = False
 
     def update_zindex(self):
         self.zindex = sum(

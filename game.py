@@ -1,8 +1,6 @@
-import math
 from copy import copy
 
 import pygame
-from pygame import draw
 from pygame.locals import *
 
 from utils import *
@@ -12,22 +10,20 @@ from gold import Gold
 from chest import Chest
 from point3d import Point3d
 
+from levels.lv import *
+
 
 class Game:
     def __init__(self) -> None:
         self.level = None
-        self.drawables = []
         self.hero = None
         self.ui_manager = None
         self.clock = pygame.time.Clock()
 
-    def add_drawable(self, drawable):
-        self.drawables.append(drawable)
-
     def draw(self, camera, surface_screen):
         # draw
         surface_screen.fill((0, 0, 0))
-        self.level.draw(self.drawables, camera, surface_screen)
+        self.level.draw(camera, surface_screen)
 
         # debug
         if __debug__:
@@ -67,8 +63,8 @@ class Game:
 
     def hero_on_ground(self):
         [bl, br, tl, tr] = self.hero.get_coords()
-        return not(
-            self.not_solid(self.get_at(bl.x, bl.y, (self.hero.position.z - 1))) 
+        return not (
+            self.not_solid(self.get_at(bl.x, bl.y, (self.hero.position.z - 1)))
             and self.not_solid(self.get_at(br.x, br.y, (self.hero.position.z - 1)))
             and self.not_solid(self.get_at(tl.x, tl.y, (self.hero.position.z - 1)))
             and self.not_solid(self.get_at(tr.x, tr.y, (self.hero.position.z - 1)))
@@ -96,10 +92,12 @@ class Game:
                 if event.key == pygame.K_DOWN:
                     self.hero.is_moving = True
                     self.hero.direction = Direction.DOWN
+                if event.key == pygame.K_n:
+                    level_2(self)
 
                 if __debug__ and event.key == pygame.K_d:
                     sorted_drawables = sorted(
-                        self.level.cubes + self.drawables,
+                        self.level.cubes + self.level.drawables,
                         key=lambda drawable: drawable.zindex,
                     )
                     for drawable in sorted_drawables:
@@ -127,7 +125,7 @@ class Game:
         if cube is not None:
             return cube
 
-        for drawable in self.drawables:
+        for drawable in self.level.drawables:
             if drawable.intersect_point3d(Point3d(x, y, z)):
                 return drawable
 
@@ -140,24 +138,21 @@ class Game:
         time_delta = self.clock.tick(60) / 1000.0
         self.hero.on_ground = self.hero_on_ground()
 
-        for drawable in self.drawables:
-            drawable.update_zindex()
-
-        for drawable in self.drawables:
+        for drawable in self.level.drawables:
             drawable.update_zindex()
 
         self.events()
 
         # check collectible
         drawable_index = 0
-        for drawable in self.drawables:
+        for drawable in self.level.drawables:
             if self.hero == drawable:
                 continue
 
             if self.hero.intersect(drawable):
                 if isinstance(drawable, Gold):
                     self.hero.gold += drawable.amount
-                    del self.drawables[drawable_index]
+                    del self.level.drawables[drawable_index]
 
             drawable_index += 1
 

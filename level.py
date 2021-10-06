@@ -9,14 +9,19 @@ from point3d import Point3d
 from utils import *
 from drawable_chunk import DrawableChunk
 from hero import Hero
+from level import *
 
 
 class Level(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.cubes = []
+        self.drawables = []
         self.image_tileset = pygame.image.load("res/tileset.png")
         self.size = Point3d()
+
+    def add_drawable(self, drawable):
+        self.drawables.append(drawable)
 
     def read(self, filename):
         tileset_width = self.image_tileset.get_width() // TILE_SIZE
@@ -52,7 +57,7 @@ class Level(pygame.sprite.Sprite):
                 self.cubes.append(cube)
 
             self.update_size()
-    
+
     def update_size(self):
         for cube in self.cubes:
             if self.size.x < cube.indexes.x + 1:
@@ -76,11 +81,11 @@ class Level(pygame.sprite.Sprite):
             if cube.indexes.x == x and cube.indexes.y == y and cube.indexes.z == z:
                 return i
 
-    def draw(self, drawables, camera, surface_display):
+    def draw(self, camera, surface_display):
         drawables_with_chunks = []
 
         # Work In Progress: split drawables into chunks when needed
-        for drawable in drawables:
+        for drawable in self.drawables:
             if isinstance(drawable, Hero):
                 # assum that only hero needs chunk display
                 # draw in a temporary surface
@@ -95,7 +100,7 @@ class Level(pygame.sprite.Sprite):
                     drawable_chunk = DrawableChunk(
                         drawable.position.x,
                         drawable.position.y,
-                        drawable.position.z + 16, # Shift
+                        drawable.position.z + 16,  # Shift
                     )
 
                     # TODO fix drawing when hero jump
@@ -108,7 +113,8 @@ class Level(pygame.sprite.Sprite):
                                 )
                             )
                         )
-                        + number - 1
+                        + number
+                        - 1
                     )
 
                     drawable_chunk.number = nb_chunk - number - 1

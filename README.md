@@ -1,3 +1,7 @@
+# Python version 
+
+This documentation assumes that the `python` command is binded with `python 3.9` or better.
+
 # Dependencies 
 
 * pygame

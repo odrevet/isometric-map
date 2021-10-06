@@ -4,6 +4,7 @@ from drawable import Drawable
 from point3d import Point3d
 from cube import Cube
 
+
 class Pot(Drawable):
     image = pygame.image.load("res/pot.png")
 

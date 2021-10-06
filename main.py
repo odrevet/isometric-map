@@ -1,3 +1,5 @@
+import argparse
+
 import pygame
 from pygame.locals import *
 
@@ -5,13 +7,17 @@ import pygame_gui
 from pygame_gui.elements.ui_text_box import UITextBox
 
 from hero import Hero
-from pot import Pot
-from chest import Chest
-from gold import Gold
 from level import *
 from cube import Cube
 from point2d import Point2d
 from game import Game
+
+from levels.lv import *
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--music", default=True, action=argparse.BooleanOptionalAction)
+parser.set_defaults(music=True)
+args = vars(parser.parse_args())
 
 # init pygame
 pygame.init()
@@ -37,36 +43,21 @@ game.debug_textbox = UITextBox(
 )
 
 # Music
-# try:
-#    pygame.mixer.music.load("res/music/overworld_2.mid")
-#    pygame.mixer.music.play()
-# except:
-#    pass
-
-# init level
-game.level = Level()
-game.level.read("data/level.map")
+if args["music"]:
+    try:
+        pygame.mixer.music.load("res/music/overworld_2.mid")
+        pygame.mixer.music.play()
+    except:
+        print("Midi device not found")
+        pass
 
 # init hero
 hero = Hero(z=Cube.SIZE)
 game.hero = hero
 
-# create drawables
-pot = Pot(Cube.SIZE * 3, Cube.SIZE * 3.5, Cube.SIZE)
-pot2 = Pot(Cube.SIZE * 4, Cube.SIZE * 3.5, Cube.SIZE)
-chest = Chest(Cube.SIZE * 2, Cube.SIZE, Cube.SIZE)
-gold = Gold(Cube.SIZE * 2, Cube.SIZE * 2, Cube.SIZE)
-gold2 = Gold(Cube.SIZE, Cube.SIZE * 4, Cube.SIZE)
-gold2.amount = 7
-
-
-# add drawables
-game.add_drawable(pot)
-game.add_drawable(pot2)
-game.add_drawable(chest)
-game.add_drawable(gold)
-game.add_drawable(gold2)
-game.add_drawable(hero)
+# init level
+game.level = Level()
+level_1(game)
 
 while True:
     game.update()
