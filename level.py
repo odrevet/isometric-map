@@ -17,7 +17,7 @@ class Level(pygame.sprite.Sprite):
         super().__init__()
         self.cubes = []
         self.drawables = []
-        self.image_tileset = pygame.image.load("res/tileset.png")
+        self.image_tileset = pygame.image.load("res/tileset.png").convert_alpha()
         self.size = Point3d()
 
     def add_drawable(self, drawable):

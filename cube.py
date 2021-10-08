@@ -13,7 +13,7 @@ class Cube(Drawable):
 
     def draw(self, x, y, surface_display, image_tileset):
         top, left, right = self.coords
-
+        
         if top is not None:
             surface_display.blit(
                 image_tileset,

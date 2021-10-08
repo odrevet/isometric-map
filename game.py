@@ -27,7 +27,8 @@ class Game:
 
         # debug
         if __debug__:
-            debug_text = f"{self.level.size.x}:{self.level.size.y}:{self.level.size.z} {self.hero.position.x}:{self.hero.position.y}:{self.hero.position.z}  {self.hero.gold}G"
+            fps = str(int(self.clock.get_fps()))
+            debug_text = f"{self.level.size.x}:{self.level.size.y}:{self.level.size.z} {self.hero.position.x}:{self.hero.position.y}:{self.hero.position.z} {self.hero.gold}G | {fps} fps"
             self.debug_textbox.html_text = debug_text
             self.debug_textbox.rebuild()
             self.ui_manager.draw_ui(surface_screen)
