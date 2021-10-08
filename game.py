@@ -2,6 +2,7 @@ from copy import copy
 
 import pygame
 from pygame.locals import *
+from drawable import Drawable
 
 from utils import *
 from cube import Cube
@@ -107,6 +108,30 @@ class Game:
                 if event.key == pygame.K_SPACE:
                     if self.hero.on_ground:
                         self.hero.jump = True
+
+                if event.key == pygame.K_RETURN:
+                    x = self.hero.position.x
+                    y = self.hero.position.y
+                    z = self.hero.position.z
+
+                    if self.hero.direction == Direction.UP:
+                        y -= 8
+                    elif self.hero.direction == Direction.RIGHT:
+                        x += 24
+                    elif self.hero.direction == Direction.DOWN:
+                        y += 24
+                    elif self.hero.direction == Direction.LEFT:
+                        x -= 8
+
+                    drawable = self.level.get_drawable(
+                        x // 16,
+                        y // 16,
+                        z // 16,
+                    )
+
+                    if isinstance(drawable, Chest) and not drawable.is_open :
+                        drawable.open()
+
             elif event.type == KEYUP:
                 if event.key in [
                     pygame.K_LEFT,

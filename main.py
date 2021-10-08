@@ -16,7 +16,6 @@ from levels.lv import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--music", default=True, action=argparse.BooleanOptionalAction)
-parser.set_defaults(music=True)
 args = vars(parser.parse_args())
 
 # init pygame
