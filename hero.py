@@ -5,7 +5,7 @@ from enum import Enum
 from drawable import Drawable
 from const import *
 from cube import Cube
-from point3d import Point3d
+from pygame.math import Vector3
 
 
 class Direction(Enum):
@@ -55,20 +55,20 @@ class Hero(Drawable):
 
         self.drawable_width = 32
         self.drawable_height = 48
-        self.size = Point3d(Cube.SIZE - 1, Cube.SIZE - 1, 48)
+        self.size = Vector3(Cube.SIZE - 1, Cube.SIZE - 1, 48)
 
         self.gold = 0
         self.life = 6
 
     def get_coords(self):
-        bl = Point3d(self.position.x, self.position.y + self.size.y, self.position.z)
-        br = Point3d(
+        bl = Vector3(self.position.x, self.position.y + self.size.y, self.position.z)
+        br = Vector3(
             self.position.x + self.size.x,
             self.position.y + self.size.y,
             self.position.z,
         )
-        tl = Point3d(self.position.x, self.position.y, self.position.z)
-        tr = Point3d(self.position.x + self.size.x, self.position.y, self.position.z)
+        tl = Vector3(self.position.x, self.position.y, self.position.z)
+        tr = Vector3(self.position.x + self.size.x, self.position.y, self.position.z)
         return (bl, br, tl, tr)
 
     def draw(self, x, y, surface_display):

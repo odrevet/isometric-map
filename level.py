@@ -5,7 +5,7 @@ from pygame.locals import *
 
 from cube import Cube
 from const import *
-from point3d import Point3d
+from pygame.math import Vector3
 from utils import *
 from drawable_chunk import DrawableChunk
 from hero import Hero
@@ -18,7 +18,7 @@ class Level(pygame.sprite.Sprite):
         self.cubes = []
         self.drawables = []
         self.image_tileset = pygame.image.load("res/tileset.png").convert_alpha()
-        self.size = Point3d()
+        self.size = Vector3()
 
     def add_drawable(self, drawable):
         self.drawables.append(drawable)
@@ -48,12 +48,12 @@ class Level(pygame.sprite.Sprite):
                 coords = [c0, c1, c2]
 
                 cube = Cube(coords)
-                cube.position = Point3d(
+                cube.position = Vector3(
                     r[0] * Cube.SIZE, r[1] * Cube.SIZE, r[2] * Cube.SIZE
                 )
 
-                cube.indexes = Point3d(r[0], r[1], r[2])
-                cube.zindex = sum(cube.indexes.list())
+                cube.indexes = Vector3(r[0], r[1], r[2])
+                cube.zindex = sum(cube.indexes)
                 self.cubes.append(cube)
 
             self.update_size()
@@ -115,7 +115,7 @@ class Level(pygame.sprite.Sprite):
                             list(
                                 map(
                                     (lambda x: x / Cube.SIZE),
-                                    drawable_chunk.position.list(),
+                                    drawable_chunk.position,
                                 )
                             )
                         )
@@ -125,7 +125,7 @@ class Level(pygame.sprite.Sprite):
 
                     drawable_chunk.number = nb_chunk - number - 1
                     drawable_chunk.surface = surface_tmp
-                    drawable_chunk.size = Point2d(
+                    drawable_chunk.size = Vector2(
                         drawable.drawable_width, drawable.drawable_height
                     )
                     drawables_with_chunks.append(drawable_chunk)

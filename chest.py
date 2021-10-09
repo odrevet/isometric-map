@@ -1,14 +1,15 @@
 import pygame
+from pygame.math import Vector3
+
 from cube import Cube
 
 from drawable import Drawable
-from point3d import Point3d
 
 
 class Chest(Drawable):
     def __init__(self, x=0, y=0, z=0):
         super().__init__(x, y, z)
-        self.size = Point3d(Cube.SIZE - 1, Cube.SIZE - 1, Cube.SIZE - 1)
+        self.size = Vector3(Cube.SIZE - 1, Cube.SIZE - 1, Cube.SIZE - 1)
         self.is_open = False
         self.content = None
         self.on_open = None

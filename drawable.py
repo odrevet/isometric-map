@@ -1,21 +1,21 @@
 from abc import ABC
 
-from point3d import Point3d
+from pygame.math import Vector3
 from const import CUBE_SIZE
 
 
 class Drawable(ABC):
     def __init__(self, x=0, y=0, z=0):
-        self.position = Point3d(x, y, z)
+        self.position = Vector3(x, y, z)
         self.zindex = 0
         self.update_zindex()
-        self.size = Point3d(0, 0, 0)
+        self.size = Vector3(0, 0, 0)
         self.solid = True
         self.draggable = False
 
     def update_zindex(self):
         self.zindex = sum(
-            list(map((lambda position: position // CUBE_SIZE), self.position.list()))
+            self.position // CUBE_SIZE
         )
 
     def intersect(self, other):
@@ -28,18 +28,18 @@ class Drawable(ABC):
             and self.position.z < other.position.z + other.size.z
         )
 
-    def intersect_point3d(self, point3d):
+    def intersect_Vector3(self, Vector3):
         return (
-            self.position.y + self.size.y >= point3d.y
-            and self.position.y <= point3d.y
-            and self.position.x + self.size.x >= point3d.x
-            and self.position.x <= point3d.x
-            and self.position.z + self.size.z >= point3d.z
-            and self.position.z <= point3d.z
+            self.position.y + self.size.y >= Vector3.y
+            and self.position.y <= Vector3.y
+            and self.position.x + self.size.x >= Vector3.x
+            and self.position.x <= Vector3.x
+            and self.position.z + self.size.z >= Vector3.z
+            and self.position.z <= Vector3.z
         )
 
     def draw(self, x, y, surface_display):
         pass
 
     def __str__(self):
-        return f"{type(self).__name__} at {self.position} zindex {self.zindex}"
+        return f"{type(self).__name__} at {self.position} zindex {int(self.zindex)}"

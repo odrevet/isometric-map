@@ -9,7 +9,7 @@ from cube import Cube
 from hero import Direction
 from gold import Gold
 from chest import Chest
-from point3d import Point3d
+from pygame.math import Vector3
 
 from levels.lv import *
 
@@ -29,7 +29,7 @@ class Game:
         # debug
         if __debug__:
             fps = str(int(self.clock.get_fps()))
-            debug_text = f"{self.level.size.x}:{self.level.size.y}:{self.level.size.z} {self.hero.position.x}:{self.hero.position.y}:{self.hero.position.z} {self.hero.gold}G | {fps} fps"
+            debug_text = f"{self.level.size} {self.hero.position} {self.hero.gold}G | {fps} fps"
             self.debug_textbox.html_text = debug_text
             self.debug_textbox.rebuild()
             self.ui_manager.draw_ui(surface_screen)
@@ -38,7 +38,7 @@ class Game:
             # get hero coords and find isometric locations
             bl, br, tl, tr = list(
                 map(
-                    (lambda coord: cartesian_to_isometric(coord.list())),
+                    (lambda coord: cartesian_to_isometric(coord)),
                     self.hero.get_coords(),
                 )
             )
@@ -152,7 +152,7 @@ class Game:
             return cube
 
         for drawable in self.level.drawables:
-            if drawable.intersect_point3d(Point3d(x, y, z)):
+            if drawable.intersect_Vector3(Vector3(x, y, z)):
                 return drawable
 
         return None

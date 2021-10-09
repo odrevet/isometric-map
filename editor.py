@@ -2,7 +2,7 @@ import argparse
 from os.path import exists
 
 import pygame
-from pygame.locals import *
+from pygame.math import Vector2, Vector3
 
 import pygame_gui
 from pygame_gui.elements.ui_text_box import UITextBox
@@ -11,7 +11,7 @@ from level import *
 from const import *
 from cube import Cube
 from cursor import Cursor
-from point2d import Point2d
+
 
 
 def add_cube(level, cursor):
@@ -23,17 +23,17 @@ def add_cube(level, cursor):
     if cube_index is None:
         cube = Cube(
             coords=[
-                Point2d(0, 0),
-                Point2d(0, 2),
-                Point2d(6, 2),
+                Vector2(0, 0),
+                Vector2(0, 2),
+                Vector2(6, 2),
             ]
         )
-        cube.position = Point3d(
+        cube.position = Vector3(
             cursor.position.x * Cube.SIZE,
             cursor.position.y * Cube.SIZE,
             cursor.position.z * Cube.SIZE,
         )
-        cube.indexes = Point3d(
+        cube.indexes = Vector3(
             cursor.position.x,
             cursor.position.y,
             cursor.position.z,
@@ -50,10 +50,10 @@ def save(level, filename):
     tileset_width = level.image_tileset.get_width() // TILE_SIZE
     f = open(filename, "w")
     for cube in level.cubes:
-        c0 = to_1d_coords(cube.coords[0], tileset_width)
-        c1 = to_1d_coords(cube.coords[1], tileset_width)
-        c2 = to_1d_coords(cube.coords[2], tileset_width)
-        f.write(f"{cube.indexes.x}:{cube.indexes.y}:{cube.indexes.z} {c0}:{c1}:{c2}\n")
+        c0 = int(to_1d_coords(cube.coords[0], tileset_width))
+        c1 = int(to_1d_coords(cube.coords[1], tileset_width))
+        c2 = int(to_1d_coords(cube.coords[2], tileset_width))
+        f.write(f"{int(cube.indexes.x)}:{int(cube.indexes.y)}:{int(cube.indexes.z)} {c0}:{c1}:{c2}\n")
 
 
 def center_camera():
@@ -74,19 +74,19 @@ pygame.font.init()
 font_size = 24
 font = pygame.font.SysFont("", font_size)
 bgcolor = (0, 0, 0)
-resolution_window = Point2d(640, 480)
-resolution_screen = Point2d(320, 240)
-surface_window = pygame.display.set_mode(resolution_window.list())
-surface_screen = pygame.Surface(resolution_screen.list())
+resolution_window = (640, 480)
+resolution_screen = (320, 240)
+surface_window = pygame.display.set_mode(resolution_window)
+surface_screen = pygame.Surface(resolution_screen)
 pygame.display.set_caption("Isometric Map Editor")
-camera = Point2d(0, 0)
+camera = Vector2(0, 0)
 clock = pygame.time.Clock()
 
 # init GUI
-ui_manager = pygame_gui.UIManager(resolution_screen.list(), "data/themes/classic.json")
+ui_manager = pygame_gui.UIManager(resolution_screen, "data/themes/classic.json")
 debug_textbox = UITextBox(
     "test",
-    pygame.Rect((0, 0), (resolution_screen.x, resolution_screen.y // 3)),
+    pygame.Rect((0, 0), (resolution_screen[0], resolution_screen[1] // 3)),
     manager=ui_manager,
     object_id="#toolbar_textbox",
 )
@@ -108,8 +108,8 @@ while True:
     camera = cartesian_to_isometric(
         (cursor.position.x * Cube.SIZE, cursor.position.y * Cube.SIZE)
     )
-    camera.x = resolution_screen.x // 2 - camera.x
-    camera.y = resolution_screen.y // 2 - camera.y + cursor.position.z * Cube.SIZE
+    camera.x = resolution_screen[0] // 2 - camera.x
+    camera.y = resolution_screen[1] // 2 - camera.y + cursor.position.z * Cube.SIZE
 
     # Events
     for event in pygame.event.get():
@@ -223,8 +223,8 @@ while True:
     )
 
     # Draw HUD
-    debug_text = f"Level size {level.size.x}:{level.size.y}:{level.size.z} | "
-    debug_text += f"Cursor at {cursor.position.x}:{cursor.position.y}:{cursor.position.z}<br/>{level.get_cube(cursor.position.x,cursor.position.y,cursor.position.z)}"
+    debug_text = f"Level size {level.size}<br/>"
+    debug_text += f"Cursor at {cursor.position}<br/>{level.get_cube(cursor.position.x,cursor.position.y,cursor.position.z)}"
     debug_textbox.html_text = debug_text
     debug_textbox.rebuild()
     ui_manager.draw_ui(surface_screen)

@@ -9,7 +9,7 @@ from pygame_gui.elements.ui_text_box import UITextBox
 from hero import Hero
 from level import *
 from cube import Cube
-from point2d import Point2d
+from pygame.math import Vector3
 from game import Game
 
 from levels.lv import *
@@ -21,18 +21,18 @@ args = vars(parser.parse_args())
 # init pygame
 pygame.init()
 
-resolution_screen = Point2d(320, 240)
-resolution_window = Point2d(640, 480)
-surface_window = pygame.display.set_mode(resolution_window.list())
-surface_screen = pygame.Surface(resolution_screen.list())
+resolution_screen = (320, 240)
+resolution_window = (640, 480)
+surface_window = pygame.display.set_mode(resolution_window)
+surface_screen = pygame.Surface(resolution_screen)
 pygame.display.set_caption("Isometric map")
-camera = Point2d(0, 0)
+camera = Vector2(0, 0)
 
 game = Game()
 
 # init GUI
 game.ui_manager = pygame_gui.UIManager(
-    resolution_screen.list(), "data/themes/classic.json"
+    resolution_screen, "data/themes/classic.json"
 )
 game.debug_textbox = UITextBox(
     "",
@@ -61,8 +61,8 @@ level_1(game)
 while True:
     game.update()
     camera = cartesian_to_isometric((hero.position.x, hero.position.y))
-    camera.x = resolution_screen.x // 2 - camera.x
-    camera.y = resolution_screen.y // 2 - camera.y + hero.position.z
+    camera.x = resolution_screen[0] // 2 - camera.x
+    camera.y = resolution_screen[1] // 2 - camera.y + hero.position.z
     game.draw(camera, surface_screen)
 
     scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
