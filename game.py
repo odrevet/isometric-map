@@ -93,8 +93,6 @@ class Game:
                 if event.key == pygame.K_DOWN:
                     self.hero.is_moving = True
                     self.hero.direction = Direction.DOWN
-                if event.key == pygame.K_n:
-                    level_2(self)
 
                 if __debug__ and event.key == pygame.K_d:
                     sorted_drawables = sorted(
