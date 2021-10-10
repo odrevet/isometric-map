@@ -1,19 +1,11 @@
 import pygame
+from pygame.math import Vector3
 import pyganim
 
-from enum import Enum
 from drawable import Drawable
 from const import *
 from cube import Cube
-from pygame.math import Vector3
-
-
-class Direction(Enum):
-    UP = 0
-    RIGHT = 1
-    DOWN = 2
-    LEFT = 3
-
+from direction import Direction
 
 class Hero(Drawable):
     def __init__(self, x=0, y=0, z=0):
@@ -21,13 +13,13 @@ class Hero(Drawable):
         self.direction = Direction.DOWN
         self.is_moving = False
 
-        self.still_up = pygame.image.load("res/ryle/up.png").convert_alpha()
-        self.still_down = pygame.image.load("res/ryle/down.png").convert_alpha()
+        self.still_up = pygame.image.load("res/ryle/up.png")
+        self.still_down = pygame.image.load("res/ryle/down.png")
         self.still_left = pygame.transform.flip(self.still_up, True, False)
         self.still_right = pygame.transform.flip(self.still_down, True, False)
 
-        self.jump_up = pygame.image.load("res/ryle/jump_up_0.png").convert_alpha()
-        self.jump_down = pygame.image.load("res/ryle/jump_down_0.png").convert_alpha()
+        self.jump_up = pygame.image.load("res/ryle/jump_up_0.png")
+        self.jump_down = pygame.image.load("res/ryle/jump_down_0.png")
         self.jump_left = pygame.transform.flip(self.jump_up, True, False)
         self.jump_right = pygame.transform.flip(self.jump_down, True, False)
 
