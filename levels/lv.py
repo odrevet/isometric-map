@@ -9,10 +9,6 @@ from gold import Gold
 from cube import Cube
 from NPC import *
 
-def clear(level):
-    level.drawables = []
-    level.cubes = []
-
 def on_open_chest_1(game):
     game.hero.gold += 50
 
@@ -43,7 +39,7 @@ def display_text(game, surface_screen):
 
 
 def level_1(game, surface_screen):
-    clear(game.level)
+    game.level.clear()
     game.level.read("data/level.map")
 
     pot = Pot(Cube.SIZE * 6, Cube.SIZE * 5.5, Cube.SIZE)
@@ -76,7 +72,7 @@ def level_1(game, surface_screen):
 
 
 def level_2(game, _):
-    clear(game.level)
+    game.level.clear()
     game.level.read("data/level_2.map")
 
     gold = Gold(Cube.SIZE * 2, Cube.SIZE * 2, Cube.SIZE)

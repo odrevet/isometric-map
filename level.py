@@ -148,3 +148,8 @@ class Level(pygame.sprite.Sprite):
                 drawable.draw(x, y, surface_display, self.image_tileset)
             else:
                 drawable.draw(x, y, surface_display)
+
+    def clear(self):
+        self.drawables.clear()
+        self.cubes.clear()
+        self.events.clear()
