@@ -169,7 +169,7 @@ class Game:
 
         self.events()
 
-        # check collectible
+        # check collectibles
         drawable_index = 0
         for drawable in self.level.drawables:
             if self.hero == drawable:
@@ -181,6 +181,14 @@ class Game:
                     del self.level.drawables[drawable_index]
 
             drawable_index += 1
+
+        # check events
+        event_index = 0
+        for event in self.level.events:
+            if self.hero.intersect(event):
+                event.on_intersect()
+
+            event_index += 1        
 
         # update hero location
         if self.hero.is_moving:

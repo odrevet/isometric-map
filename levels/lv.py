@@ -1,8 +1,11 @@
+from functools import partial
+
+from event import Event
 from pot import Pot
 from chest import Chest
 from gold import Gold
 from cube import Cube
-from functools import partial
+
 
 def clear(level):
     level.drawables = []
@@ -31,6 +34,10 @@ def level_1(game):
 
     chest.id = 1
     chest.on_open = partial(on_open_chest_1, game)
+
+    event = Event(0, Cube.SIZE * 5, Cube.SIZE)
+    game.level.events.append(event)
+
 
 
 def level_2(game):

@@ -17,6 +17,7 @@ class Level(pygame.sprite.Sprite):
         super().__init__()
         self.cubes = []
         self.drawables = []
+        self.events = []
         self.image_tileset = pygame.image.load("res/tileset.png").convert_alpha()
         self.size = Vector3()
 
