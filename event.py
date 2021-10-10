@@ -6,10 +6,7 @@ class Event:
 
     def __init__(self, x, y, z):
         self.position = Vector3(x, y, z)
-
-    def on_intersect(self):
-        print("Event intersect")
-
+        self.on_intersect = None
 
 class EventWarp(Event):
     def __init__(self):

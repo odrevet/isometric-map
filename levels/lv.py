@@ -1,5 +1,7 @@
 from functools import partial
 
+import pygame
+
 from event import Event
 from pot import Pot
 from chest import Chest
@@ -14,7 +16,33 @@ def clear(level):
 def on_open_chest_1(game):
     game.hero.gold += 50
 
-def level_1(game):
+def warp(game):
+    level_2(game, None)
+
+def display_text(game, surface_screen):
+    text = f"Event Text"
+    game.debug_textbox.html_text = text
+    loop = True
+
+    while loop:
+        game.debug_textbox.rebuild()
+        game.ui_manager.draw_ui(surface_screen)
+        pygame.display.update()
+
+        for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        pygame.quit()
+                        quit()
+
+                    if event.key == pygame.K_RETURN:
+                        loop = False
+
+
+def level_1(game, surface_screen):
     clear(game.level)
     game.level.read("data/level.map")
 
@@ -35,12 +63,17 @@ def level_1(game):
     chest.id = 1
     chest.on_open = partial(on_open_chest_1, game)
 
-    event = Event(0, Cube.SIZE * 5, Cube.SIZE)
+    event = Event(0, Cube.SIZE * 9, Cube.SIZE)
+    event.on_intersect = partial(warp, game)
     game.level.events.append(event)
 
+    event_text = Event(0, Cube.SIZE * 8, Cube.SIZE)
+    event_text.on_intersect = partial(display_text, game, surface_screen)
+    game.level.events.append(event_text)
 
 
-def level_2(game):
+
+def level_2(game, _):
     clear(game.level)
     game.level.read("data/level_2.map")
 

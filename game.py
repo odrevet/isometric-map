@@ -2,7 +2,6 @@ from copy import copy
 
 import pygame
 from pygame.locals import *
-from drawable import Drawable
 
 from utils import *
 from cube import Cube
