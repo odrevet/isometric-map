@@ -7,7 +7,7 @@ from pot import Pot
 from chest import Chest
 from gold import Gold
 from cube import Cube
-
+from NPC import *
 
 def clear(level):
     level.drawables = []
@@ -52,12 +52,14 @@ def level_1(game, surface_screen):
     gold = Gold(0, Cube.SIZE * 2, Cube.SIZE)
     gold2 = Gold(0, Cube.SIZE * 4, Cube.SIZE)
     gold2.amount = 7
+    woman = Woman(Cube.SIZE * 5, Cube.SIZE * 7, Cube.SIZE)
 
     game.level.add_drawable(pot)
     game.level.add_drawable(pot2)
     game.level.add_drawable(chest)
     game.level.add_drawable(gold)
     game.level.add_drawable(gold2)
+    game.level.add_drawable(woman)
     game.level.add_drawable(game.hero)
 
     chest.id = 1
