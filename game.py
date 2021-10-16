@@ -70,6 +70,11 @@ class Game:
                 points,
             )
 
+    def update_display(self):
+        scaled_win = pygame.transform.scale(self.surface_screen, self.surface_window.get_size())
+        self.surface_window.blit(scaled_win, (0, 0))
+        pygame.display.update()
+
     def hero_on_ground(self):
         [bl, br, tl, tr] = self.hero.get_coords()
         return not (

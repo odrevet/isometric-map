@@ -38,10 +38,7 @@ def display_text(game, text):
     while loop:
         game.debug_textbox.rebuild()
         game.ui_manager.draw_ui(game.surface_screen)
-
-        scaled_win = pygame.transform.scale(game.surface_screen, game.surface_window.get_size())
-        game.surface_window.blit(scaled_win, (0, 0))
-        pygame.display.update()
+        game.update_display()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

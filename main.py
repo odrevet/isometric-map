@@ -59,7 +59,4 @@ while True:
     camera.x = game.resolution_screen[0] // 2 - camera.x
     camera.y = game.resolution_screen[1] // 2 - camera.y + hero.position.z
     game.draw(camera)
-
-    scaled_win = pygame.transform.scale(game.surface_screen, game.surface_window.get_size())
-    game.surface_window.blit(scaled_win, (0, 0))
-    pygame.display.update()
+    game.update_display()
