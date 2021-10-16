@@ -21,11 +21,15 @@ class Game:
         self.hero = None
         self.ui_manager = None
         self.clock = pygame.time.Clock()
+        self.resolution_screen = (320, 240)
+        self.resolution_window = (640, 480)
+        self.surface_window = pygame.display.set_mode(self.resolution_window)
+        self.surface_screen = pygame.Surface(self.resolution_screen)
 
-    def draw(self, camera, surface_screen):
+    def draw(self, camera):
         # draw
-        surface_screen.fill((0, 0, 0))
-        self.level.draw(camera, surface_screen)
+        self.surface_screen.fill((0, 0, 0))
+        self.level.draw(camera, self.surface_screen)
 
         # debug
         if __debug__:
@@ -35,7 +39,7 @@ class Game:
             )
             self.debug_textbox.html_text = debug_text
             self.debug_textbox.rebuild()
-            self.ui_manager.draw_ui(surface_screen)
+            self.ui_manager.draw_ui(self.surface_screen)
 
             # draw lines around hero
             # get hero coords and find isometric locations
@@ -60,7 +64,7 @@ class Game:
             )
 
             pygame.draw.lines(
-                surface_screen,
+                self.surface_screen,
                 (255, 255, 255),
                 False,
                 points,
@@ -133,7 +137,10 @@ class Game:
                         if box.intersect(drawable):
                             if isinstance(drawable, Chest) and not drawable.is_open:
                                 drawable.open()
-                            elif isinstance(drawable, NPC) and drawable.on_interact is not None:
+                            elif (
+                                isinstance(drawable, NPC)
+                                and drawable.on_interact is not None
+                            ):
                                 drawable.on_interact()
 
             elif event.type == KEYUP:

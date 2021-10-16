@@ -20,11 +20,6 @@ args = vars(parser.parse_args())
 
 # init pygame
 pygame.init()
-
-resolution_screen = (320, 240)
-resolution_window = (640, 480)
-surface_window = pygame.display.set_mode(resolution_window)
-surface_screen = pygame.Surface(resolution_screen)
 pygame.display.set_caption("Isometric map")
 camera = Vector2(0, 0)
 
@@ -32,7 +27,7 @@ game = Game()
 
 # init GUI
 game.ui_manager = pygame_gui.UIManager(
-    resolution_screen, "data/themes/classic.json"
+    game.resolution_screen, "data/themes/classic.json"
 )
 game.debug_textbox = UITextBox(
     "",
@@ -56,15 +51,15 @@ game.hero = hero
 
 # init level
 game.level = Level()
-level_1(game, surface_window, surface_screen)
+level_1(game)
 
 while True:
     game.update()
     camera = cartesian_to_isometric((hero.position.x, hero.position.y))
-    camera.x = resolution_screen[0] // 2 - camera.x
-    camera.y = resolution_screen[1] // 2 - camera.y + hero.position.z
-    game.draw(camera, surface_screen)
+    camera.x = game.resolution_screen[0] // 2 - camera.x
+    camera.y = game.resolution_screen[1] // 2 - camera.y + hero.position.z
+    game.draw(camera)
 
-    scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
-    surface_window.blit(scaled_win, (0, 0))
+    scaled_win = pygame.transform.scale(game.surface_screen, game.surface_window.get_size())
+    game.surface_window.blit(scaled_win, (0, 0))
     pygame.display.update()
