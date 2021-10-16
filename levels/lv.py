@@ -24,8 +24,8 @@ def fade(surface_screen):
 
 
 def warp(game, x, y, z):
-    # fade(game.surface_screen)
-    level_2(game, None)
+    #fade(game.surface_screen)
+    level_2(game)
     game.hero.position.x = x
     game.hero.position.y = y
     game.hero.position.z = z
@@ -82,7 +82,7 @@ def level_1(game):
     chest.on_interact = partial(on_open_chest_1, game)
 
     event = Event(0, Cube.SIZE * 9, Cube.SIZE)
-    event.on_intersect = partial(warp, game, 100, 100, 96, game.surface_screen)
+    event.on_intersect = partial(warp, game, 100, 100, 96)
     game.level.events.append(event)
 
 
