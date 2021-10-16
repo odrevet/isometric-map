@@ -31,13 +31,16 @@ def warp(game, x, y, z, surface_screen):
     game.hero.position.z = z
 
 
-def display_text(game, surface_screen, text):
+def display_text(game, surface_window, surface_screen, text):
     game.debug_textbox.html_text = text
     loop = True
 
     while loop:
         game.debug_textbox.rebuild()
         game.ui_manager.draw_ui(surface_screen)
+
+        scaled_win = pygame.transform.scale(surface_screen, surface_window.get_size())
+        surface_window.blit(scaled_win, (0, 0))
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -53,7 +56,7 @@ def display_text(game, surface_screen, text):
                     loop = False
 
 
-def level_1(game, surface_screen):
+def level_1(game, surface_window, surface_screen):
     game.level.clear()
     game.level.read("data/level.map")
 
@@ -65,7 +68,7 @@ def level_1(game, surface_screen):
     gold2.amount = 7
 
     woman = NPC("woman", Cube.SIZE * 5, Cube.SIZE * 7, Cube.SIZE)
-    woman.on_interact = partial(display_text, game, surface_screen, "Hello !")
+    woman.on_interact = partial(display_text, game, surface_window, surface_screen, "Hello !")
 
     boy = NPC("boy", Cube.SIZE * 4, Cube.SIZE * 9, Cube.SIZE)
 
@@ -86,7 +89,7 @@ def level_1(game, surface_screen):
     game.level.events.append(event)
 
 
-def level_2(game, _):
+def level_2(game, surface_window, surface_screen):
     game.level.clear()
     game.level.read("data/level_2.map")
 

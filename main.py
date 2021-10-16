@@ -56,7 +56,7 @@ game.hero = hero
 
 # init level
 game.level = Level()
-level_1(game, surface_window)
+level_1(game, surface_window, surface_screen)
 
 while True:
     game.update()
