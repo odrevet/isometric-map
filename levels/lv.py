@@ -9,14 +9,29 @@ from gold import Gold
 from cube import Cube
 from NPC import *
 
+
 def on_open_chest_1(game):
     game.hero.gold += 50
 
-def warp(game):
-    level_2(game, None)
 
-def display_text(game, surface_screen):
-    text = f"Event Text"
+def fade(surface_screen):
+    fade = pygame.Surface((640, 480))
+    fade.fill((0, 0, 0))
+    for alpha in range(0, 255):
+        fade.set_alpha(alpha)
+        surface_screen.blit(fade, (0, 0))
+        pygame.display.update()
+
+
+def warp(game, x, y, z, surface_screen):
+    # fade(surface_screen)
+    level_2(game, None)
+    game.hero.position.x = x
+    game.hero.position.y = y
+    game.hero.position.z = z
+
+
+def display_text(game, surface_screen, text):
     game.debug_textbox.html_text = text
     loop = True
 
@@ -26,16 +41,16 @@ def display_text(game, surface_screen):
         pygame.display.update()
 
         for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
                     pygame.quit()
                     quit()
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        pygame.quit()
-                        quit()
 
-                    if event.key == pygame.K_RETURN:
-                        loop = False
+                if event.key == pygame.K_RETURN:
+                    loop = False
 
 
 def level_1(game, surface_screen):
@@ -48,7 +63,11 @@ def level_1(game, surface_screen):
     gold = Gold(0, Cube.SIZE * 2, Cube.SIZE)
     gold2 = Gold(0, Cube.SIZE * 4, Cube.SIZE)
     gold2.amount = 7
-    woman = Woman(Cube.SIZE * 5, Cube.SIZE * 7, Cube.SIZE)
+
+    woman = NPC("woman", Cube.SIZE * 5, Cube.SIZE * 7, Cube.SIZE)
+    woman.on_interact = partial(display_text, game, surface_screen, "Hello !")
+
+    boy = NPC("boy", Cube.SIZE * 4, Cube.SIZE * 9, Cube.SIZE)
 
     game.level.add_drawable(pot)
     game.level.add_drawable(pot2)
@@ -56,19 +75,15 @@ def level_1(game, surface_screen):
     game.level.add_drawable(gold)
     game.level.add_drawable(gold2)
     game.level.add_drawable(woman)
+    game.level.add_drawable(boy)
     game.level.add_drawable(game.hero)
 
     chest.id = 1
-    chest.on_open = partial(on_open_chest_1, game)
+    chest.on_interact = partial(on_open_chest_1, game)
 
     event = Event(0, Cube.SIZE * 9, Cube.SIZE)
-    event.on_intersect = partial(warp, game)
+    event.on_intersect = partial(warp, game, 100, 100, 96, surface_screen)
     game.level.events.append(event)
-
-    event_text = Event(0, Cube.SIZE * 8, Cube.SIZE)
-    event_text.on_intersect = partial(display_text, game, surface_screen)
-    game.level.events.append(event_text)
-
 
 
 def level_2(game, _):

@@ -12,7 +12,7 @@ class Chest(Drawable):
         self.size = Vector3(Cube.SIZE - 1, Cube.SIZE - 1, Cube.SIZE - 1)
         self.is_open = False
         self.content = None
-        self.on_open = None
+        self.on_interact = None
         self.id = None
 
         self.closed = pygame.image.load("res/chest/chest_0.png").convert_alpha()
@@ -32,4 +32,4 @@ class Chest(Drawable):
 
     def open(self):
         self.is_open = True
-        self.on_open()
+        self.on_interact()

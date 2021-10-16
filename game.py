@@ -1,6 +1,8 @@
 from copy import copy
 
 import pygame
+from pygame import draw
+from pygame.math import Vector3
 from pygame.locals import *
 
 from utils import *
@@ -8,7 +10,7 @@ from cube import Cube
 from hero import Direction
 from gold import Gold
 from chest import Chest
-from pygame.math import Vector3
+from box import Box
 
 from levels.lv import *
 
@@ -28,7 +30,9 @@ class Game:
         # debug
         if __debug__:
             fps = str(int(self.clock.get_fps()))
-            debug_text = f"{self.level.size} {self.hero.position} {self.hero.gold}G | {fps} fps"
+            debug_text = (
+                f"{self.level.size} {self.hero.position} {self.hero.gold}G | {fps} fps"
+            )
             self.debug_textbox.html_text = debug_text
             self.debug_textbox.rebuild()
             self.ui_manager.draw_ui(surface_screen)
@@ -106,11 +110,13 @@ class Game:
                     if self.hero.on_ground:
                         self.hero.jump = True
 
+                # action button
                 if event.key == pygame.K_RETURN:
+                    # interact in front of hero
                     x = self.hero.position.x
                     y = self.hero.position.y
                     z = self.hero.position.z
-
+                    #
                     if self.hero.direction == Direction.UP:
                         y -= 8
                     elif self.hero.direction == Direction.RIGHT:
@@ -120,14 +126,15 @@ class Game:
                     elif self.hero.direction == Direction.LEFT:
                         x -= 8
 
-                    drawable = self.level.get_drawable(
-                        x // 16,
-                        y // 16,
-                        z // 16,
-                    )
-
-                    if isinstance(drawable, Chest) and not drawable.is_open :
-                        drawable.open()
+                    box = Box(Vector3(x, y, z), Vector3(8, 8, 8))
+                    for drawable in self.level.drawables:
+                        if __debug__:
+                            print(f"check interact with {drawable}")
+                        if box.intersect(drawable):
+                            if isinstance(drawable, Chest) and not drawable.is_open:
+                                drawable.open()
+                            elif isinstance(drawable, NPC) and drawable.on_interact is not None:
+                                drawable.on_interact()
 
             elif event.type == KEYUP:
                 if event.key in [
@@ -185,7 +192,7 @@ class Game:
             if self.hero.intersect(event):
                 event.on_intersect()
 
-            event_index += 1        
+            event_index += 1
 
         # update hero location
         if self.hero.is_moving:

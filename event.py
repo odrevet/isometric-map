@@ -7,7 +7,3 @@ class Event:
     def __init__(self, x, y, z):
         self.position = Vector3(x, y, z)
         self.on_intersect = None
-
-class EventWarp(Event):
-    def __init__(self):
-        self.destination = None

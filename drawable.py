@@ -7,9 +7,9 @@ from const import CUBE_SIZE
 class Drawable(ABC):
     def __init__(self, x=0, y=0, z=0):
         self.position = Vector3(x, y, z)
+        self.size = Vector3(0, 0, 0)
         self.zindex = 0
         self.update_zindex()
-        self.size = Vector3(0, 0, 0)
         self.solid = True
         self.draggable = False
 
@@ -42,4 +42,4 @@ class Drawable(ABC):
         pass
 
     def __str__(self):
-        return f"{type(self).__name__} at {self.position} zindex {int(self.zindex)}"
+        return f"{type(self).__name__} \t pos {self.position} \t size {self.size} \t zindex {int(self.zindex)}"
