@@ -113,7 +113,8 @@ class Game:
                                 point.x + self.camera.x,
                                 point.y
                                 + self.camera.y
-                                - drawable.position.z - drawable.size.z
+                                - drawable.position.z
+                                - drawable.size.z
                                 + Cube.SIZE,
                             )
                         ),
@@ -246,9 +247,7 @@ class Game:
     def not_solid(self, drawable):
         return drawable is None or (drawable is not None and drawable.solid == False)
 
-    def update(self):
-        time_delta = self.clock.tick(60) / 1000.0
-
+    def update_camera(self):
         self.camera = cartesian_to_isometric(
             (self.hero.position.x, self.hero.position.y)
         )
@@ -256,6 +255,9 @@ class Game:
         self.camera.y = (
             self.resolution_screen[1] // 2 - self.camera.y + self.hero.position.z
         )
+
+    def update(self):
+        time_delta = self.clock.tick(60) / 1000.0
 
         self.hero.on_ground = self.hero_on_ground()
 
@@ -300,6 +302,7 @@ class Game:
 
                     if self.not_solid(at_top_left) and self.not_solid(at_top_right):
                         self.hero.position = copy(next_pos)
+                        self.update_camera()
 
             elif self.hero.direction == Direction.RIGHT:
                 next_pos.x += 1
@@ -316,6 +319,7 @@ class Game:
 
                     if self.not_solid(at_top_right) and self.not_solid(at_btm_right):
                         self.hero.position = copy(next_pos)
+                        self.update_camera()
 
             elif self.hero.direction == Direction.DOWN:
                 next_pos.y += 1
@@ -332,6 +336,7 @@ class Game:
 
                     if self.not_solid(at_btm_left) and self.not_solid(at_btm_right):
                         self.hero.position = copy(next_pos)
+                        self.update_camera()
 
             elif self.hero.direction == Direction.LEFT:
                 next_pos.x -= 1
@@ -346,6 +351,7 @@ class Game:
 
                     if self.not_solid(at_top_left) and self.not_solid(at_btm_left):
                         self.hero.position = copy(next_pos)
+                        self.update_camera()
 
         # jump
         if self.hero.jump == True:
@@ -355,9 +361,11 @@ class Game:
             else:
                 self.hero.position.z += 1
                 self.hero.jump_cur += 1
+            self.update_camera()
 
         # gravity
         if self.hero.jump == False and not self.hero.on_ground:
             self.hero.position.z -= 1
+            self.update_camera()
 
         self.ui_manager.update(time_delta)

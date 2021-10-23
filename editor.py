@@ -94,15 +94,17 @@ if exists(args["level"]):
 cursor = Cursor()
 move_z = False
 
-while True:
-    time_delta = clock.tick(60) / 1000.0
-
+def update_camera(camera, cursor):
     # center camera on cursor
     camera = cartesian_to_isometric(
         (cursor.position.x * Cube.SIZE, cursor.position.y * Cube.SIZE)
     )
     camera.x = resolution_screen[0] // 2 - camera.x
     camera.y = resolution_screen[1] // 2 - camera.y + cursor.position.z * Cube.SIZE
+    return camera
+
+while True:
+    time_delta = clock.tick(60) / 1000.0
 
     # Events
     for event in pygame.event.get():
@@ -123,21 +125,25 @@ while True:
 
             if event.key == pygame.K_LEFT:
                 cursor.position.x -= 1
+                camera = update_camera(camera, cursor)
 
             if event.key == pygame.K_RIGHT:
                 cursor.position.x += 1
+                camera = update_camera(camera, cursor)
 
             if event.key == pygame.K_UP:
                 if move_z == True:
                     cursor.position.z += 1
                 else:
                     cursor.position.y -= 1
+                camera = update_camera(camera, cursor)
 
             if event.key == pygame.K_DOWN:
                 if move_z == True:
                     cursor.position.z -= 1
                 else:
                     cursor.position.y += 1
+                camera = update_camera(camera, cursor)
 
             if event.key == pygame.K_BACKSPACE:
                 cube_index = level.get_cube_index(
