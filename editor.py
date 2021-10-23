@@ -57,6 +57,16 @@ def save(level, filename):
         )
 
 
+def update_camera(camera, cursor):
+    # center camera on cursor
+    camera = cartesian_to_isometric(
+        (cursor.position.x * Cube.SIZE, cursor.position.y * Cube.SIZE)
+    )
+    camera.x = resolution_screen[0] // 2 - camera.x
+    camera.y = resolution_screen[1] // 2 - camera.y + cursor.position.z * Cube.SIZE
+    return camera
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--level", type=str, required=True)
 args = vars(parser.parse_args())
@@ -92,16 +102,8 @@ if exists(args["level"]):
 
 # init cursor
 cursor = Cursor()
+camera = update_camera(camera, cursor)
 move_z = False
-
-def update_camera(camera, cursor):
-    # center camera on cursor
-    camera = cartesian_to_isometric(
-        (cursor.position.x * Cube.SIZE, cursor.position.y * Cube.SIZE)
-    )
-    camera.x = resolution_screen[0] // 2 - camera.x
-    camera.y = resolution_screen[1] // 2 - camera.y + cursor.position.z * Cube.SIZE
-    return camera
 
 while True:
     time_delta = clock.tick(60) / 1000.0

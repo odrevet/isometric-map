@@ -32,6 +32,7 @@ if args["music"]:
 # init hero
 hero = Hero(z=Cube.SIZE)
 game.hero = hero
+game.update_camera()
 
 # init level
 game.level = Level()
