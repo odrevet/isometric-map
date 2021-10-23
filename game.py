@@ -1,9 +1,11 @@
 from copy import copy
 
 import pygame
-from pygame import draw
-from pygame.math import Vector3
+from pygame.math import Vector2, Vector3
 from pygame.locals import *
+
+import pygame_gui
+from pygame_gui.elements.ui_text_box import UITextBox
 
 from utils import *
 from cube import Cube
@@ -11,6 +13,7 @@ from hero import Direction
 from gold import Gold
 from chest import Chest
 from box import Box
+from direction import Direction
 
 from levels.lv import *
 
@@ -25,53 +28,112 @@ class Game:
         self.resolution_window = (640, 480)
         self.surface_window = pygame.display.set_mode(self.resolution_window)
         self.surface_screen = pygame.Surface(self.resolution_screen)
+        self.camera = Vector2(0, 0)
 
-    def draw(self, camera):
+        # init GUI
+        self.ui_manager = pygame_gui.UIManager(
+            self.resolution_screen, "data/themes/classic.json"
+        )
+
+        self.hud_textbox = UITextBox(
+            "",
+            pygame.Rect((0, 0), (320, 35)),
+            manager=self.ui_manager,
+            object_id="#hud_textbox",
+        )
+
+        self.msg_textbox = UITextBox(
+            "",
+            pygame.Rect((0, 180), (320, 60)),
+            manager=self.ui_manager,
+            object_id="#msg_textbox",
+        )
+        self.msg_textbox.hide()
+
+        if __debug__:
+            self.debug_textbox = UITextBox(
+                "",
+                pygame.Rect((0, 35), (320, 35)),
+                manager=self.ui_manager,
+                object_id="#debug_textbox",
+            )
+
+    def draw(self):
         # draw
         self.surface_screen.fill((0, 0, 0))
-        self.level.draw(camera, self.surface_screen)
+        self.level.draw(self.camera, self.surface_screen)
+
+        hud_text = f"{self.hero.gold}G"
+        self.hud_textbox.html_text = hud_text
+        self.hud_textbox.rebuild()
 
         # debug
         if __debug__:
-            fps = str(int(self.clock.get_fps()))
-            debug_text = (
-                f"{self.level.size} {self.hero.position} {self.hero.gold}G | {fps} fps"
-            )
+            debug_text = f"{self.level.size} {self.hero.position} | {int(self.clock.get_fps())} fps"
             self.debug_textbox.html_text = debug_text
             self.debug_textbox.rebuild()
-            self.ui_manager.draw_ui(self.surface_screen)
 
-            # draw lines around hero
-            # get hero coords and find isometric locations
-            bl, br, tl, tr = list(
-                map(
-                    (lambda coord: cartesian_to_isometric(coord)),
-                    self.hero.get_coords(),
+            # draw lines around drawables
+            for drawable in self.level.drawables:
+                bl, br, tl, tr = list(
+                    map(
+                        (lambda coord: cartesian_to_isometric(coord)),
+                        drawable.get_coords(),
+                    )
                 )
-            )
 
-            # adjust all points with camera and hero z position
-            points = list(
-                map(
-                    (
-                        lambda point: (
-                            point.x + camera.x,
-                            point.y + camera.y - self.hero.position.z + Cube.SIZE,
-                        )
-                    ),
-                    [bl, br, br, tr, tl, tr, tl, bl],
+                # adjust all points with camera and z position
+                points = list(
+                    map(
+                        (
+                            lambda point: (
+                                point.x + self.camera.x,
+                                point.y
+                                + self.camera.y
+                                - drawable.position.z
+                                + Cube.SIZE,
+                            )
+                        ),
+                        [bl, br, br, tr, tl, tr, tl, bl],
+                    )
                 )
-            )
 
-            pygame.draw.lines(
-                self.surface_screen,
-                (255, 255, 255),
-                False,
-                points,
-            )
+                pygame.draw.lines(
+                    self.surface_screen,
+                    (255, 255, 255),
+                    False,
+                    points,
+                )
+
+                # Top
+                points = list(
+                    map(
+                        (
+                            lambda point: (
+                                point.x + self.camera.x,
+                                point.y
+                                + self.camera.y
+                                - drawable.position.z - drawable.size.z
+                                + Cube.SIZE,
+                            )
+                        ),
+                        [bl, br, br, tr, tl, tr, tl, bl],
+                    )
+                )
+
+                pygame.draw.lines(
+                    self.surface_screen,
+                    (255, 255, 255),
+                    False,
+                    points,
+                )
+
+        self.ui_manager.draw_ui(self.surface_screen)
 
     def update_display(self):
-        scaled_win = pygame.transform.scale(self.surface_screen, self.surface_window.get_size())
+        scaled_win = pygame.transform.scale(
+            self.surface_screen, self.surface_window.get_size()
+        )
         self.surface_window.blit(scaled_win, (0, 0))
         pygame.display.update()
 
@@ -146,6 +208,14 @@ class Game:
                                 isinstance(drawable, NPC)
                                 and drawable.on_interact is not None
                             ):
+                                if self.hero.direction == Direction.LEFT:
+                                    drawable.direction = Direction.RIGHT
+                                elif self.hero.direction == Direction.UP:
+                                    drawable.direction = Direction.DOWN
+                                elif self.hero.direction == Direction.RIGHT:
+                                    drawable.direction = Direction.LEFT
+                                elif self.hero.direction == Direction.DOWN:
+                                    drawable.direction = Direction.UP
                                 drawable.on_interact()
 
             elif event.type == KEYUP:
@@ -178,6 +248,15 @@ class Game:
 
     def update(self):
         time_delta = self.clock.tick(60) / 1000.0
+
+        self.camera = cartesian_to_isometric(
+            (self.hero.position.x, self.hero.position.y)
+        )
+        self.camera.x = self.resolution_screen[0] // 2 - self.camera.x
+        self.camera.y = (
+            self.resolution_screen[1] // 2 - self.camera.y + self.hero.position.z
+        )
+
         self.hero.on_ground = self.hero_on_ground()
 
         for drawable in self.level.drawables:

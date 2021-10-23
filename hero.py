@@ -47,21 +47,10 @@ class Hero(Drawable):
 
         self.drawable_width = 32
         self.drawable_height = 48
-        self.size = Vector3(Cube.SIZE - 1, Cube.SIZE - 1, 48)
+        self.size = Vector3(Cube.SIZE - 1, Cube.SIZE - 1, Cube.SIZE * 2)
 
         self.gold = 0
         self.life = 6
-
-    def get_coords(self):
-        bl = Vector3(self.position.x, self.position.y + self.size.y, self.position.z)
-        br = Vector3(
-            self.position.x + self.size.x,
-            self.position.y + self.size.y,
-            self.position.z,
-        )
-        tl = Vector3(self.position.x, self.position.y, self.position.z)
-        tr = Vector3(self.position.x + self.size.x, self.position.y, self.position.z)
-        return (bl, br, tl, tr)
 
     def draw(self, x, y, surface_display):
         if self.jump == True or self.on_ground == False:

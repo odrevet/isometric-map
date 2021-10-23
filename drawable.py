@@ -38,6 +38,17 @@ class Drawable(ABC):
             and self.position.z <= Vector3.z
         )
 
+    def get_coords(self):
+        bl = Vector3(self.position.x, self.position.y + self.size.y, self.position.z)
+        br = Vector3(
+            self.position.x + self.size.x,
+            self.position.y + self.size.y,
+            self.position.z,
+        )
+        tl = Vector3(self.position.x, self.position.y, self.position.z)
+        tr = Vector3(self.position.x + self.size.x, self.position.y, self.position.z)
+        return (bl, br, tl, tr)
+
     def draw(self, x, y, surface_display):
         pass
 

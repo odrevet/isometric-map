@@ -10,21 +10,17 @@ from cube import Cube
 from NPC import *
 
 
-def on_open_chest_1(game):
-    game.hero.gold += 50
-
-
-def fade(surface_screen):
+def fade(game):
     fade = pygame.Surface((640, 480))
     fade.fill((0, 0, 0))
     for alpha in range(0, 255):
         fade.set_alpha(alpha)
-        surface_screen.blit(fade, (0, 0))
-        pygame.display.update()
+        game.surface_screen.blit(fade, (0, 0))
+        game.update_display()
 
 
 def warp(game, x, y, z):
-    #fade(game.surface_screen)
+    #fade(game)
     level_2(game)
     game.hero.position.x = x
     game.hero.position.y = y
@@ -32,13 +28,17 @@ def warp(game, x, y, z):
 
 
 def display_text(game, text):
-    game.debug_textbox.html_text = text
+    game.msg_textbox.show()
+    game.msg_textbox.html_text = text
+    game.msg_textbox.rebuild()
     loop = True
 
     while loop:
-        game.debug_textbox.rebuild()
+        time_delta = game.clock.tick(60) / 1000.0
+        game.draw() 
         game.ui_manager.draw_ui(game.surface_screen)
         game.update_display()
+        game.ui_manager.update(time_delta)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -52,6 +52,11 @@ def display_text(game, text):
                 if event.key == pygame.K_RETURN:
                     loop = False
 
+    game.msg_textbox.hide()
+
+def on_open_chest_1(game):
+    game.hero.gold += 50
+    display_text(game, "Found 50 Gold")
 
 def level_1(game):
     game.level.clear()

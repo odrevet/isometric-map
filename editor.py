@@ -13,7 +13,6 @@ from cube import Cube
 from cursor import Cursor
 
 
-
 def add_cube(level, cursor):
     cube_index = level.get_cube_index(
         cursor.position.x,
@@ -53,15 +52,9 @@ def save(level, filename):
         c0 = int(to_1d_coords(cube.coords[0], tileset_width))
         c1 = int(to_1d_coords(cube.coords[1], tileset_width))
         c2 = int(to_1d_coords(cube.coords[2], tileset_width))
-        f.write(f"{int(cube.indexes.x)}:{int(cube.indexes.y)}:{int(cube.indexes.z)} {c0}:{c1}:{c2}\n")
-
-
-def center_camera():
-    camera = cartesian_to_isometric(
-        (cursor.position.x * Cube.SIZE, cursor.position.y * Cube.SIZE)
-    )
-    camera.x = resolution_screen.x // 2 - camera.x
-    camera.y = resolution_screen.y // 2 - camera.y + cursor.position.z * Cube.SIZE
+        f.write(
+            f"{int(cube.indexes.x)}:{int(cube.indexes.y)}:{int(cube.indexes.z)} {c0}:{c1}:{c2}\n"
+        )
 
 
 parser = argparse.ArgumentParser()
@@ -84,7 +77,7 @@ clock = pygame.time.Clock()
 
 # init GUI
 ui_manager = pygame_gui.UIManager(resolution_screen, "data/themes/classic.json")
-debug_textbox = UITextBox(
+hud_textbox = UITextBox(
     "test",
     pygame.Rect((0, 0), (resolution_screen[0], resolution_screen[1] // 3)),
     manager=ui_manager,
@@ -223,10 +216,10 @@ while True:
     )
 
     # Draw HUD
-    debug_text = f"Level size {level.size}<br/>"
-    debug_text += f"Cursor at {cursor.position}<br/>{level.get_cube(cursor.position.x,cursor.position.y,cursor.position.z)}"
-    debug_textbox.html_text = debug_text
-    debug_textbox.rebuild()
+    hud_text = f"Level size {level.size}<br/>"
+    hud_text += f"Cursor at {cursor.position}<br/>{level.get_cube(cursor.position.x,cursor.position.y,cursor.position.z)}"
+    hud_textbox.html_text = hud_text
+    hud_textbox.rebuild()
     ui_manager.draw_ui(surface_screen)
     ui_manager.update(time_delta)
 

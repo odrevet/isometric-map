@@ -11,14 +11,16 @@ class NPC(Drawable):
         super().__init__(x, y, z)
         self.type = type
         self.size = Vector3(Cube.SIZE, Cube.SIZE, Cube.SIZE * 2)
-        self.image = pygame.image.load(f"res/NPC/{self.type}/walk_down_0.png")
         self.on_interact = None
+        self.direction = Direction.DOWN
 
+        # animations
         anim_types = ["walk_up", "walk_down"]
         self.anim_objs = {}
+        
         for anim_type in anim_types:
             images_with_duration = [
-                ((f"res/NPC/{self.type}/{anim_type}_{str(num)}.png"), 100) for num in range(4)
+                ((f"res/NPC/{self.type}/{anim_type}_{str(num)}.png"), 130) for num in range(4)
             ]
             self.anim_objs[anim_type] = pyganim.PygAnimation(images_with_duration)
 
@@ -29,6 +31,20 @@ class NPC(Drawable):
         self.anim_objs["walk_left"].flip(True, False)
         self.anim_objs["walk_left"].makeTransformsPermanent()
 
+        self.moveConductor = pyganim.PygConductor(self.anim_objs)
+
 
     def draw(self, x, y, surface_display):
-        surface_display.blit(self.image, (x, y - 16))
+        animation_key = ""
+        if self.direction == Direction.LEFT:
+            animation_key = "walk_left"
+        elif self.direction == Direction.UP:
+            animation_key = "walk_up"
+        elif self.direction == Direction.RIGHT:
+            animation_key = "walk_right"
+        elif self.direction == Direction.DOWN:
+            animation_key = "walk_down"
+
+
+        self.anim_objs[animation_key].currentFrameNum = 0
+        self.anim_objs[animation_key].blit(surface_display, (x, y - 16))
